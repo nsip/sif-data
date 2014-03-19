@@ -6,3 +6,10 @@ README.md
  * data/ 	Data that could be needed for generating data
  * xsd/		XSDs
 	
+
+Database Rules
+
+ * id 		Unique ID created for every row
+ * refId	TODO Should we just use id also as RefId?
+
+
