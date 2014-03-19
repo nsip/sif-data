@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--version 3.00.13-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	<xs:include schemaLocation="SIFglobal.xsd"/>
+	<!--The types in this file are SIF Idendity Management artifacts. They do not fit into the entity model because they are management objects but function in most ways as entities. -->
+	<xs:complexType name="gApplicationType">
+		<xs:annotation>
+			<xs:appinfo>
+				<elementName>Application</elementName>
+				<events>yes</events>
+				<isSIFObject>yes</isSIFObject>
+				<cedsId/>
+				<cedsURL/>
+			</xs:appinfo>
+			<xs:documentation>A piece of software or a software system.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="gIdentityManagementArtifactType">
+				<xs:sequence>
+					<xs:element name="localId" type="gLocalIdType" minOccurs="0"/>
+					<xs:element name="name" type="xs:normalizedString"/>
+					<xs:element name="uri" type="xs:anyURI" minOccurs="0"/>
+					<xs:element name="callback_URI" type="xs:anyURI" minOccurs="0"/>
+					<xs:element name="applicationFunctionList" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="applicationFunction" type="gApplicationFunctionType" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="defaultFunction" type="gApplicationFunctionType" minOccurs="0"/>
+					<xs:element name="identityProviderList" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="identityProvider" type="gGenericRefIdPointerType" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="defaultIdentityProvider" type="gRefIdPointerType" minOccurs="0"/>
+					<xs:element name="startDate" type="xs:date" minOccurs="0"/>
+					<xs:element name="endDate" type="xs:date" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="application" type="gApplicationType"/>
+	<xs:complexType name="gAuthenticationType">
+		<xs:annotation>
+			<xs:appinfo>
+				<elementName>Authentication</elementName>
+				<events>yes</events>
+				<isSIFObject>yes</isSIFObject>
+				<cedsId/>
+				<cedsURL/>
+			</xs:appinfo>
+			<xs:documentation>Defines how authentication is performed and exchanged.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="gIdentityManagementArtifactType">
+				<xs:sequence>
+					<xs:element name="loginId" type="xs:normalizedString"/>
+					<xs:element name="userIdList">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="userId" type="gGenericRefIdPointerType" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="systemId" type="gRefIdPointerType" minOccurs="0"/>
+					<xs:element name="authenticationType" type="gAuthenticationTypeType" minOccurs="0"/>
+					<xs:element name="credentialList" type="gCredentialsList" minOccurs="0"/>
+					<xs:element name="endDate" type="xs:date" minOccurs="0"/>
+					<xs:element name="startDate" type="xs:date" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="authentication" type="gAuthenticationType"/>
+	<xs:complexType name="gAuthorizationType">
+		<xs:annotation>
+			<xs:appinfo>
+				<elementName>Authorization</elementName>
+				<events>yes</events>
+				<isSIFObject>yes</isSIFObject>
+				<cedsId/>
+				<cedsURL/>
+			</xs:appinfo>
+			<xs:documentation>The description of what a user under an authenticated identity is permitted to do on an application, if anything.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="gIdentityManagementArtifactType">
+				<xs:sequence>
+					<xs:element name="applicationId" type="gRefIdPointerType"/>
+					<xs:element name="userIdList">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="userId" type="gGenericRefIdPointerType" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="applicationFunction" type="gApplicationFunctionType" minOccurs="0"/>
+					<xs:element name="roleList" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="role" type="xs:token" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="startDate" type="xs:date" minOccurs="0"/>
+					<xs:element name="endDate" type="xs:date" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="authorization" type="gAuthorizationType"/>
+	<xs:complexType name="gIdentityManagementArtifactType">
+		<xs:annotation>
+			<xs:appinfo>
+				<elementName>Identity Management Artifact</elementName>
+				<events>yes</events>
+				<isSIFObject>yes</isSIFObject>
+			</xs:appinfo>
+			<xs:documentation>A parent entity for SIF Identity Management objects</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="gSIF_EntityType"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="identityManagementArtifact"/>
+	<xs:complexType name="gIdentityManagementSystemType">
+		<xs:annotation>
+			<xs:appinfo>
+				<elementName>Identity Management System</elementName>
+				<events>yes</events>
+				<isSIFObject>yes</isSIFObject>
+				<cedsId/>
+				<cedsURL/>
+			</xs:appinfo>
+			<xs:documentation>This object describes an identity management system.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="gApplicationType"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="identityManagementSystem" type="gIdentityManagementSystemType"/>
+</xs:schema>

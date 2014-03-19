@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--version 3.00.05-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.sifassociation.org/datamodel/us/3.0" targetNamespace="http://www.sifassociation.org/datamodel/us/3.0" elementFormDefault="qualified">
+	<xs:include schemaLocation="../Entity/SIFglobal.xsd"/>
+	<xs:complexType name="wfQuarterlyEmploymentRecordType">
+		<xs:sequence>
+			<xs:element name="employedAfterExit" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId>000988</cedsId>
+						<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3990</cedsURL>
+					</xs:appinfo>
+					<xs:documentation>An individual who is a paid employee or works in his or her own business, profession, or farm after exiting secondary, postsecondary, or adult education.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="employedWhileEnrolled" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId>000987</cedsId>
+						<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3989</cedsURL>
+					</xs:appinfo>
+					<xs:documentation>An individual who is a paid employee or works in his or her own business, profession, or farm and at the same time is enrolled in secondary, postsecondary, or adult education.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="employmentLocationState" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId>000990</cedsId>
+						<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3992</cedsURL>
+					</xs:appinfo>
+					<xs:documentation>The state in which an individual is found employed.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="employmentNAICSCode" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId>001064</cedsId>
+						<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=4070</cedsURL>
+					</xs:appinfo>
+					<xs:documentation>The North American Industry Classification System (NAICS) code associated with an individual's employment.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="inMultipleJobs" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId>000991</cedsId>
+						<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3993</cedsURL>
+					</xs:appinfo>
+					<xs:documentation>The number of jobs held by a person.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="administrativeDataSource" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId>000994</cedsId>
+						<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3996</cedsURL>
+					</xs:appinfo>
+					<xs:documentation>Administrative data source of information used to collect employment and earnings-related data.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="earnings" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId>000989</cedsId>
+						<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3991</cedsURL>
+					</xs:appinfo>
+					<xs:documentation>The quarterly amount paid to individuals found employed.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="referenceQuarterEndDate" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId>000993</cedsId>
+						<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3995</cedsURL>
+					</xs:appinfo>
+					<xs:documentation>The year, month, and day of the last day of the reference quarter.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="quarterStartDate" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId>000992</cedsId>
+						<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3994</cedsURL>
+					</xs:appinfo>
+					<xs:documentation>The year, month, and day of the first day of the reference quarter.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="socialSecurityNumber" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId>000259</cedsId>
+						<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3259</cedsURL>
+					</xs:appinfo>
+					<xs:documentation>The nine-digit number of identification assigned to the person by the Social Security Administration.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="refId" type="gRefIdType" use="required"/>
+	</xs:complexType>
+	<xs:element name="wfQuarterlyEmploymentRecord" type="wfQuarterlyEmploymentRecordType"/>
+	<xs:complexType name="wfParticipantType">
+		<xs:sequence>
+			<xs:element name="name" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="firstName" type="xs:string" minOccurs="0">
+							<xs:annotation>
+								<xs:appinfo>
+									<sifChar>O</sifChar>
+									<cedsId>000115</cedsId>
+									<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3115</cedsURL>
+								</xs:appinfo>
+								<xs:documentation>The full legal first name given to a person at birth, baptism, or through legal change.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="middleName" type="xs:string" minOccurs="0">
+							<xs:annotation>
+								<xs:appinfo>
+									<sifChar>O</sifChar>
+									<cedsId>000184</cedsId>
+									<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3184</cedsURL>
+								</xs:appinfo>
+								<xs:documentation>A full legal middle name given to a person at birth, baptism, or through legal change.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="lastName" type="xs:string" minOccurs="0">
+							<xs:annotation>
+								<xs:appinfo>
+									<sifChar>O</sifChar>
+									<cedsId>000172</cedsId>
+									<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3172</cedsURL>
+								</xs:appinfo>
+								<xs:documentation>The full legal last name borne in common by members of a family.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="suffix" type="xs:string" minOccurs="0">
+							<xs:annotation>
+								<xs:appinfo>
+									<sifChar>O</sifChar>
+									<cedsId>000121</cedsId>
+									<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3121</cedsURL>
+								</xs:appinfo>
+								<xs:documentation>An appendage, if any, used to denote a person's generation in his family (e.g., Jr., Sr., III).</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="prefix" type="xs:string" minOccurs="0">
+							<xs:annotation>
+								<xs:appinfo>
+									<sifChar>O</sifChar>
+									<cedsId>000212</cedsId>
+									<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3212</cedsURL>
+								</xs:appinfo>
+								<xs:documentation>An appellation, if any, used to denote rank, placement, or status (e.g., Mr., Ms., Reverend, Sister, Dr., Colonel).</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="otherNameList" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="otherName" minOccurs="1" maxOccurs="unbounded">
+							<xs:complexType>
+								<xs:attribute name="otherNameType" type="xs:string">
+									<xs:annotation>
+										<xs:appinfo>
+											<sifChar>O</sifChar>
+											<cedsId>000634</cedsId>
+											<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3627</cedsURL>
+										</xs:appinfo>
+										<xs:documentation>The types of previous, alternate or other names for a person.</xs:documentation>
+									</xs:annotation>
+								</xs:attribute>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="socialSecurityNumber" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId>000259</cedsId>
+						<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3259</cedsURL>
+					</xs:appinfo>
+					<xs:documentation>The nine-digit number of identification assigned to the person by the Social Security Administration.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="idVerification" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId>000618</cedsId>
+						<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3611</cedsURL>
+					</xs:appinfo>
+					<xs:documentation>The evidence by which a persons name, address, date of birth, etc. is confirmed.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="referencePeriodStartDate" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId>000998</cedsId>
+						<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=4001</cedsURL>
+					</xs:appinfo>
+					<xs:documentation>The year, month, and day of the first day of the reference period during which data are matched between education and workforce data sources.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="referencePeriodEndDate" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId>000999</cedsId>
+						<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=4002</cedsURL>
+					</xs:appinfo>
+					<xs:documentation>The year, month, and day of the last day of the reference period during which data are matched between education and workforce data sources.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="whileEnrolledInEducationProgram" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId>000996</cedsId>
+						<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3999</cedsURL>
+					</xs:appinfo>
+					<xs:documentation>The type of workforce and employment development program that an individual is participating in while enrolled in an education program.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="afterExit" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId>000997</cedsId>
+						<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=4000</cedsURL>
+					</xs:appinfo>
+					<xs:documentation>The type of workforce and employment development program that an individual is participating in after exiting an education program.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="credentialConferred" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId>000783</cedsId>
+						<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3780</cedsURL>
+					</xs:appinfo>
+					<xs:documentation>An indicator of the category of credential conferred by a state occupational licensing entity or industry organization for competency in a specific area measured by a set of pre-established standards.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="refId" type="gRefIdType" use="required"/>
+	</xs:complexType>
+	<xs:element name="wfParticipant" type="wfParticipantType"/>
+</xs:schema>

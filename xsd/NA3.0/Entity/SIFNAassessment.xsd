@@ -1,0 +1,3003 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--version 3.00.05-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.sifassociation.org/datamodel/us/3.0" targetNamespace="http://www.sifassociation.org/datamodel/us/3.0" elementFormDefault="qualified">
+	<xs:include schemaLocation="SIFglobal.xsd"/>
+	<xs:complexType name="assessmentType">
+		<xs:complexContent>
+			<xs:extension base="gSIF_EntityType">
+				<xs:sequence>
+					<xs:element name="name" type="xs:normalizedString">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId>000028</cedsId>
+								<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3028</cedsURL>
+							</xs:appinfo>
+							<xs:documentation>Name of the test.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="assessmentIdentifierList" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="assessmentIdentifier" maxOccurs="unbounded">
+									<xs:complexType>
+										<xs:attribute name="assessmentIdType" type="xs:string">
+											<xs:annotation>
+												<xs:appinfo>
+													<elementName/>
+													<sifChar>O</sifChar>
+													<cedsId>000365</cedsId>
+													<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3158</cedsURL>
+												</xs:appinfo>
+												<xs:documentation>The Id Type Codes indicate the authority that maintains and/or uses the identifier.</xs:documentation>
+											</xs:annotation>
+										</xs:attribute>
+									</xs:complexType>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="assessmentPackageRefId" type="gRefIdPointerType" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId/>
+								<cedsURL/>
+							</xs:appinfo>
+							<xs:documentation/>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="assessmentDescriptorList" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="assessmentDescriptor" type="xs:token" maxOccurs="unbounded">
+									<xs:annotation>
+										<xs:appinfo>
+											<elementName/>
+											<sifChar>R</sifChar>
+											<cedsId>000029</cedsId>
+											<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3029</cedsURL>
+										</xs:appinfo>
+										<xs:documentation/>
+									</xs:annotation>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="shortName" type="xs:normalizedString" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar/>
+								<cedsId>000931</cedsId>
+								<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3932</cedsURL>
+							</xs:appinfo>
+							<xs:documentation>An abbreviated title for an assessment.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="assessmentProvider" type="xs:normalizedString" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId>001006</cedsId>
+								<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=4009</cedsURL>
+							</xs:appinfo>
+							<xs:documentation>Identifies the provider or publisher of the assessment.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="assessmentItemBankList" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="assessmentItemBank" maxOccurs="unbounded">
+									<xs:complexType>
+										<xs:sequence>
+											<xs:element name="assessmentItemBankId" type="gExternalIdType">
+												<xs:annotation>
+													<xs:appinfo>
+														<elementName/>
+														<sifChar>M</sifChar>
+														<cedsId/>
+														<cedsURL/>
+													</xs:appinfo>
+													<xs:documentation>If the assessment is provided with an item bank, then this identifies the item bank: a unique code or number used by the item banking system.</xs:documentation>
+												</xs:annotation>
+											</xs:element>
+											<xs:element name="assessmentItemBankName" type="xs:normalizedString" minOccurs="0">
+												<xs:annotation>
+													<xs:appinfo>
+														<elementName/>
+														<sifChar>O</sifChar>
+														<cedsId/>
+														<cedsURL/>
+													</xs:appinfo>
+													<xs:documentation>If the assessment is provided with an item bank, then this is the name of the item bank.</xs:documentation>
+												</xs:annotation>
+											</xs:element>
+										</xs:sequence>
+									</xs:complexType>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="assessmentSubjectList" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="assessmentSubject" type="gSubjectAreaType" maxOccurs="unbounded">
+									<xs:annotation>
+										<xs:appinfo>
+											<elementName/>
+											<sifChar>R</sifChar>
+											<cedsId>000021</cedsId>
+											<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3021</cedsURL>
+										</xs:appinfo>
+										<xs:documentation/>
+									</xs:annotation>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="assessmentGradeLevelList" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="assessmentGradeLevel" type="gYearGroupType" maxOccurs="unbounded">
+									<xs:annotation>
+										<xs:appinfo>
+											<elementName/>
+											<sifChar>R</sifChar>
+											<cedsId/>
+											<cedsURL/>
+										</xs:appinfo>
+										<xs:documentation/>
+									</xs:annotation>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="objective" type="xs:string" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId>000382</cedsId>
+								<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3373</cedsURL>
+							</xs:appinfo>
+							<xs:documentation>This is the objective that the assessment is measuring.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="purpose" type="xs:string" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId>000026</cedsId>
+								<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3026</cedsURL>
+							</xs:appinfo>
+							<xs:documentation>The reason for which an assessment is designed or delivered.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="assessmentLanguageList" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="assessmentLanguage" type="gLanguageType" maxOccurs="unbounded">
+									<xs:annotation>
+										<xs:appinfo>
+											<elementName/>
+											<sifChar>R</sifChar>
+											<cedsId>000317</cedsId>
+											<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3317</cedsURL>
+										</xs:appinfo>
+										<xs:documentation/>
+									</xs:annotation>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="learningStandardItemRefIdList" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="learningStandardItemRefId" type="gRefIdPointerType" maxOccurs="unbounded">
+									<xs:annotation>
+										<xs:appinfo>
+											<elementName/>
+											<sifChar>O</sifChar>
+											<cedsId/>
+											<cedsURL/>
+										</xs:appinfo>
+										<xs:documentation>Reference to all learning standards that can be measured by this assessment. Note that a specific form of an assessment may measure all or a subset of the learning standards. If the assessment measures all standards under a parent standard, then the paren</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="assessment" type="assessmentType"/>
+	<xs:complexType name="assessmentFormType">
+		<xs:complexContent>
+			<xs:extension base="gSIF_EntityType">
+				<xs:sequence>
+					<xs:element name="assessmentRefId" type="gRefIdPointerType">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId/>
+								<cedsURL/>
+							</xs:appinfo>
+							<xs:documentation>The RefId of the assessment related to this form.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="formName" type="xs:normalizedString">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId>000024</cedsId>
+								<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3024</cedsURL>
+							</xs:appinfo>
+							<xs:documentation>Text description for this particular arrangement of questions, etc.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="formVersion" type="xs:token" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId>001183</cedsId>
+								<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=4134</cedsURL>
+							</xs:appinfo>
+							<xs:documentation>This is the version of the form that this object represents. Note that new versions of forms must generate new RefIds and therefore a new form object. The format of the version numbering system is determined by the assessment provider.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="formPublishDate" type="xs:date" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId>001184</cedsId>
+								<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=4135</cedsURL>
+							</xs:appinfo>
+							<xs:documentation>This is the date that this version of the form was published (published means made available for use). If a FormVersion is provided, then this element should also be provided.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="assessmentType" type="xs:token" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId> </cedsId>
+								<cedsURL> </cedsURL>
+							</xs:appinfo>
+							<xs:documentation>Indicates whether this assessment (form) is a standard administration or alternate administration (accommodations provided).</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="formIdentifierList" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="formIdentifier" type="gLocalIdType" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="formAccommodationList" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="formAccommodation" type="xs:token" maxOccurs="unbounded">
+									<xs:annotation>
+										<xs:appinfo>
+											<elementName/>
+											<sifChar>O</sifChar>
+											<cedsId/>
+											<cedsURL/>
+										</xs:appinfo>
+										<xs:documentation>This list is one or more of the specific accommodations available. If no accommodations are provided, then this list will not be present.</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="level" type="xs:token" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId/>
+								<cedsURL/>
+							</xs:appinfo>
+							<xs:documentation>Indicates the level of the form.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="period" type="xs:token" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId/>
+								<cedsURL/>
+							</xs:appinfo>
+							<xs:documentation>The time period in which the form is intended to be administered.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="gradeLevelList" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="gradeLevel" type="gYearGroupType" maxOccurs="unbounded">
+									<xs:annotation>
+										<xs:appinfo>
+											<elementName/>
+											<sifChar>R</sifChar>
+											<cedsId/>
+											<cedsURL/>
+										</xs:appinfo>
+										<xs:documentation/>
+									</xs:annotation>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="assessmentFormSubjectList" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="assessmentFormSubject" type="gSubjectAreaType" maxOccurs="unbounded">
+									<xs:annotation>
+										<xs:appinfo>
+											<elementName/>
+											<sifChar>R</sifChar>
+											<cedsId>000021</cedsId>
+											<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3021</cedsURL>
+										</xs:appinfo>
+										<xs:documentation/>
+									</xs:annotation>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="assessmentFormLanguageList" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="assessmentFormLanguage" type="xs:string" maxOccurs="unbounded">
+									<xs:annotation>
+										<xs:appinfo>
+											<elementName/>
+											<sifChar>R</sifChar>
+											<cedsId>001089</cedsId>
+											<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=4073</cedsURL>
+										</xs:appinfo>
+										<xs:documentation/>
+									</xs:annotation>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="intendedAdministrationEndDate" type="xs:date" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId>001187</cedsId>
+								<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=4138</cedsURL>
+							</xs:appinfo>
+							<xs:documentation>The ending date of the time period in which the form is intended to be administered.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="IntendedAdministrationStartDate" type="xs:date" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId>001186</cedsId>
+								<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=4137</cedsURL>
+							</xs:appinfo>
+							<xs:documentation>The beginning date of the time period in which the form is intended to be administered.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="assessmentSubTestRefIdList" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="assessmentSubTestRefId" type="gRefIdPointerType" maxOccurs="unbounded">
+									<xs:annotation>
+										<xs:appinfo>
+											<elementName/>
+											<sifChar>R</sifChar>
+											<cedsId> </cedsId>
+											<cedsURL> </cedsURL>
+										</xs:appinfo>
+										<xs:documentation>A subtest identified by RefId.</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="assessmentSectionList" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="assessmentSection" maxOccurs="unbounded">
+									<xs:complexType>
+										<xs:sequence>
+											<xs:element name="assessmentSectionRefId" type="gRefIdPointerType" minOccurs="1">
+												<xs:annotation>
+													<xs:appinfo>
+														<elementName/>
+														<sifChar>O</sifChar>
+														<cedsId>980</cedsId>
+														<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3981</cedsURL>
+													</xs:appinfo>
+													<xs:documentation>The reference to an Assessment Section object.</xs:documentation>
+												</xs:annotation>
+											</xs:element>
+											<xs:element name="assessmentSectionSequence" type="xs:token" minOccurs="0">
+												<xs:annotation>
+													<xs:appinfo>
+														<elementName/>
+														<sifChar>O</sifChar>
+														<cedsId>979</cedsId>
+														<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3980</cedsURL>
+													</xs:appinfo>
+													<xs:documentation>A numeric sequence in which the section will be presented to the test taker. This should be a simple integer sequence number (1,2,3, etc.) but may be other values that can be sorted into sequence (e.g., S-A, S-B, S-C, etc).</xs:documentation>
+												</xs:annotation>
+											</xs:element>
+										</xs:sequence>
+									</xs:complexType>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="assessmentPlatformList" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="assessmentPlatform" type="xs:token" maxOccurs="unbounded">
+									<xs:annotation>
+										<xs:appinfo>
+											<elementName/>
+											<sifChar>R</sifChar>
+											<cedsId/>
+											<cedsURL/>
+										</xs:appinfo>
+										<xs:documentation>A delivery platform that this form design will support.</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="assessmentAssetRefIdList" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="assessmentAssetRefId" type="gRefIdPointerType">
+									<xs:annotation>
+										<xs:appinfo>
+											<elementName/>
+											<sifChar>O</sifChar>
+											<cedsId/>
+											<cedsURL/>
+										</xs:appinfo>
+										<xs:documentation>A reference to a specific asset used by this form.</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="assessmentForm" type="assessmentFormType"/>
+	<xs:complexType name="assessmentSectionType">
+		<xs:complexContent>
+			<xs:extension base="gSIF_EntityType">
+				<xs:sequence>
+					<xs:element name="sectionVersion" type="xs:token" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId>1189</cedsId>
+								<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=4140</cedsURL>
+							</xs:appinfo>
+							<xs:documentation>The version of the section that this object represents. New versions of the section will generate new RefIds and therefore new instances of the object. The format of the version number is defined by the assessment provider.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="sectionPublishDate" type="xs:date" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId>1184</cedsId>
+								<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=4135</cedsURL>
+							</xs:appinfo>
+							<xs:documentation>The date that this version of the section was published (published means made available for use). If the SectionVersion element is provided, then this date should also be provided.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="sectionIdentifierList" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="sectionIdentifier" type="gRefIdPointerType" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="SectionName" type="xs:normalizedString" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId>001191</cedsId>
+								<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=4142</cedsURL>
+							</xs:appinfo>
+							<xs:documentation>If the authoring system provides for a section name then this element is used to store that information.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="academicSubject" type="gSubjectAreaType" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar/>
+								<cedsId>000021</cedsId>
+								<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3021</cedsURL>
+							</xs:appinfo>
+							<xs:documentation>The description of the academic content or subject area (e.g., arts, mathematics, reading, or a foreign language) being evaluated.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="sectionItemSequenceType" type="xs:token" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>M</sifChar>
+								<cedsId/>
+								<cedsURL/>
+							</xs:appinfo>
+							<xs:documentation>Specifies how items are presented to the test taker.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="itemSelectionAlgorithmName" type="xs:token" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId/>
+								<cedsURL/>
+							</xs:appinfo>
+							<xs:documentation>If the section is a Random or an Adaptive section, then this will identify the name of the algorithm used to select items.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="itemSelectionAlgorithm" type="xs:token" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId/>
+								<cedsURL/>
+							</xs:appinfo>
+							<xs:documentation>If this section is a Random or an Adaptive section, then this will specify the location of the Algorithm.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="sectionTimeLimit" type="xs:duration" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId>001192</cedsId>
+								<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=4143</cedsURL>
+							</xs:appinfo>
+							<xs:documentation>See http://www.w3.org/TR/2001/REC-xmlschema-2-20010502/#duration for the format of this field. </xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="sectionSealed" type="gYesNoUnknownType" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId>001193</cedsId>
+								<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=4144</cedsURL>
+							</xs:appinfo>
+							<xs:documentation>Indicates this section is sealed, meaning the test taker cannot enter the section until authorized by the proctor.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="sectionReentry" type="gYesNoUnknownType" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId>001194</cedsId>
+								<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=4145</cedsURL>
+							</xs:appinfo>
+							<xs:documentation>Indicates that this section can be re-entered, meaning the test taker can return to this section after they have left the section. A common example of this is a two section test where one section does not allow the use of a calculator and the other does. Typically the test taker cannot return to the non-calculator section after they have used a calculator.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="sectionAssetList" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="sectionAsset" type="gRefIdPointerType" maxOccurs="unbounded">
+									<xs:annotation>
+										<xs:appinfo>
+											<elementName/>
+											<sifChar>MR</sifChar>
+											<cedsId/>
+											<cedsURL/>
+										</xs:appinfo>
+										<xs:documentation>The RefId of the AssessmentAsset object that contains the asset.</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="sectionItemList" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="sectionItem" maxOccurs="unbounded">
+									<xs:complexType>
+										<xs:sequence>
+											<xs:element name="assessmentItemRefId" type="gRefIdPointerType">
+												<xs:annotation>
+													<xs:appinfo>
+														<elementName/>
+														<sifChar>M</sifChar>
+														<cedsId/>
+														<cedsURL/>
+													</xs:appinfo>
+													<xs:documentation>The RefId of the AssessmentItem to be included in the section.</xs:documentation>
+												</xs:annotation>
+											</xs:element>
+											<xs:element name="itemSequence" type="xs:token" minOccurs="0">
+												<xs:annotation>
+													<xs:appinfo>
+														<elementName/>
+														<sifChar>O</sifChar>
+														<cedsId/>
+														<cedsURL/>
+													</xs:appinfo>
+													<xs:documentation>If the section is a sequential section, then this will specify the sequence that this item will appear within the section. Should start at 1 and increment by 1.</xs:documentation>
+												</xs:annotation>
+											</xs:element>
+											<xs:element name="sectionItemAssetList" minOccurs="0">
+												<xs:complexType>
+													<xs:sequence>
+														<xs:element name="sectionItemAsset" type="gRefIdPointerType" maxOccurs="unbounded">
+															<xs:annotation>
+																<xs:appinfo>
+																	<elementName/>
+																	<sifChar>MR</sifChar>
+																	<cedsId/>
+																	<cedsURL/>
+																</xs:appinfo>
+																<xs:documentation>The RefId of the AssessmentAsset object that contains the asset.</xs:documentation>
+															</xs:annotation>
+														</xs:element>
+													</xs:sequence>
+												</xs:complexType>
+											</xs:element>
+										</xs:sequence>
+									</xs:complexType>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="assessmentSection" type="assessmentSectionType"/>
+	<xs:complexType name="assessmentItemType">
+		<xs:complexContent>
+			<xs:extension base="gSIF_EntityType">
+				<xs:sequence>
+					<xs:element name="assessmentFormRefId" type="gRefIdPointerType">
+						<xs:annotation>
+							<xs:documentation>This RefId points to the assessment form of which the item is a part.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="itemLabel" type="xs:token" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>An item number or other identifier for the item. It may be used to indicate the order or grouping of items.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="responseType" type="xs:token">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId/>
+								<cedsURL/>
+							</xs:appinfo>
+							<xs:documentation>A value that indicates the response type for the item.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="ItemName" type="xs:normalizedString" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId>000368</cedsId>
+								<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3367</cedsURL>
+							</xs:appinfo>
+							<xs:documentation>Name or short description of the item.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="ItemVersion" type="xs:token" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId/>
+								<cedsURL/>
+							</xs:appinfo>
+							<xs:documentation>This will identify the version of the item that this object represents. New versions of the item will generate new RefIds and therefore new instances of the object. The format of the version number is defined by the assessment provider.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="ItemPublishDate" type="xs:date" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId/>
+								<cedsURL/>
+							</xs:appinfo>
+							<xs:documentation>The date that this version of the item was published (published means made available for use). If the ItemVersion is provided, then this date should also be provided.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="assessmentIdentifierList" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="assessmentIdentifier" maxOccurs="unbounded">
+									<xs:complexType>
+										<xs:simpleContent>
+											<xs:extension base="xs:token">
+												<xs:attribute name="assessmentIdType" type="xs:token">
+													<xs:annotation>
+														<xs:appinfo>
+															<elementName/>
+															<sifChar>O</sifChar>
+															<cedsId/>
+															<cedsURL/>
+														</xs:appinfo>
+														<xs:documentation>The Id Type Codes indicate the authority that maintains and/or uses the identifier.</xs:documentation>
+													</xs:annotation>
+												</xs:attribute>
+											</xs:extension>
+										</xs:simpleContent>
+									</xs:complexType>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="assessmentSubjectList" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="assessmentSubject" type="gSubjectAreaType" maxOccurs="unbounded">
+									<xs:annotation>
+										<xs:appinfo>
+											<elementName/>
+											<sifChar>R</sifChar>
+											<cedsId/>
+											<cedsURL/>
+										</xs:appinfo>
+										<xs:documentation/>
+									</xs:annotation>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="assessmentGradeLevelList" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="assessmentGradeLevel" type="gYearGroupType" maxOccurs="unbounded">
+									<xs:annotation>
+										<xs:appinfo>
+											<elementName/>
+											<sifChar>R</sifChar>
+											<cedsId/>
+											<cedsURL/>
+										</xs:appinfo>
+										<xs:documentation/>
+									</xs:annotation>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="assessmentLanguageList" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="assessmentLanguage" type="gLanguageType" maxOccurs="unbounded">
+									<xs:annotation>
+										<xs:appinfo>
+											<elementName/>
+											<sifChar>R</sifChar>
+											<cedsId/>
+											<cedsURL/>
+										</xs:appinfo>
+										<xs:documentation/>
+									</xs:annotation>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="learningStandardItemRefIdList" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="learningStandardItemRefId" type="gRefIdPointerType" maxOccurs="unbounded">
+									<xs:annotation>
+										<xs:appinfo>
+											<elementName/>
+											<sifChar>R</sifChar>
+											<cedsId/>
+											<cedsURL/>
+										</xs:appinfo>
+										<xs:documentation/>
+									</xs:annotation>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="assessmentItemAssetRefIdList" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="assessmentItemAssetRefId" type="gRefIdPointerType" maxOccurs="unbounded">
+									<xs:annotation>
+										<xs:appinfo>
+											<elementName/>
+											<sifChar>R</sifChar>
+											<cedsId/>
+											<cedsURL/>
+										</xs:appinfo>
+										<xs:documentation>Reference to an asset used by this item.</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="stem" type="xs:string" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId/>
+								<cedsURL/>
+							</xs:appinfo>
+							<xs:documentation>The question, task, or statement that prompts a response from the test taker.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="responseChoiceList" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="responseChoice" maxOccurs="unbounded">
+									<xs:complexType>
+										<xs:sequence>
+											<xs:element name="choiceLabel" type="xs:token" minOccurs="0">
+												<xs:annotation>
+													<xs:appinfo>
+														<elementName/>
+														<sifChar>O</sifChar>
+														<cedsId/>
+														<cedsURL/>
+													</xs:appinfo>
+													<xs:documentation>A choice number or other identifier for the choice. It may be used to indicate the order or grouping of the choices.</xs:documentation>
+												</xs:annotation>
+											</xs:element>
+											<xs:element name="choiceContent" type="xs:string" minOccurs="1">
+												<xs:annotation>
+													<xs:appinfo>
+														<elementName/>
+														<sifChar>O</sifChar>
+														<cedsId/>
+														<cedsURL/>
+													</xs:appinfo>
+													<xs:documentation>The text of the choice, such as true, 27, or important economic and social factors.</xs:documentation>
+												</xs:annotation>
+											</xs:element>
+											<xs:element name="creditValue" type="xs:decimal" minOccurs="0">
+												<xs:annotation>
+													<xs:appinfo>
+														<elementName/>
+														<sifChar>O</sifChar>
+														<cedsId/>
+														<cedsURL/>
+													</xs:appinfo>
+													<xs:documentation>A numeric value that indicates the amount of credit awarded for choosing the choice.</xs:documentation>
+												</xs:annotation>
+											</xs:element>
+											<xs:element name="responseFeedback" type="xs:string" minOccurs="0">
+												<xs:annotation>
+													<xs:appinfo>
+														<elementName/>
+														<sifChar>O</sifChar>
+														<cedsId/>
+														<cedsURL/>
+													</xs:appinfo>
+													<xs:documentation>Feedback can be provided for each choice. If a test taker selects this choice, this can provide additional feedback to the student if the choice is correct or not.</xs:documentation>
+												</xs:annotation>
+											</xs:element>
+										</xs:sequence>
+									</xs:complexType>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="itemFeedbackCorrect" type="xs:string" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId/>
+								<cedsURL/>
+							</xs:appinfo>
+							<xs:documentation>Feedback can be provided for the item if the item is correct.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="itemFeedbackIncorrect" type="xs:string" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId/>
+								<cedsURL/>
+							</xs:appinfo>
+							<xs:documentation>Feedback can be provided for the item if the item is incorrect.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="itemFeedbackHint" type="xs:string" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId/>
+								<cedsURL/>
+							</xs:appinfo>
+							<xs:documentation>A hint is provided to the test taker during testing, either on request or upon an incorrect response as determined by the test design.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="itemScoreMaximum" type="xs:token" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId/>
+								<cedsURL/>
+							</xs:appinfo>
+							<xs:documentation>The maximum item score possible for this item.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="itemScoreMinimum" type="xs:token" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId/>
+								<cedsURL/>
+							</xs:appinfo>
+							<xs:documentation>The minimum item score possible for this item.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="itemRubricIdList" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="itemRubricId" type="gRefIdPointerType" maxOccurs="unbounded">
+									<xs:annotation>
+										<xs:appinfo>
+											<elementName/>
+											<sifChar>R</sifChar>
+											<cedsId/>
+											<cedsURL/>
+										</xs:appinfo>
+										<xs:documentation>If this item is scored using a rubric, this will identify the specific rubric used.</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="assessmentItemBankList" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="assessmentItemBank" maxOccurs="unbounded">
+									<xs:complexType>
+										<xs:sequence>
+											<xs:element name="assessmentItemBankId" type="gExternalIdType">
+												<xs:annotation>
+													<xs:appinfo>
+														<elementName/>
+														<sifChar>O</sifChar>
+														<cedsId/>
+														<cedsURL/>
+													</xs:appinfo>
+													<xs:documentation>If the assessment is provided with an item bank, then this will identify the item bank. Potentially a unique code or number.</xs:documentation>
+												</xs:annotation>
+											</xs:element>
+											<xs:element name="assessmentItemBankName" type="xs:normalizedString" minOccurs="0">
+												<xs:annotation>
+													<xs:appinfo>
+														<elementName/>
+														<sifChar>O</sifChar>
+														<cedsId/>
+														<cedsURL/>
+													</xs:appinfo>
+													<xs:documentation>If the assessment is provided with an item bank, then this will be the name of the item bank.</xs:documentation>
+												</xs:annotation>
+											</xs:element>
+										</xs:sequence>
+									</xs:complexType>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="assessmentItemPlatformList" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="assessmentItemPlatform" type="xs:token" maxOccurs="unbounded">
+									<xs:annotation>
+										<xs:appinfo>
+											<elementName/>
+											<sifChar>R</sifChar>
+											<cedsId/>
+											<cedsURL/>
+										</xs:appinfo>
+										<xs:documentation>The specific delivery platform that this item will support.</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="assessmentItem" type="assessmentItemType"/>
+	<xs:complexType name="assessmentSubTestType">
+		<xs:complexContent>
+			<xs:extension base="gSIF_EntityType">
+				<xs:sequence>
+					<xs:element name="subTestVersion" type="xs:token" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId/>
+								<cedsURL/>
+							</xs:appinfo>
+							<xs:documentation>Identifies the version of the subtest that this object instance represents. Note that new versions of subtests must generate new RefIds and therefore a new subtest object instance. The format of the numbering system is determined by the assessment provide</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="subTestPublishDate" type="xs:date" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId/>
+								<cedsURL/>
+							</xs:appinfo>
+							<xs:documentation>Identifies the date that this version of the subtest was published (published means made available for use). If a SubTestVersion is provided, then this element should also be provided.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="subTestIdentifierList" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>List of subtests that compose this subtest, i.e., subtests of this subtest.</xs:documentation>
+						</xs:annotation>
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="subTestIdentifier" type="gRefIdPointerType" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="subTestName" type="xs:normalizedString" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId/>
+								<cedsURL/>
+							</xs:appinfo>
+							<xs:documentation>Text name of the subtest.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="scoreScaleList" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>A list of the scales for which scores are reported. Each scoreScale is named by its metric, e.g., Grade Equivealent, Raw Score, Percent Correct, etc. </xs:documentation>
+						</xs:annotation>
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="scoreScale" maxOccurs="unbounded">
+									<xs:complexType>
+										<xs:sequence>
+											<xs:element name="scoreMetric" type="xs:token">
+												<xs:annotation>
+													<xs:appinfo>
+														<elementName/>
+														<sifChar>O</sifChar>
+														<cedsId/>
+														<cedsURL/>
+													</xs:appinfo>
+													<xs:documentation>The metric or scale used to report the scores.</xs:documentation>
+												</xs:annotation>
+											</xs:element>
+											<xs:element name="minimum" type="xs:token" minOccurs="0">
+												<xs:annotation>
+													<xs:appinfo>
+														<elementName/>
+														<sifChar>O</sifChar>
+														<cedsId/>
+														<cedsURL/>
+													</xs:appinfo>
+													<xs:documentation>Lowest possible score value.</xs:documentation>
+												</xs:annotation>
+											</xs:element>
+											<xs:element name="maximum" type="xs:token" minOccurs="0">
+												<xs:annotation>
+													<xs:appinfo>
+														<elementName/>
+														<sifChar>O</sifChar>
+														<cedsId/>
+														<cedsURL/>
+													</xs:appinfo>
+													<xs:documentation>Highest possible score value.</xs:documentation>
+												</xs:annotation>
+											</xs:element>
+											<xs:element name="scoreTableRefId" type="gRefIdPointerType" minOccurs="0">
+												<xs:annotation>
+													<xs:appinfo>
+														<elementName/>
+														<sifChar>O</sifChar>
+														<cedsId/>
+														<cedsURL/>
+													</xs:appinfo>
+													<xs:documentation>This identifies the specific score table used by this subtest to generate the score if applicable. Note that the score metric in this object should match the to-score-metric in the score table.</xs:documentation>
+												</xs:annotation>
+											</xs:element>
+										</xs:sequence>
+									</xs:complexType>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="subTestSubjectAreaList" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Subject areas covered by the subTest.</xs:documentation>
+						</xs:annotation>
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="subTestSubjectArea" type="gSubjectAreaType" maxOccurs="unbounded">
+									<xs:annotation>
+										<xs:appinfo>
+											<elementName/>
+											<sifChar>R</sifChar>
+											<cedsId/>
+											<cedsURL/>
+										</xs:appinfo>
+										<xs:documentation/>
+									</xs:annotation>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="subTestGradeLevelList" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="subTestGradeLevel" type="gYearGroupType" maxOccurs="unbounded">
+									<xs:annotation>
+										<xs:appinfo>
+											<elementName/>
+											<sifChar>R</sifChar>
+											<cedsId/>
+											<cedsURL/>
+										</xs:appinfo>
+										<xs:documentation/>
+									</xs:annotation>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="assessmentSubTestRefIdList" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="assessmentSubTestRefId" type="gRefIdPointerType" maxOccurs="unbounded">
+									<xs:annotation>
+										<xs:appinfo>
+											<elementName/>
+											<sifChar>R</sifChar>
+											<cedsId/>
+											<cedsURL/>
+										</xs:appinfo>
+										<xs:documentation>A reference to a child AssessmentSubTest by RefId.</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="ContainerOnly" type="gYesNoUnknownType" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId/>
+								<cedsURL/>
+							</xs:appinfo>
+							<xs:documentation>Indicator describing the purpose of an AssessmentSubTest as being that of a container for the child AssessmentSubTests. There will be no scores within this subtest.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="SubTestTier" type="xs:int" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId/>
+								<cedsURL/>
+							</xs:appinfo>
+							<xs:documentation>An integer that defines the level or tier of the score in a multi-level arrangement of composite scores. Zero indicates the highest or root level.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="learningStandardItemRefIdList" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="learningStandardItemRefId" type="gRefIdPointerType" maxOccurs="unbounded">
+									<xs:annotation>
+										<xs:appinfo>
+											<elementName/>
+											<sifChar>R</sifChar>
+											<cedsId/>
+											<cedsURL/>
+										</xs:appinfo>
+										<xs:documentation>A reference to a LearningStandardItem by RefId.</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="Abbreviation" type="xs:token" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId/>
+								<cedsURL/>
+							</xs:appinfo>
+							<xs:documentation>This is the short version of the name of, or code identifying, the assessment subtest. It is often used for quick reference and used in reports.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="Description" type="xs:string" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId/>
+								<cedsURL/>
+							</xs:appinfo>
+							<xs:documentation>The description element provides an opportunity to pass additional information about the assessment and also be used for describing elements in a test hierarchy.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="numberOfItems" type="xs:int" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId/>
+								<cedsURL/>
+							</xs:appinfo>
+							<xs:documentation>This element records the number of items included on the assessment. This number may be different than the possible score.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="assessmentItemList" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="assessmentItem" maxOccurs="unbounded">
+									<xs:complexType>
+										<xs:sequence>
+											<xs:element name="assessmentItemRefId" type="gRefIdPointerType">
+												<xs:annotation>
+													<xs:appinfo>
+														<elementName/>
+														<sifChar>M</sifChar>
+														<cedsId/>
+														<cedsURL/>
+													</xs:appinfo>
+													<xs:documentation>This identifies the specific item that contributes to a sub-test score.</xs:documentation>
+												</xs:annotation>
+											</xs:element>
+											<xs:element name="ItemWeightCorrect" type="xs:decimal" minOccurs="0">
+												<xs:annotation>
+													<xs:appinfo>
+														<elementName/>
+														<sifChar>O</sifChar>
+														<cedsId>001010</cedsId>
+														<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=4013</cedsURL>
+													</xs:appinfo>
+													<xs:documentation>This provides a weighting factor for how the item score is used to compute a sub-test score when the item is correct or partially correct. Item weight of 1 indicates the full item score is used. A weight of .5 would indicate the item only contributes one </xs:documentation>
+												</xs:annotation>
+											</xs:element>
+											<xs:element name="ItemWeightIncorrect" type="xs:decimal" minOccurs="0">
+												<xs:annotation>
+													<xs:appinfo>
+														<elementName/>
+														<sifChar>O</sifChar>
+														<cedsId>001012</cedsId>
+														<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=4014</cedsURL>
+													</xs:appinfo>
+													<xs:documentation>This provides a weighting factor for how the item score is used to compute a sub-test score when the item is attempted and incorrect. Item weight should be a negative value if the item subtracts from the score if missed.</xs:documentation>
+												</xs:annotation>
+											</xs:element>
+											<xs:element name="ItemWeightNotAttempted" type="xs:decimal" minOccurs="0">
+												<xs:annotation>
+													<xs:appinfo>
+														<elementName/>
+														<sifChar>O</sifChar>
+														<cedsId>001013</cedsId>
+														<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=4015</cedsURL>
+													</xs:appinfo>
+													<xs:documentation>This provides a weighting factor for how the item score is used to compute a sub-test score when the item has not been attempted by the student. Item weight should be a negative value if the item subtracts from the score if not attempted.</xs:documentation>
+												</xs:annotation>
+											</xs:element>
+										</xs:sequence>
+									</xs:complexType>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="assessmentSubTest" type="assessmentSubTestType"/>
+	<xs:complexType name="assessmentAdministrationType">
+		<xs:complexContent>
+			<xs:extension base="gEventType">
+				<xs:sequence>
+					<xs:element name="administrationName" type="xs:normalizedString" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId/>
+								<cedsURL/>
+							</xs:appinfo>
+							<xs:documentation>Name of the administration.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="administrationCode" type="xs:token" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId/>
+								<cedsURL/>
+							</xs:appinfo>
+							<xs:documentation>A code associated with the administration. Typically assigned by the assessment program.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="StartDateTime" type="xs:dateTime" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId/>
+								<cedsURL/>
+							</xs:appinfo>
+							<xs:documentation>Date and time testing begins.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="FinishDateTime" type="xs:dateTime" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId/>
+								<cedsURL/>
+							</xs:appinfo>
+							<xs:documentation>Date and time testing ends.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="asessmentRefIdList">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="assessmentRefId" type="gRefIdPointerType" maxOccurs="unbounded">
+									<xs:annotation>
+										<xs:appinfo>
+											<elementName/>
+											<sifChar>R</sifChar>
+											<cedsId/>
+											<cedsURL/>
+										</xs:appinfo>
+										<xs:documentation>The RefId of the assessment related to this administration.</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="organizationList" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="organization" maxOccurs="unbounded">
+									<xs:annotation>
+										<xs:documentation>One or both of LEA Id and School Id can be provided.</xs:documentation>
+									</xs:annotation>
+									<xs:complexType>
+										<xs:sequence>
+											<xs:element name="leaRefId" type="gRefIdPointerType" minOccurs="0">
+												<xs:annotation>
+													<xs:appinfo>
+														<elementName/>
+														<sifChar>O</sifChar>
+														<cedsId/>
+														<cedsURL/>
+													</xs:appinfo>
+													<xs:documentation>Optional reference to a school district associated with the administration.</xs:documentation>
+												</xs:annotation>
+											</xs:element>
+											<xs:element name="schoolRefId" type="gRefIdPointerType" minOccurs="0">
+												<xs:annotation>
+													<xs:appinfo>
+														<elementName/>
+														<sifChar>O</sifChar>
+														<cedsId/>
+														<cedsURL/>
+													</xs:appinfo>
+													<xs:documentation>Optional reference to a school associated with the administration.</xs:documentation>
+												</xs:annotation>
+											</xs:element>
+										</xs:sequence>
+									</xs:complexType>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="assessmentAdministration" type="assessmentAdministrationType"/>
+	<xs:complexType name="assessmentAssetType">
+		<xs:complexContent>
+			<xs:extension base="gSIF_EntityType">
+				<xs:sequence>
+					<xs:element name="assetType" type="xs:token">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId/>
+								<cedsURL/>
+							</xs:appinfo>
+							<xs:documentation>Identifies the type of asset that this object represents. Because there is no industry standard for identifying types of assessment assets, this will be implementation specific. Other custom types should be articulated in your implementation profile.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="assetVersion" type="xs:token" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId/>
+								<cedsURL/>
+							</xs:appinfo>
+							<xs:documentation>Identifies the version of the asset that this object represents. New versions of the asset will generate new RefIds and therefore new instances of the object. The format of the version number is defined by the assessment provider.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="assetPublishDate" type="xs:date" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId/>
+								<cedsURL/>
+							</xs:appinfo>
+							<xs:documentation>The date that this version of the asset was published (published means made available for use). If the AssetVersion is provided, then this date should also be provided.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="assetIdentifierList" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="assetIdentifier" maxOccurs="unbounded">
+									<xs:complexType>
+										<xs:simpleContent>
+											<xs:extension base="xs:token">
+												<xs:attribute name="assetIdType" type="xs:string">
+													<xs:annotation>
+														<xs:appinfo>
+															<elementName/>
+															<sifChar>O</sifChar>
+															<cedsId/>
+															<cedsURL/>
+														</xs:appinfo>
+														<xs:documentation>The type of identifier that is provided for this asset.</xs:documentation>
+													</xs:annotation>
+												</xs:attribute>
+											</xs:extension>
+										</xs:simpleContent>
+									</xs:complexType>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="assetName" type="xs:normalizedString" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId/>
+								<cedsURL/>
+							</xs:appinfo>
+							<xs:documentation>The name of the asset</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="assetOwner" type="xs:normalizedString" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId/>
+								<cedsURL/>
+							</xs:appinfo>
+							<xs:documentation>The name of the owner (publisher) of the asset.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="assetSubjectList" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="assetSubject" type="gSubjectAreaType" maxOccurs="unbounded">
+									<xs:annotation>
+										<xs:appinfo>
+											<elementName/>
+											<sifChar>R</sifChar>
+											<cedsId/>
+											<cedsURL/>
+										</xs:appinfo>
+										<xs:documentation/>
+									</xs:annotation>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="assetGradeLevelList" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="assetGradeLevel" type="gYearGroupType" maxOccurs="unbounded">
+									<xs:annotation>
+										<xs:appinfo>
+											<elementName/>
+											<sifChar>R</sifChar>
+											<cedsId/>
+											<cedsURL/>
+										</xs:appinfo>
+										<xs:documentation/>
+									</xs:annotation>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="assetLanguage" type="gLanguageType" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId/>
+								<cedsURL/>
+							</xs:appinfo>
+							<xs:documentation>The language in which this asset is written (if applicable).</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="assetLearningStandardRefIdList" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="assetLearningStandardRefId" type="gRefIdPointerType" maxOccurs="unbounded">
+									<xs:annotation>
+										<xs:appinfo>
+											<elementName/>
+											<sifChar>R</sifChar>
+											<cedsId/>
+											<cedsURL/>
+										</xs:appinfo>
+										<xs:documentation>The RefId of a specific learning standard for the asset. If the asset is linked to all children learning standards in a hierarchy, then the parent learning standard should also be linked.</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="assetContent" type="xs:string">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId/>
+								<cedsURL/>
+							</xs:appinfo>
+							<xs:documentation>Contains the actual asset content. Content could be text, images, audio/video, interactive tools, etc.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="assessmentAsset" type="assessmentAssetType"/>
+	<xs:complexType name="assessmentRegistrationType">
+		<xs:complexContent>
+			<xs:extension base="gSIF_EntityType">
+				<xs:sequence>
+					<xs:element name="studentPersonalRefId" type="gRefIdPointerType" minOccurs="1">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>M</sifChar>
+								<cedsId/>
+								<cedsURL/>
+							</xs:appinfo>
+							<xs:documentation>The student associated with the registration.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="assessmentRefId" type="gRefIdPointerType" minOccurs="1">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>M</sifChar>
+								<cedsId/>
+								<cedsURL/>
+							</xs:appinfo>
+							<xs:documentation>The assessment that is to be taken by the student.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="assessmentAdministrationRefId" type="gRefIdPointerType" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId/>
+								<cedsURL/>
+							</xs:appinfo>
+							<xs:documentation>The assessment administration associated with the registration.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="assessmentSessionRefId" type="gRefIdPointerType" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId/>
+								<cedsURL/>
+							</xs:appinfo>
+							<xs:documentation>Identifies the AssessmentSession that contains the location and scheduled time the assessment will/has been delivered. The session is likely identified at some time after the registration is initially created.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="assessmentFormRefId" type="gRefIdPointerType" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId/>
+								<cedsURL/>
+							</xs:appinfo>
+							<xs:documentation>Identifies the AssessmentForm that will be used to assess the test taker. This element is useful for calculating, staging, and acquiring materials for a large-scale administration.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="creationDateTime" type="xs:dateTime" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId/>
+								<cedsURL/>
+							</xs:appinfo>
+							<xs:documentation>Date/time assignment is made.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="startDateTime" type="xs:dateTime" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId/>
+								<cedsURL/>
+							</xs:appinfo>
+							<xs:documentation>Date/time the assignment actually started. Typically considered the login time. For paper-based tests, this would typically be the date of testing for this student. Note: if the student pauses or otherwise logs in/out of a test after starting, this only</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="endDateTime" type="xs:dateTime" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId/>
+								<cedsURL/>
+							</xs:appinfo>
+							<xs:documentation>Date/time the assignment actually ended. Typically considered the time the test has been submitted for scoring by the test taker. Likely used for online tests only.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="assessmentPlatform" type="xs:token" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId/>
+								<cedsURL/>
+							</xs:appinfo>
+							<xs:documentation>Indicates if the registration is for a specific assessment delivery platform. Should be updated post-test with the actual platform used.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="daysOfInstruction" type="xs:unsignedShort" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId/>
+								<cedsURL/>
+							</xs:appinfo>
+							<xs:documentation>This indicates the number of days of instruction the student has taken prior to testing.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="retestIndicator" type="gYesNoUnknownType" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId/>
+								<cedsURL/>
+							</xs:appinfo>
+							<xs:documentation>Indicates if this registration is for a retest (retake). Retest can occur if a student failed a prior attempt and is eligible to retake. Other retest scenarios also can occur.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="testAttemptIdentifier" type="xs:token" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId/>
+								<cedsURL/>
+							</xs:appinfo>
+							<xs:documentation>If the assessment delivery system assigns a unique identifier for the test attempt, then the identifier can be provided. Examples of unique identifiers for paper-based tests are batch/stack/serial and for online tests is likely a unique internal identifie</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="studentSpecialEventList" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="studentSpecialEvent" minOccurs="1" maxOccurs="unbounded">
+									<xs:complexType>
+										<xs:simpleContent>
+											<xs:extension base="xs:token">
+												<xs:attribute name="eventType" type="xs:token">
+													<xs:annotation>
+														<xs:appinfo>
+															<elementName/>
+															<sifChar>O</sifChar>
+															<cedsId/>
+															<cedsURL/>
+														</xs:appinfo>
+														<xs:documentation>A code indicating the type of special event. Code values are determined by the assessment program..</xs:documentation>
+													</xs:annotation>
+												</xs:attribute>
+											</xs:extension>
+										</xs:simpleContent>
+									</xs:complexType>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="testingStatusList" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="testingStatus" minOccurs="1" maxOccurs="unbounded">
+									<xs:complexType>
+										<xs:sequence>
+											<xs:element name="testingStatusCode" type="xs:token" minOccurs="1">
+												<xs:annotation>
+													<xs:appinfo>
+														<elementName/>
+														<sifChar>M</sifChar>
+														<cedsId/>
+														<cedsURL/>
+													</xs:appinfo>
+													<xs:documentation>A code that identifies the specific testing status. Code values are determined by the testing program.</xs:documentation>
+												</xs:annotation>
+											</xs:element>
+											<xs:element name="testingStatusDescription" type="xs:string" minOccurs="0">
+												<xs:annotation>
+													<xs:appinfo>
+														<elementName/>
+														<sifChar>O</sifChar>
+														<cedsId/>
+														<cedsURL/>
+													</xs:appinfo>
+													<xs:documentation>A description of the testing status. Values might include: Did not attempt Do not score  Do not report  Duplicate test</xs:documentation>
+												</xs:annotation>
+											</xs:element>
+										</xs:sequence>
+									</xs:complexType>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="scorePublishDate" type="xs:date" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId/>
+								<cedsURL/>
+							</xs:appinfo>
+							<xs:documentation>This is the date set by the testing program when the test scores are published. For formative or classroom assessments, this will likely be the date when the scoring system scored the individual test. For summative assessments, this date is likely set for</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="studentGradeLevel" type="gYearGroupType" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId/>
+								<cedsURL/>
+							</xs:appinfo>
+							<xs:documentation>Grade level of the student at the time of testing.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="assessmentGradeLevel" type="xs:string" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId/>
+								<cedsURL/>
+							</xs:appinfo>
+							<xs:documentation>The grade or level at which the student is to be tested. This element should be omitted unless the student is being tested out-of-level.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="assessmentStudentSnapshot" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="name" type="xs:normalizedString" minOccurs="0">
+									<xs:annotation>
+										<xs:appinfo>
+											<elementName/>
+											<sifChar>O</sifChar>
+											<cedsId/>
+											<cedsURL/>
+										</xs:appinfo>
+										<xs:documentation>The name of the student.</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+								<xs:element name="localId" type="gLocalIdType" minOccurs="0">
+									<xs:annotation>
+										<xs:appinfo>
+											<elementName/>
+											<sifChar>O</sifChar>
+											<cedsId/>
+											<cedsURL/>
+										</xs:appinfo>
+										<xs:documentation>The locally-defined identifier for this student.</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+								<xs:element name="stateProvinceId" type="gExternalIdType" minOccurs="0">
+									<xs:annotation>
+										<xs:appinfo>
+											<elementName/>
+											<sifChar>O</sifChar>
+											<cedsId/>
+											<cedsURL/>
+										</xs:appinfo>
+										<xs:documentation>The state-assigned identifier for this student.</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+								<xs:element name="address" type="gAddressType" minOccurs="0"/>
+								<xs:element name="raceList" minOccurs="0">
+									<xs:complexType>
+										<xs:sequence>
+											<xs:element name="race" type="xs:token" maxOccurs="unbounded">
+												<xs:annotation>
+													<xs:appinfo>
+														<elementName/>
+														<sifChar>R</sifChar>
+														<cedsId/>
+														<cedsURL/>
+													</xs:appinfo>
+													<xs:documentation/>
+												</xs:annotation>
+											</xs:element>
+										</xs:sequence>
+									</xs:complexType>
+								</xs:element>
+								<xs:element name="hispanicLatino" type="gYesNoUnknownType" minOccurs="0">
+									<xs:annotation>
+										<xs:appinfo>
+											<elementName/>
+											<sifChar>O</sifChar>
+											<cedsId/>
+											<cedsURL/>
+										</xs:appinfo>
+										<xs:documentation/>
+									</xs:annotation>
+								</xs:element>
+								<xs:element name="gender" type="gSexusType" minOccurs="0">
+									<xs:annotation>
+										<xs:appinfo>
+											<elementName/>
+											<sifChar>O</sifChar>
+											<cedsId/>
+											<cedsURL/>
+										</xs:appinfo>
+										<xs:documentation>A person's gender.</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+								<xs:element name="birthDate" type="xs:date" minOccurs="0">
+									<xs:annotation>
+										<xs:appinfo>
+											<elementName/>
+											<sifChar>O</sifChar>
+											<cedsId/>
+											<cedsURL/>
+										</xs:appinfo>
+										<xs:documentation>The person's date of birth.</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+								<xs:element name="age" type="xs:unsignedShort" minOccurs="0">
+									<xs:annotation>
+										<xs:appinfo>
+											<elementName/>
+											<sifChar>O</sifChar>
+											<cedsId/>
+											<cedsURL/>
+										</xs:appinfo>
+										<xs:documentation>The age (in years) of the student on the date of the registration.</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+								<xs:element name="projectedGraduationYear" type="gPartialDateType" minOccurs="0">
+									<xs:annotation>
+										<xs:appinfo>
+											<elementName/>
+											<sifChar>O</sifChar>
+											<cedsId/>
+											<cedsURL/>
+										</xs:appinfo>
+										<xs:documentation>Currently projected graduation year.</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+								<xs:element name="onTimeGraduationYear" type="gPartialDateType" minOccurs="0">
+									<xs:annotation>
+										<xs:appinfo>
+											<elementName/>
+											<sifChar>O</sifChar>
+											<cedsId/>
+											<cedsURL/>
+										</xs:appinfo>
+										<xs:documentation>First projected graduation year, usually determined when student is accepted into ninth grade.</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+								<xs:element name="graduationDate" type="xs:date" minOccurs="0">
+									<xs:annotation>
+										<xs:appinfo>
+											<elementName/>
+											<sifChar>O</sifChar>
+											<cedsId/>
+											<cedsURL/>
+										</xs:appinfo>
+										<xs:documentation>Date student officially graduated from secondary education.</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+								<xs:element name="graduationAward" type="xs:token" minOccurs="0">
+									<xs:annotation>
+										<xs:appinfo>
+											<elementName/>
+											<sifChar>O</sifChar>
+											<cedsId/>
+											<cedsURL/>
+										</xs:appinfo>
+										<xs:documentation>The award received upon graduation.</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+								<xs:element name="graduationOnTime" type="gYesNoUnknownType" minOccurs="0">
+									<xs:annotation>
+										<xs:appinfo>
+											<elementName/>
+											<sifChar>O</sifChar>
+											<cedsId/>
+											<cedsURL/>
+										</xs:appinfo>
+										<xs:documentation>Did the student graduate in the expected number of years?</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+								<xs:element name="homeEnrollment" minOccurs="0">
+									<xs:complexType>
+										<xs:sequence>
+											<xs:element name="studentSchoolEnrollmentRefId" type="gRefIdPointerType" minOccurs="0">
+												<xs:annotation>
+													<xs:appinfo>
+														<elementName/>
+														<sifChar>O</sifChar>
+														<cedsId/>
+														<cedsURL/>
+													</xs:appinfo>
+													<xs:documentation>The Id (UUID) of the StudentSchoolEnrollment object from which the enrollment information is derived.</xs:documentation>
+												</xs:annotation>
+											</xs:element>
+											<xs:element name="schoolName" type="xs:normalizedString" minOccurs="0">
+												<xs:annotation>
+													<xs:appinfo>
+														<elementName/>
+														<sifChar>O</sifChar>
+														<cedsId/>
+														<cedsURL/>
+													</xs:appinfo>
+													<xs:documentation>Name of the school.</xs:documentation>
+												</xs:annotation>
+											</xs:element>
+											<xs:element name="schoolRefId" type="gRefIdPointerType" minOccurs="0">
+												<xs:annotation>
+													<xs:appinfo>
+														<elementName/>
+														<sifChar>O</sifChar>
+														<cedsId/>
+														<cedsURL/>
+													</xs:appinfo>
+													<xs:documentation>The Id (GUID) of the school. Provide both the SchoolInfoRefId and LocalId elements if possible. If not, one or the other must be provided.</xs:documentation>
+												</xs:annotation>
+											</xs:element>
+											<xs:element name="localId" type="gLocalIdType" minOccurs="0">
+												<xs:annotation>
+													<xs:appinfo>
+														<elementName/>
+														<sifChar>O</sifChar>
+														<cedsId/>
+														<cedsURL/>
+													</xs:appinfo>
+													<xs:documentation>The locally-defined identifier for this school. Provide both the LocalId and SchoolId elements if possible. If not, one or the other must be provided.</xs:documentation>
+												</xs:annotation>
+											</xs:element>
+											<xs:element name="stateProvinceId" type="gExternalIdType" minOccurs="0">
+												<xs:annotation>
+													<xs:appinfo>
+														<elementName/>
+														<sifChar>O</sifChar>
+														<cedsId/>
+														<cedsURL/>
+													</xs:appinfo>
+													<xs:documentation>The state or province defined identifier for this school.</xs:documentation>
+												</xs:annotation>
+											</xs:element>
+											<xs:element name="status" type="xs:token" minOccurs="0">
+												<xs:annotation>
+													<xs:appinfo>
+														<elementName/>
+														<sifChar>O</sifChar>
+														<cedsId/>
+														<cedsURL/>
+													</xs:appinfo>
+													<xs:documentation>Enrollment status as of the registration date.</xs:documentation>
+												</xs:annotation>
+											</xs:element>
+											<xs:element name="gradeLevel" type="gYearGroupType" minOccurs="0">
+												<xs:annotation>
+													<xs:appinfo>
+														<elementName/>
+														<sifChar>O</sifChar>
+														<cedsId/>
+														<cedsURL/>
+													</xs:appinfo>
+													<xs:documentation>Grade or academic level of student.</xs:documentation>
+												</xs:annotation>
+											</xs:element>
+											<xs:element name="homeroom" minOccurs="0">
+												<xs:annotation>
+													<xs:documentation>One or both of Room RefId or Room number may be provided.</xs:documentation>
+												</xs:annotation>
+												<xs:complexType>
+													<xs:sequence>
+														<xs:element name="roomRefId" type="gRefIdPointerType" minOccurs="0">
+															<xs:annotation>
+																<xs:appinfo>
+																	<elementName/>
+																	<sifChar>O</sifChar>
+																	<cedsId/>
+																	<cedsURL/>
+																</xs:appinfo>
+																<xs:documentation>SIF refId for the room.</xs:documentation>
+															</xs:annotation>
+														</xs:element>
+														<xs:element name="roomNumber" type="xs:token" minOccurs="0">
+															<xs:annotation>
+																<xs:appinfo>
+																	<elementName/>
+																	<sifChar>O</sifChar>
+																	<cedsId/>
+																	<cedsURL/>
+																</xs:appinfo>
+																<xs:documentation>The locally-defined identifier for this room.</xs:documentation>
+															</xs:annotation>
+														</xs:element>
+													</xs:sequence>
+												</xs:complexType>
+											</xs:element>
+											<xs:element name="fullYearEnrollment" type="gYesNoUnknownType" minOccurs="0">
+												<xs:annotation>
+													<xs:appinfo>
+														<elementName/>
+														<sifChar>O</sifChar>
+														<cedsId/>
+														<cedsURL/>
+													</xs:appinfo>
+													<xs:documentation>An indication as to whether or not the student was enrolled for the whole school year. If the SchoolYear is in progress as of the registration date, use the value Unknown.</xs:documentation>
+												</xs:annotation>
+											</xs:element>
+										</xs:sequence>
+									</xs:complexType>
+								</xs:element>
+								<xs:element name="idea" type="gYesNoUnknownType" minOccurs="0">
+									<xs:annotation>
+										<xs:appinfo>
+											<elementName/>
+											<sifChar>O</sifChar>
+											<cedsId/>
+											<cedsURL/>
+										</xs:appinfo>
+										<xs:documentation/>
+									</xs:annotation>
+								</xs:element>
+								<xs:element name="migrant" type="gYesNoUnknownType" minOccurs="0">
+									<xs:annotation>
+										<xs:appinfo>
+											<elementName/>
+											<sifChar>O</sifChar>
+											<cedsId/>
+											<cedsURL/>
+										</xs:appinfo>
+										<xs:documentation/>
+									</xs:annotation>
+								</xs:element>
+								<xs:element name="title1" type="gYesNoUnknownType" minOccurs="0">
+									<xs:annotation>
+										<xs:appinfo>
+											<elementName/>
+											<sifChar>O</sifChar>
+											<cedsId/>
+											<cedsURL/>
+										</xs:appinfo>
+										<xs:documentation/>
+									</xs:annotation>
+								</xs:element>
+								<xs:element name="giftedTalented" type="gYesNoUnknownType" minOccurs="0">
+									<xs:annotation>
+										<xs:appinfo>
+											<elementName/>
+											<sifChar>O</sifChar>
+											<cedsId/>
+											<cedsURL/>
+										</xs:appinfo>
+										<xs:documentation/>
+									</xs:annotation>
+								</xs:element>
+								<xs:element name="economicDisadvantage" type="gYesNoUnknownType" minOccurs="0">
+									<xs:annotation>
+										<xs:appinfo>
+											<elementName/>
+											<sifChar>O</sifChar>
+											<cedsId/>
+											<cedsURL/>
+										</xs:appinfo>
+										<xs:documentation/>
+									</xs:annotation>
+								</xs:element>
+								<xs:element name="ell" type="gYesNoUnknownType" minOccurs="0">
+									<xs:annotation>
+										<xs:appinfo>
+											<elementName/>
+											<sifChar>O</sifChar>
+											<cedsId/>
+											<cedsURL/>
+										</xs:appinfo>
+										<xs:documentation/>
+									</xs:annotation>
+								</xs:element>
+								<xs:element name="homeless" type="gYesNoUnknownType" minOccurs="0">
+									<xs:annotation>
+										<xs:appinfo>
+											<elementName/>
+											<sifChar>O</sifChar>
+											<cedsId/>
+											<cedsURL/>
+										</xs:appinfo>
+										<xs:documentation/>
+									</xs:annotation>
+								</xs:element>
+								<xs:element name="section504" type="gYesNoUnknownType" minOccurs="0">
+									<xs:annotation>
+										<xs:appinfo>
+											<elementName/>
+											<sifChar>O</sifChar>
+											<cedsId/>
+											<cedsURL/>
+										</xs:appinfo>
+										<xs:documentation/>
+									</xs:annotation>
+								</xs:element>
+								<xs:element name="vocationalConcentrator" type="gYesNoUnknownType" minOccurs="0">
+									<xs:annotation>
+										<xs:appinfo>
+											<elementName/>
+											<sifChar>O</sifChar>
+											<cedsId/>
+											<cedsURL/>
+										</xs:appinfo>
+										<xs:documentation/>
+									</xs:annotation>
+								</xs:element>
+								<xs:element name="immigrant" type="gYesNoUnknownType" minOccurs="0">
+									<xs:annotation>
+										<xs:appinfo>
+											<elementName/>
+											<sifChar>O</sifChar>
+											<cedsId/>
+											<cedsURL/>
+										</xs:appinfo>
+										<xs:documentation/>
+									</xs:annotation>
+								</xs:element>
+								<xs:element name="freeAndReducedStatus" type="gYesNoUnknownType" minOccurs="0">
+									<xs:annotation>
+										<xs:appinfo>
+											<elementName/>
+											<sifChar>O</sifChar>
+											<cedsId/>
+											<cedsURL/>
+										</xs:appinfo>
+										<xs:documentation>Student's eligibility for free and reduced meals.</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+								<xs:element name="neglectedDelinquent" type="gYesNoUnknownType" minOccurs="0">
+									<xs:annotation>
+										<xs:appinfo>
+											<elementName/>
+											<sifChar>O</sifChar>
+											<cedsId/>
+											<cedsURL/>
+										</xs:appinfo>
+										<xs:documentation/>
+									</xs:annotation>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="leaRefId" type="gRefIdPointerType" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId/>
+								<cedsURL/>
+							</xs:appinfo>
+							<xs:documentation>Optional reference to a district associated with the registration.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="schoolRefId" type="gRefIdPointerType" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId/>
+								<cedsURL/>
+							</xs:appinfo>
+							<xs:documentation>Optional reference to a school associated with the registration.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="staffPersonRefId" type="gRefIdPointerType" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId/>
+								<cedsURL/>
+							</xs:appinfo>
+							<xs:documentation>Optional reference to a staff person associated with the registration.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="sectionRefId" type="gRefIdPointerType" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId/>
+								<cedsURL/>
+							</xs:appinfo>
+							<xs:documentation>Optional reference to a section (or class) associated with the registration.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="assessmentRegistration" type="assessmentRegistrationType"/>
+	<xs:complexType name="assessmentSessionType">
+		<xs:complexContent>
+			<xs:extension base="gEventType">
+				<xs:sequence>
+					<xs:element name="sessionName" type="xs:normalizedString" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId/>
+								<cedsURL/>
+							</xs:appinfo>
+							<xs:documentation>Name of the Administration Session.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="sessionType" type="xs:token" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId/>
+								<cedsURL/>
+							</xs:appinfo>
+							<xs:documentation>Indicates the type of session that is scheduled.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="unusualEventList" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="unusualEvent" maxOccurs="unbounded">
+									<xs:complexType>
+										<xs:sequence>
+											<xs:element name="code" type="xs:token">
+												<xs:annotation>
+													<xs:appinfo>
+														<elementName/>
+														<sifChar>O</sifChar>
+														<cedsId/>
+														<cedsURL/>
+													</xs:appinfo>
+													<xs:documentation>This is the identifier for the list of unusual events typically defined by the assessment program owner. Typically this is a unique code assigned to each special condition by the assessment program.</xs:documentation>
+												</xs:annotation>
+											</xs:element>
+											<xs:element name="sif_Action" type="xs:token" minOccurs="0">
+												<xs:annotation>
+													<xs:appinfo>
+														<elementName/>
+														<sifChar>O</sifChar>
+														<cedsId/>
+														<cedsURL/>
+													</xs:appinfo>
+													<xs:documentation>In a Change event, this flag can be used to indicate an element has been deleted from the parent list container. At a minimum the key for the list must also be present.</xs:documentation>
+												</xs:annotation>
+											</xs:element>
+										</xs:sequence>
+									</xs:complexType>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="scheduledStartDateTime" type="xs:dateTime" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId/>
+								<cedsURL/>
+							</xs:appinfo>
+							<xs:documentation>Date and time the test is scheduled to begin.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="scheduledEndDateTime" type="xs:dateTime" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId/>
+								<cedsURL/>
+							</xs:appinfo>
+							<xs:documentation>Date and time the test is scheduled to end.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="actualStartDateTime" type="xs:dateTime" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId/>
+								<cedsURL/>
+							</xs:appinfo>
+							<xs:documentation>Date and time the test actually began.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="actualEndDateTime" type="xs:dateTime" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId/>
+								<cedsURL/>
+							</xs:appinfo>
+							<xs:documentation>Date and time the test actually ended.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="address" type="gAddressType" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId/>
+								<cedsURL/>
+							</xs:appinfo>
+							<xs:documentation>Address of the location where the administration takes place.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="assessmentAdministrationRefId" type="gRefIdPointerType" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId/>
+								<cedsURL/>
+							</xs:appinfo>
+							<xs:documentation>Optional reference to the assessment administration event that this session is part of. If this is a local-only session, then this reference is not required.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="assessmentRefId" type="gRefIdPointerType" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId/>
+								<cedsURL/>
+							</xs:appinfo>
+							<xs:documentation>The RefId of the assessment object used in the assessment administration.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="assessmentFormRefId" type="gRefIdPointerType" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId/>
+								<cedsURL/>
+							</xs:appinfo>
+							<xs:documentation>If this is an accommodations session type, then a specific form may be selected for the session, such as a read-aloud form. This is only necessary if the session is being assigned a specific form and all students in the session must take the same form of </xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="leaRefId" type="gRefIdPointerType" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId/>
+								<cedsURL/>
+							</xs:appinfo>
+							<xs:documentation>Optional reference to a school district associated with the administration.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="schoolInfoRefId" type="gRefIdPointerType" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId/>
+								<cedsURL/>
+							</xs:appinfo>
+							<xs:documentation>Optional reference to a school associated with the administration.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="staffPersonalRefIdList" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="staffPersonalRefId" type="gRefIdPointerType" maxOccurs="unbounded">
+									<xs:annotation>
+										<xs:appinfo>
+											<elementName/>
+											<sifChar>R</sifChar>
+											<cedsId/>
+											<cedsURL/>
+										</xs:appinfo>
+										<xs:documentation>A StaffPersonal RefId.</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="assessmentSession" type="assessmentSessionType"/>
+	<xs:complexType name="assessmentResponseSetType">
+		<xs:complexContent>
+			<xs:extension base="gSIF_EntityType">
+				<xs:sequence>
+					<xs:element name="assessmentAdministrationRefId" type="gRefIdPointerType" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId/>
+								<cedsURL/>
+							</xs:appinfo>
+							<xs:documentation>The administration associated with the response set.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="studentPersonalRefId" type="gRefIdPointerType" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId/>
+								<cedsURL/>
+							</xs:appinfo>
+							<xs:documentation>The student associated with the response set.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="assessmentRegistrationRefId" type="gRefIdPointerType" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId/>
+								<cedsURL/>
+							</xs:appinfo>
+							<xs:documentation>The registration associated with the response set.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="itemList" minOccurs="1">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="item" minOccurs="1" maxOccurs="unbounded">
+									<xs:complexType>
+										<xs:sequence>
+											<xs:element name="assessmentItemRefId" type="gRefIdPointerType" minOccurs="1">
+												<xs:annotation>
+													<xs:appinfo>
+														<elementName/>
+														<sifChar>M</sifChar>
+														<cedsId/>
+														<cedsURL/>
+													</xs:appinfo>
+													<xs:documentation>A GUID that identifies the item object associated with this student result.</xs:documentation>
+												</xs:annotation>
+											</xs:element>
+											<xs:element name="response" type="xs:string" minOccurs="0">
+												<xs:annotation>
+													<xs:appinfo>
+														<elementName/>
+														<sifChar>O</sifChar>
+														<cedsId/>
+														<cedsURL/>
+													</xs:appinfo>
+													<xs:documentation>Answer selected or student work in raw format.</xs:documentation>
+												</xs:annotation>
+											</xs:element>
+											<xs:element name="responseLocation" type="xs:anyURI" minOccurs="0">
+												<xs:annotation>
+													<xs:appinfo>
+														<elementName/>
+														<sifChar>O</sifChar>
+														<cedsId/>
+														<cedsURL/>
+													</xs:appinfo>
+													<xs:documentation>An optional element that contains a URL pointing to the location of the response or additional response.</xs:documentation>
+												</xs:annotation>
+											</xs:element>
+											<xs:element name="responseCorrect" type="gYesNoUnknownType" minOccurs="0">
+												<xs:annotation>
+													<xs:appinfo>
+														<elementName/>
+														<sifChar>O</sifChar>
+														<cedsId/>
+														<cedsURL/>
+													</xs:appinfo>
+													<xs:documentation>After the test has been scored, this value will indicate the correctness of the response. This element will be missing if the response has not yet been scored. For open ended items that are scored using a rubric, this value will also likely be missing. </xs:documentation>
+												</xs:annotation>
+											</xs:element>
+											<xs:element name="viewStatus" type="gYesNoUnknownType" minOccurs="0">
+												<xs:annotation>
+													<xs:appinfo>
+														<elementName/>
+														<sifChar>O</sifChar>
+														<cedsId/>
+														<cedsURL/>
+													</xs:appinfo>
+													<xs:documentation>This element will indicate if the item has been viewed or not by the student. Note this value can only be determined for online delivered tests. Paper tests should not use this attribute.</xs:documentation>
+												</xs:annotation>
+											</xs:element>
+											<xs:element name="attemptStatus" type="gYesNoUnknownType" minOccurs="0">
+												<xs:annotation>
+													<xs:appinfo>
+														<elementName/>
+														<sifChar>O</sifChar>
+														<cedsId/>
+														<cedsURL/>
+													</xs:appinfo>
+													<xs:documentation>This element indicates if the student attempted the item. If a full or partial response is present then the item should be considered attempted. If the student never responded then the item was not attempted. If the item was answered and then later the an</xs:documentation>
+												</xs:annotation>
+											</xs:element>
+											<xs:element name="numberOfAttempts" type="xs:unsignedShort" minOccurs="0">
+												<xs:annotation>
+													<xs:appinfo>
+														<elementName/>
+														<sifChar>O</sifChar>
+														<cedsId/>
+														<cedsURL/>
+													</xs:appinfo>
+													<xs:documentation>The number of times a student changes their answer or attempts a response. For online tests, this would represent each time an item was changed after the original (complete) response was provided and the student navigated away from the item. For paper-bas</xs:documentation>
+												</xs:annotation>
+											</xs:element>
+											<xs:element name="timeOnItem" type="xs:duration" minOccurs="0">
+												<xs:annotation>
+													<xs:appinfo>
+														<elementName/>
+														<sifChar>O</sifChar>
+														<cedsId/>
+														<cedsURL/>
+													</xs:appinfo>
+													<xs:documentation>The length of time the student spent viewing or answering this item. Only applies for online tests. If the student viewed the item multiple times, then this would be the accumulated total time spent on the item. As much as is possible, the delivery system</xs:documentation>
+												</xs:annotation>
+											</xs:element>
+											<xs:element name="itemNumber" type="xs:unsignedShort" minOccurs="0">
+												<xs:annotation>
+													<xs:appinfo>
+														<elementName/>
+														<sifChar>O</sifChar>
+														<cedsId/>
+														<cedsURL/>
+													</xs:appinfo>
+													<xs:documentation>Identifies the sequence of the item as it was delivered to this student. For adaptive testing, this is the sequence in which the item was delivered. This should be the item sequence starting at 1 and continue to the end of the test (spanning all sections)</xs:documentation>
+												</xs:annotation>
+											</xs:element>
+											<xs:element name="itemName" type="xs:normalizedString" minOccurs="0">
+												<xs:annotation>
+													<xs:appinfo>
+														<elementName/>
+														<sifChar>O</sifChar>
+														<cedsId/>
+														<cedsURL/>
+													</xs:appinfo>
+													<xs:documentation>Identifies the item on the assessment by name.</xs:documentation>
+												</xs:annotation>
+											</xs:element>
+											<xs:element name="assessmentRubricRefId" type="gRefIdPointerType" minOccurs="0">
+												<xs:annotation>
+													<xs:appinfo>
+														<elementName/>
+														<sifChar>O</sifChar>
+														<cedsId/>
+														<cedsURL/>
+													</xs:appinfo>
+													<xs:documentation>This identifies the rubric that was used to determine the score that is being recorded for this item response. This is only used for items that are scored using one or more rubrics.</xs:documentation>
+												</xs:annotation>
+											</xs:element>
+											<xs:element name="itemScore" type="xs:token" minOccurs="0">
+												<xs:annotation>
+													<xs:appinfo>
+														<elementName/>
+														<sifChar>O</sifChar>
+														<cedsId/>
+														<cedsURL/>
+													</xs:appinfo>
+													<xs:documentation>This is the score the student received on the specific item.</xs:documentation>
+												</xs:annotation>
+											</xs:element>
+											<xs:element name="itemScoreCode" type="xs:token" minOccurs="0">
+												<xs:annotation>
+													<xs:appinfo>
+														<elementName/>
+														<sifChar>O</sifChar>
+														<cedsId/>
+														<cedsURL/>
+													</xs:appinfo>
+													<xs:documentation>This is the score code the student received for the specific item. Generally only applies to open ended items. Values are program specific, but example values might be 'BL = blank', 'OT = off topic', 'FL = foreign language'.</xs:documentation>
+												</xs:annotation>
+											</xs:element>
+											<xs:element name="commentList" minOccurs="0">
+												<xs:complexType>
+													<xs:sequence>
+														<xs:element name="comment" maxOccurs="unbounded">
+															<xs:complexType>
+																<xs:sequence>
+																	<xs:element name="commentCode" type="xs:token" minOccurs="0">
+																		<xs:annotation>
+																			<xs:appinfo>
+																				<elementName/>
+																				<sifChar>O</sifChar>
+																				<cedsId/>
+																				<cedsURL/>
+																			</xs:appinfo>
+																			<xs:documentation>For each comment provided, this will identify the specific code for the comment. These codes will be program specific (no standardized values).</xs:documentation>
+																		</xs:annotation>
+																	</xs:element>
+																	<xs:element name="commentDescription" type="xs:string" minOccurs="0">
+																		<xs:annotation>
+																			<xs:appinfo>
+																				<elementName/>
+																				<sifChar>O</sifChar>
+																				<cedsId/>
+																				<cedsURL/>
+																			</xs:appinfo>
+																			<xs:documentation>Allows for the description of the comment code to be provided by the scoring system.</xs:documentation>
+																		</xs:annotation>
+																	</xs:element>
+																</xs:sequence>
+															</xs:complexType>
+														</xs:element>
+													</xs:sequence>
+												</xs:complexType>
+											</xs:element>
+											<xs:element name="traitScoreList" minOccurs="0">
+												<xs:complexType>
+													<xs:sequence>
+														<xs:element name="traitScore" maxOccurs="unbounded">
+															<xs:complexType>
+																<xs:sequence>
+																	<xs:element name="traitScoreType" type="xs:token" minOccurs="0">
+																		<xs:annotation>
+																			<xs:appinfo>
+																				<elementName/>
+																				<sifChar>O</sifChar>
+																				<cedsId/>
+																				<cedsURL/>
+																			</xs:appinfo>
+																			<xs:documentation>If trait scores are provided, then this identifies the specific trait score that is provided. This value will be program specific (i.e. no standardized list of values available).</xs:documentation>
+																		</xs:annotation>
+																	</xs:element>
+																	<xs:element name="traitScoreValue" type="xs:decimal" minOccurs="0">
+																		<xs:annotation>
+																			<xs:appinfo>
+																				<elementName/>
+																				<sifChar>O</sifChar>
+																				<cedsId/>
+																				<cedsURL/>
+																			</xs:appinfo>
+																			<xs:documentation>This will be the numeric trait score value.</xs:documentation>
+																		</xs:annotation>
+																	</xs:element>
+																	<xs:element name="traitScoreCode" type="xs:token" minOccurs="0">
+																		<xs:annotation>
+																			<xs:appinfo>
+																				<elementName/>
+																				<sifChar>O</sifChar>
+																				<cedsId/>
+																				<cedsURL/>
+																			</xs:appinfo>
+																			<xs:documentation>If there is a code associated with the trait score, then this will allow for identifying the code.</xs:documentation>
+																		</xs:annotation>
+																	</xs:element>
+																</xs:sequence>
+															</xs:complexType>
+														</xs:element>
+													</xs:sequence>
+												</xs:complexType>
+											</xs:element>
+											<xs:element name="feedbackItemList" minOccurs="0">
+												<xs:complexType>
+													<xs:sequence>
+														<xs:element name="feedbackItem" maxOccurs="unbounded">
+															<xs:complexType>
+																<xs:sequence>
+																	<xs:element name="feedbackCode" type="xs:token" minOccurs="0">
+																		<xs:annotation>
+																			<xs:appinfo>
+																				<elementName/>
+																				<sifChar>O</sifChar>
+																				<cedsId/>
+																				<cedsURL/>
+																			</xs:appinfo>
+																			<xs:documentation>If there is a coding system associated with the feedback concerning the score, then this will identify that code. The format and content of the code is determined by the assessment program.</xs:documentation>
+																		</xs:annotation>
+																	</xs:element>
+																	<xs:element name="diagnosticStatement" type="xs:string" minOccurs="0">
+																		<xs:annotation>
+																			<xs:appinfo>
+																				<elementName/>
+																				<sifChar>O</sifChar>
+																				<cedsId/>
+																				<cedsURL/>
+																			</xs:appinfo>
+																			<xs:documentation>Psychometric purpose or design-related comment about the question.</xs:documentation>
+																		</xs:annotation>
+																	</xs:element>
+																	<xs:element name="feedbackDescription" type="xs:string" minOccurs="0">
+																		<xs:annotation>
+																			<xs:appinfo>
+																				<elementName/>
+																				<sifChar>O</sifChar>
+																				<cedsId/>
+																				<cedsURL/>
+																			</xs:appinfo>
+																			<xs:documentation>This is further qualification of a Student Score. If this is a teacher scored item, then this may be comments the teacher is providing back to the student.</xs:documentation>
+																		</xs:annotation>
+																	</xs:element>
+																	<xs:element name="feedbackSource" type="xs:token" minOccurs="0">
+																		<xs:annotation>
+																			<xs:appinfo>
+																				<elementName/>
+																				<sifChar>O</sifChar>
+																				<cedsId/>
+																				<cedsURL/>
+																			</xs:appinfo>
+																			<xs:documentation>This indicates the source for this feedback. May indicate if this is teacher, scorer, or system generated feedback. Values for this attribute would be determined by the assessment program.</xs:documentation>
+																		</xs:annotation>
+																	</xs:element>
+																</xs:sequence>
+															</xs:complexType>
+														</xs:element>
+													</xs:sequence>
+												</xs:complexType>
+											</xs:element>
+											<xs:element name="itemAidList" minOccurs="0">
+												<xs:complexType>
+													<xs:sequence>
+														<xs:element name="itemAid" type="xs:token" maxOccurs="unbounded">
+															<xs:annotation>
+																<xs:appinfo>
+																	<elementName/>
+																	<sifChar>R</sifChar>
+																	<cedsId/>
+																	<cedsURL/>
+																</xs:appinfo>
+																<xs:documentation>Each tool or aid set used while viewing the item. Such as Scientific Calculator, Periodic Table, etc.</xs:documentation>
+															</xs:annotation>
+														</xs:element>
+													</xs:sequence>
+												</xs:complexType>
+											</xs:element>
+										</xs:sequence>
+									</xs:complexType>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="assessmentResponseSet" type="assessmentResponseSetType"/>
+	<xs:complexType name="assessmentScoreSetType">
+		<xs:complexContent>
+			<xs:extension base="gSIF_EntityType">
+				<xs:sequence>
+					<xs:element name="scoreMetric" type="xs:token">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId/>
+								<cedsURL/>
+							</xs:appinfo>
+							<xs:documentation>The metric or scale used to report the score.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="studentPersonalRefId" type="gRefIdPointerType">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId/>
+								<cedsURL/>
+							</xs:appinfo>
+							<xs:documentation>The student associated with this score set.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="assessmentAdministrationRefId" type="gRefIdPointerType" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId/>
+								<cedsURL/>
+							</xs:appinfo>
+							<xs:documentation>The administration associated with this score set.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="assessmentRegistrationRefId" type="gRefIdPointerType" minOccurs="0">
+						<xs:annotation>
+							<xs:appinfo>
+								<elementName/>
+								<sifChar>O</sifChar>
+								<cedsId/>
+								<cedsURL/>
+							</xs:appinfo>
+							<xs:documentation>The registration associated with this score set.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="scoreList">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="score" maxOccurs="unbounded">
+									<xs:complexType>
+										<xs:sequence>
+											<xs:element name="assessmentSubTestRefId" type="gRefIdPointerType" minOccurs="0">
+												<xs:annotation>
+													<xs:appinfo>
+														<elementName/>
+														<sifChar>O</sifChar>
+														<cedsId/>
+														<cedsURL/>
+													</xs:appinfo>
+													<xs:documentation>References the AssessmentSubTest that defines the score.</xs:documentation>
+												</xs:annotation>
+											</xs:element>
+											<xs:element name="preliminaryIndicator" type="gYesNoUnknownType" minOccurs="0">
+												<xs:annotation>
+													<xs:appinfo>
+														<elementName/>
+														<sifChar>O</sifChar>
+														<cedsId/>
+														<cedsURL/>
+													</xs:appinfo>
+													<xs:documentation>If this score is preliminary, then this attribute value should be set. Preliminary scores may be provided for early use by the assessment program or user while final scoring is occurring.</xs:documentation>
+												</xs:annotation>
+											</xs:element>
+											<xs:element name="scoreValue" type="xs:token">
+												<xs:annotation>
+													<xs:appinfo>
+														<elementName/>
+														<sifChar>O</sifChar>
+														<cedsId/>
+														<cedsURL/>
+													</xs:appinfo>
+													<xs:documentation>The value of the score.</xs:documentation>
+												</xs:annotation>
+											</xs:element>
+											<xs:element name="passFailIndicator" type="gYesNoUnknownType" minOccurs="0">
+												<xs:annotation>
+													<xs:appinfo>
+														<elementName/>
+														<sifChar>O</sifChar>
+														<cedsId/>
+														<cedsURL/>
+													</xs:appinfo>
+													<xs:documentation>If the score value also determines a pass/fail level, then this indicator will specify the value.</xs:documentation>
+												</xs:annotation>
+											</xs:element>
+											<xs:element name="numberOfResponses" type="xs:unsignedShort" minOccurs="0">
+												<xs:annotation>
+													<xs:appinfo>
+														<elementName/>
+														<sifChar>O</sifChar>
+														<cedsId/>
+														<cedsURL/>
+													</xs:appinfo>
+													<xs:documentation>This is the number of responses that are included with the StudentScoreSet. Responses are those items that were attempted (partially or fully answered) by the student and not necessarily the number of items in the sub test (which can be determined from th</xs:documentation>
+												</xs:annotation>
+											</xs:element>
+										</xs:sequence>
+									</xs:complexType>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="feedbackItemList" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="feedbackItem" maxOccurs="unbounded">
+									<xs:complexType>
+										<xs:sequence>
+											<xs:element name="diagnosticStatement" type="xs:string" minOccurs="0">
+												<xs:annotation>
+													<xs:appinfo>
+														<elementName/>
+														<sifChar>O</sifChar>
+														<cedsId/>
+														<cedsURL/>
+													</xs:appinfo>
+													<xs:documentation>Comment created by any logical analysis of this score.</xs:documentation>
+												</xs:annotation>
+											</xs:element>
+											<xs:element name="feedbackDescription" type="xs:string" minOccurs="0">
+												<xs:annotation>
+													<xs:appinfo>
+														<elementName/>
+														<sifChar>O</sifChar>
+														<cedsId/>
+														<cedsURL/>
+													</xs:appinfo>
+													<xs:documentation>This is further qualification of a Student Score. If this is a teacher scored item, then this may be comments the teacher is providing back to the student.</xs:documentation>
+												</xs:annotation>
+											</xs:element>
+											<xs:element name="feedbackSource" type="xs:token" minOccurs="0">
+												<xs:annotation>
+													<xs:appinfo>
+														<elementName/>
+														<sifChar>O</sifChar>
+														<cedsId/>
+														<cedsURL/>
+													</xs:appinfo>
+													<xs:documentation>This indicates the source for this feedback. May indicate if this is teacher, scorer, or system generated feedback. Values for this attribute would be determined by the assessment program.</xs:documentation>
+												</xs:annotation>
+											</xs:element>
+										</xs:sequence>
+									</xs:complexType>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="assessmentScoreSet" type="assessmentScoreSetType"/>
+</xs:schema>

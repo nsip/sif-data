@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--version 3.00.02-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	<xs:complexType name="assessmentSummaryType">
+		<xs:annotation>
+			<xs:documentation>A spreadsheet-like object that transmits aggregate or calculated assessment information</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="refId"/>
+			<xs:element name="summaryContext">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="assessmentId"/>
+						<xs:element name="assessmentName" minOccurs="0"/>
+						<xs:element name="schoolYear"/>
+						<xs:element name="unitOfAnalysis">
+							<xs:simpleType>
+								<xs:restriction base="xs:token">
+									<xs:enumeration value="item"/>
+									<xs:enumeration value="subTest"/>
+									<xs:enumeration value="strand"/>
+									<xs:enumeration value="learningStandard"/>
+									<xs:enumeration value="benchmark"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+						<xs:element name="State" minOccurs="0"/>
+						<xs:element name="LEA" minOccurs="0"/>
+						<xs:element name="School" minOccurs="0"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="columns">
+				<xs:annotation>
+					<xs:documentation>This structure holds the column header information only.  The actual data is in the rows/facts structure.</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="column" maxOccurs="unbounded">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="columnLetter"/>
+									<xs:element name="columnLabel" minOccurs="0">
+										<xs:annotation>
+											<xs:documentation>A descriptive name of the column.</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="metric" minOccurs="0">
+										<xs:annotation>
+											<xs:documentation>The value for this element could be count, scale score, percent correct, etc.</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="factGroupName" minOccurs="0">
+										<xs:annotation>
+											<xs:documentation>A variable that can be used to categorize facts into groups or subheadings.</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+					<xs:attribute name="numberOfColumns"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="rows">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="row" maxOccurs="unbounded">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="rowNumber"/>
+									<xs:element name="rowLabel" minOccurs="0">
+										<xs:annotation>
+											<xs:documentation>A variable that identifies the record, row, or individual. </xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:sequence>
+										<xs:element name="facts">
+											<xs:annotation>
+												<xs:documentation>The number of facts (columns) cannon exceed the numberOfColumns attribute</xs:documentation>
+											</xs:annotation>
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="fact">
+														<xs:complexType/>
+													</xs:element>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="assessmentSummary" type="assessmentSummaryType"/>
+</xs:schema>

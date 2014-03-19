@@ -1,0 +1,1873 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--version 3.00.13-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	<xs:include schemaLocation="SIFglobalBaseTypes.xsd"/>
+	<!--Enumerated Types, i.e., coded elements that are enumerated inline in the XSD instead of having an external codeset  -->
+	<xs:simpleType name="gAlertMessageTypeType">
+		<xs:annotation>
+			<xs:documentation>This attribute specifies what type of alert message this is.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:token"/>
+	</xs:simpleType>
+	<xs:simpleType name="gAssociationTypeType">
+		<xs:annotation>
+			<xs:documentation>The association between a person and the organization they are affiliated with.This is meant to enumerate the relevant subclasses of Person defined by organizational affiliatione.g.  Student,  Staff, PersonContact. The enumeration may extend beyond those subclasses.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:token"/>
+	</xs:simpleType>
+	<!--Simple Common Types-->
+	<xs:simpleType name="gAddressRoleType">
+		<xs:annotation>
+			<xs:documentation>A facet of Address</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:token"/>
+	</xs:simpleType>
+	<xs:simpleType name="gApplicationFunctionType">
+		<xs:annotation>
+			<xs:documentation>The primary function of an application, e.g., student information or library management.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:token"/>
+	</xs:simpleType>
+	<xs:simpleType name="gAuthenticationTypeType">
+		<xs:annotation>
+			<xs:documentation>Defines how authentication is performed and exchanged.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:token"/>
+	</xs:simpleType>
+	<xs:simpleType name="gBirthdateVerificationType">
+		<xs:annotation>
+			<xs:documentation>Means by which the persons birth date was validated.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:token"/>
+	</xs:simpleType>
+	<xs:simpleType name="gCitizenshipStatusType">
+		<xs:annotation>
+			<xs:documentation>The persons citizenship status.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:token"/>
+	</xs:simpleType>
+	<xs:simpleType name="gContactFlagType">
+		<xs:annotation>
+			<xs:documentation>Contains a list of the contact persons role. Provide an instance for all characteristics that apply. </xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:token"/>
+	</xs:simpleType>
+	<xs:simpleType name="gCreditTypeEarnedType">
+		<xs:annotation>
+			<xs:documentation>Number of credits earned.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:decimal"/>
+	</xs:simpleType>
+	<xs:simpleType name="gDocumentPublishingStatusType">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:restriction base="xs:token"/>
+	</xs:simpleType>
+	<xs:simpleType name="gDwellingArrangementType">
+		<xs:annotation>
+			<xs:documentation>Setting/environment in which the person resides.</xs:documentation>
+		</xs:annotation>
+		<xs:list itemType="xs:token"/>
+	</xs:simpleType>
+	<xs:simpleType name="gEducationLevel">
+		<xs:annotation>
+			<xs:documentation>A code representing the highest level of education completed by a person.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:token"/>
+	</xs:simpleType>
+	<xs:simpleType name="gElectoralDistrictType">
+		<xs:annotation>
+			<xs:documentation>The electoral district.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:token"/>
+	</xs:simpleType>
+	<xs:simpleType name="gElectronicIdTypeType">
+		<xs:annotation>
+			<xs:documentation>The type of the identifier that is read by electronic equipment. The types include Barcode, Magstripe, PIN, RFID, etc.</xs:documentation>
+		</xs:annotation>
+		<xs:list itemType="xs:token"/>
+	</xs:simpleType>
+	<xs:simpleType name="gEmailTypeType">
+		<xs:annotation>
+			<xs:documentation>This attribute specifies the type of e-mail address.</xs:documentation>
+		</xs:annotation>
+		<xs:list itemType="xs:token"/>
+	</xs:simpleType>
+	<xs:simpleType name="gEmployerTypeType">
+		<xs:annotation>
+			<xs:documentation>Code that defines the employer type.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:token"/>
+	</xs:simpleType>
+	<xs:simpleType name="gEncryptionType">
+		<xs:annotation>
+			<xs:documentation>A named encryption algorithm.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:token"/>
+	</xs:simpleType>
+	<xs:simpleType name="gEntryTypeType">
+		<xs:annotation>
+			<xs:documentation>Container elements for EntryType information.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:token"/>
+	</xs:simpleType>
+	<xs:simpleType name="gExitStatusType">
+		<xs:annotation>
+			<xs:documentation>Closure status for this enrollment.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:token"/>
+	</xs:simpleType>
+	<xs:simpleType name="gExitTypeType">
+		<xs:annotation>
+			<xs:documentation>The type of exit for this enrollment</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:token"/>
+	</xs:simpleType>
+	<xs:simpleType name="gFullTimeStatusType">
+		<xs:annotation>
+			<xs:documentation>An indication of whether the student is enrolled full time or part time.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:token"/>
+	</xs:simpleType>
+	<xs:simpleType name="gGenderOfEntryType">
+		<xs:annotation>
+			<xs:documentation>Gender of school population.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:token"/>
+	</xs:simpleType>
+	<xs:simpleType name="gGraduationDate">
+		<xs:annotation>
+			<xs:documentation>Date student officially graduated from secondary education.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="gPartialDateType"/>
+	</xs:simpleType>
+	<xs:simpleType name="gInstructionalLevelType">
+		<xs:annotation>
+			<xs:documentation>An indication of the general nature and difficulty of instruction provided.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:token"/>
+	</xs:simpleType>
+	<xs:simpleType name="gJobFunctionType">
+		<xs:annotation>
+			<xs:documentation>The purpose of the activities as related to students.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:token"/>
+	</xs:simpleType>
+	<xs:simpleType name="gLanguageProficiencyType">
+		<xs:annotation>
+			<xs:documentation>The persons proficiency in the primary language of education in the school. In the existing SIF locales, the language is English.</xs:documentation>
+		</xs:annotation>
+		<xs:list itemType="xs:token"/>
+	</xs:simpleType>
+	<xs:simpleType name="gLanguageTypeType">
+		<xs:annotation>
+			<xs:documentation>An indication of the function and context in which an individual uses a language to communicate.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:token"/>
+	</xs:simpleType>
+	<xs:simpleType name="gLeaTypeType">
+		<xs:annotation>
+			<xs:documentation>Type of LEA.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:token"/>
+	</xs:simpleType>
+	<xs:simpleType name="gLearningStandardsItemRelationshipType">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:restriction base="xs:string"/>
+	</xs:simpleType>
+	<xs:simpleType name="gLearningStandardsOrganizationType">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:restriction base="xs:string"/>
+	</xs:simpleType>
+	<xs:simpleType name="gListedStatusType">
+		<xs:annotation>
+			<xs:documentation>Indicates whether or not the phone number is available to the public.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="gYesNoUnknownType"/>
+	</xs:simpleType>
+	<xs:simpleType name="gMaritalStatusType">
+		<xs:annotation>
+			<xs:documentation>The persons marital status.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:token"/>
+	</xs:simpleType>
+	<xs:simpleType name="gMedicalAlertMessageSeverityType">
+		<xs:annotation>
+			<xs:documentation>The level of severity of this medical alert.</xs:documentation>
+		</xs:annotation>
+		<xs:list itemType="xs:token"/>
+	</xs:simpleType>
+	<xs:simpleType name="gMembershipTypeType">
+		<xs:annotation>
+			<xs:documentation>The type of association between the party and the organization. May encompass existing SIF associations such as K12StudentEnrollment.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:token"/>
+	</xs:simpleType>
+	<xs:simpleType name="gNameRoleType">
+		<xs:annotation>
+			<xs:documentation>Code that specifies what type of name this is. The type has a different codeset for different Locales, which is not represented at the global tier by a fixed codeset.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:token"/>
+	</xs:simpleType>
+	<xs:simpleType name="gOperationalStatusType">
+		<xs:annotation>
+			<xs:documentation>Operational condition of an institution.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:token"/>
+	</xs:simpleType>
+	<xs:simpleType name="gOtherIdTypeType">
+		<xs:annotation>
+			<xs:documentation>Other Id type.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:token"/>
+	</xs:simpleType>
+	<xs:simpleType name="gPhoneNumberTypeType">
+		<xs:annotation>
+			<xs:documentation>Code that specifies what type of phone number this is. Note: A subset of valid values may be specified in data objects.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:token"/>
+	</xs:simpleType>
+	<xs:simpleType name="gPromotionStatusType">
+		<xs:annotation>
+			<xs:documentation>This value should be set if this enrollment instance is closed for an end-of-year closeout or a mid-year promotion or demotion. A value other than N/A should be specified when the enrollment instance represents an end-of-year closeout or mid-year promotion/demotion.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:token"/>
+	</xs:simpleType>
+	<xs:simpleType name="gRecordClosureReasonType">
+		<xs:annotation>
+			<xs:documentation>The reason why this enrollment was closed.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:token"/>
+	</xs:simpleType>
+	<xs:simpleType name="gRelationshipType">
+		<xs:annotation>
+			<xs:documentation>The relationship of the contact person to the person, e.g., father, mother, parent, guardian.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:token"/>
+	</xs:simpleType>
+	<xs:simpleType name="gResidencyStatusType">
+		<xs:annotation>
+			<xs:documentation>Location of an individuals legal residence relative to (within or outside) the boundaries of the school for this enrollment.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:token"/>
+	</xs:simpleType>
+	<xs:simpleType name="gRoleTypeType">
+		<xs:annotation>
+			<xs:documentation/>
+		</xs:annotation>
+		<xs:restriction base="xs:token"/>
+	</xs:simpleType>
+	<xs:simpleType name="gSchoolSectorType">
+		<xs:annotation>
+			<xs:documentation>School sector of school, e.g. Public/Private.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:token"/>
+	</xs:simpleType>
+	<xs:simpleType name="gSchoolFocusType">
+		<xs:annotation>
+			<xs:documentation>The type of educational institution as classified by its focus.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:token"/>
+	</xs:simpleType>
+	<xs:simpleType name="gSchoolTypeType">
+		<xs:annotation>
+			<xs:documentation>An indication of the level of the educational institution.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:token"/>
+	</xs:simpleType>
+	<xs:simpleType name="gSessionTypeType">
+		<xs:annotation>
+			<xs:documentation>Code that specifies the session type.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:token"/>
+	</xs:simpleType>
+	<xs:simpleType name="gSubjectAreaType">
+		<xs:annotation>
+			<xs:documentation>This represents the subject or content area this curriculum item addresses.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:token"/>
+	</xs:simpleType>
+	<xs:simpleType name="gTeachingAssignmentType">
+		<xs:annotation>
+			<xs:documentation>A field taught by the individual.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:token"/>
+	</xs:simpleType>
+	<!-- Complex Common Types-->
+	<xs:complexType name="gAlertMessageType">
+		<xs:annotation>
+			<xs:documentation>An alert message associatied with the student. </xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="message"/>
+			<xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="messageType"/>
+	</xs:complexType>
+	<xs:complexType name="gBaseNameType">
+		<xs:sequence>
+			<xs:element name="prefix" type="xs:token" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="familyName" type="xs:normalizedString">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="givenName" type="xs:normalizedString">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="middleName" type="xs:normalizedString" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="suffix" type="xs:token" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="preferredFamilyName" type="xs:normalizedString" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="preferredGivenName" type="xs:normalizedString" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="sortName" type="xs:normalizedString" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation>The name to be used for sorting in lists of names</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="fullName" type="xs:normalizedString" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="familyNameFirst" type="gYesNoUnknownType" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="preferredFamilyNameFirst" type="gYesNoUnknownType" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="gBellPeriodType">
+		<xs:sequence>
+			<xs:element name="timetableDayIdentifier" type="xs:token">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="useInAttendanceCalculations" type="gYesNoUnknownType" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="timetablePeriodIdentifier" type="xs:token" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="startTime" type="xs:time" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="endTime" type="xs:time" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="regularSchoolPeriod" type="gYesNoUnknownType" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="instructionalMinutes" type="xs:int" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="gBellScheduleDayType">
+		<xs:sequence>
+			<xs:element name="bellScheduleRefId" type="gRefIdPointerType">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="timetableDayIdentifier" type="xs:string">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="gRoomList">
+		<xs:sequence>
+			<xs:element name="room" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="roomRefId" type="gRefIdPointerType"/>
+						<xs:element name="roomNumber" type="xs:token"/>
+						<xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="gRoomType">
+		<xs:sequence>
+			<xs:element name="roomRefId" type="gRefIdPointerType"/>
+			<xs:element name="roomNumber" type="xs:token"/>
+			<xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="gContactFlagListType">
+		<xs:sequence>
+			<xs:element name="contactFlag" type="gContactFlagType" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="gCountryList">
+		<xs:sequence>
+			<xs:element name="country" type="gCountryType" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="gCountryType">
+		<xs:complexContent>
+			<xs:extension base="gCodedElementType"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="gCourseCreditListType">
+		<xs:sequence>
+			<xs:element name="courseCredit" type="xs:decimal">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="creditType" minOccurs="0"/>
+			<xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="gCourseCreditType">
+		<xs:sequence>
+			<xs:element name="courseCredit" type="xs:decimal">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="creditType" type="xs:token" minOccurs="0"/>
+			<xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="gCreatedType">
+		<xs:sequence>
+			<xs:element name="dateTimeCreated" type="xs:dateTime">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="creatorList" type="gCreatorList" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="gCreatorType">
+		<xs:sequence>
+			<xs:element name="creatorName" type="xs:string" minOccurs="1">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="creatorId" type="xs:string" minOccurs="1">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="gCreatorList">
+		<xs:sequence>
+			<xs:element name="creator" type="gCreatorType" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="gCredentialsList">
+		<xs:sequence>
+			<xs:element name="credential" type="gCredentialType" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="gCredentialType">
+		<xs:sequence>
+			<xs:element name="password" type="xs:token">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="encryption" type="gEncryptionType">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="keyName" type="xs:token" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="gDemographicsType">
+		<xs:sequence>
+			<xs:element name="ethnicity" type="gEthnicityList" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="sexus" type="gSexusType" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="birthDate" type="xs:date" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="birthDateVerification" type="gBirthdateVerificationType" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="placeOfBirth" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="subregionOfBirth" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="stateProvinceOfBirth" type="gStateProvinceType" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="countryOfBirth" type="gCountryType" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="countriesOfCitizenship" type="gCountryList" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="countriesOfResidency" type="gCountryType" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="countryArrivalDate" type="xs:date" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="citizenshipStatus" type="gCitizenshipStatusType" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="languageProficiency" type="gLanguageProficiencyType" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="languageList" type="gLanguageList" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="dwellingArrangement" type="gDwellingArrangementType" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="maritalStatus" type="gMaritalStatusType" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="gEducationFilter">
+		<xs:sequence>
+			<xs:element name="learningStandardItemList" type="xs:string" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="gElectronicIdList">
+		<xs:sequence>
+			<xs:element name="electronicId" type="gElectronicIdType" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation>A list of ids meant to be read and processed by electronic equipment. This includes Barcode, Magstripe, PIN, RFID, etc.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="gElectronicIdType">
+		<xs:annotation>
+			<xs:documentation>An identifier meant to be read and processed by electronic equipment. This includes Barcode, Magstripe, PIN, RFID, etc.</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:extension base="gLocalIdType"/>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="gEmailListType">
+		<xs:sequence>
+			<xs:element name="email" type="gEmailType" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="gEthnicityList">
+		<xs:sequence>
+			<xs:element name="ethnicity" type="gEthnicityType" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="gEthnicityType">
+		<xs:complexContent>
+			<xs:extension base="gCodedElementType"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="gExternalIdList">
+		<xs:sequence>
+			<xs:element name="externalId" type="gExternalIdType" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation>The external (to the local system) identifier for this entity as assigned by a government authority (typically state or province in a federal system, national in a centralized system).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="gLanguageDescription">
+		<xs:sequence>
+			<xs:element name="code" type="gLanguageType">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="languageType" type="gLanguageTypeType" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="dialect" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="gLanguageType">
+		<xs:annotation>
+			<xs:documentation>The code representing the specific language that an individual uses to communicate.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="gCodedElementType"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="gLanguageList">
+		<xs:sequence>
+			<xs:element name="language" type="gLanguageDescription" minOccurs="1" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="gLifeCycle">
+		<xs:sequence>
+			<xs:element name="created" type="gCreatedType" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="modificationHistory" type="gModificationHistory" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="timeElementList" type="gTimeElementList" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="gMedicalAlertMessage">
+		<xs:annotation>
+			<xs:documentation>A medical alert message associatied with the student. </xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="message" type="xs:string">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="severity" type="gMedicalAlertMessageSeverityType" use="optional">
+			<xs:annotation>
+				<xs:appinfo>
+					<sifChar>O</sifChar>
+					<cedsId/>
+					<cedsURL/>
+				</xs:appinfo>
+				<xs:documentation/>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="gMeetingTime">
+		<xs:sequence>
+			<xs:element name="timeTableDay" type="xs:token" minOccurs="1">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="timeTablePeriod" type="xs:token" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="gMeetingTimeList">
+		<xs:sequence>
+			<xs:element name="meetingTime" type="gMeetingTime" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="gModificationHistory">
+		<xs:sequence>
+			<xs:element name="modified" type="gModifiedType" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="gModifiedType">
+		<xs:sequence>
+			<xs:element name="modifiedBy" type="xs:string">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="dateTimeModified" type="xs:dateTime">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="description" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="gNameOfRecordType">
+		<xs:sequence>
+			<xs:element name="nameOfRecord" type="gBaseNameType">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="nameRole" type="gNameRoleType" use="optional">
+			<xs:annotation>
+				<xs:appinfo>
+					<sifChar>O</sifChar>
+					<cedsId/>
+					<cedsURL/>
+				</xs:appinfo>
+				<xs:documentation/>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="gOtherNameListType">
+		<xs:annotation>
+			<xs:documentation>When a person is known by more than one name, the additional, unofficial names are listed here.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="otherName" type="gOtherNameType" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="gOtherNameType">
+		<xs:sequence>
+			<xs:element name="otherName" type="gBaseNameType">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="nameRole" type="gNameRoleType" use="optional">
+			<xs:annotation>
+				<xs:appinfo>
+					<sifChar>O</sifChar>
+					<cedsId/>
+					<cedsURL/>
+				</xs:appinfo>
+				<xs:documentation/>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="gOtherIdListType">
+		<xs:sequence>
+			<xs:element name="otherId" type="gOtherIdType" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="gPhoneNumberListType">
+		<xs:sequence>
+			<xs:element name="phoneNumber" type="gPhoneNumberType" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="gPhoneNumberType">
+		<xs:sequence>
+			<xs:element name="number" type="xs:token">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="extension" type="xs:token" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="listedStatus" type="gListedStatusType" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="phoneNumberType" type="gPhoneNumberTypeType" use="optional">
+			<xs:annotation>
+				<xs:appinfo>
+					<sifChar>O</sifChar>
+					<cedsId/>
+					<cedsURL/>
+				</xs:appinfo>
+				<xs:documentation/>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="gRelatedLearningStandardItemType">
+		<xs:sequence>
+			<xs:element name="relatedLearningStandardItemRefId" type="gRefIdPointerType">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="relationshipType" type="gLearningStandardsItemRelationshipType">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="gRelatedLearningStandardItemList">
+		<xs:sequence>
+			<xs:element name="relatedLearningStandardItem" type="gRelatedLearningStandardItemType" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="gSchoolFocusList">
+		<xs:sequence>
+			<xs:element name="schoolFocus" type="gSchoolFocusType" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="gSectionTeacherType">
+		<xs:sequence>
+			<xs:element name="staffRefId" type="gRefIdPointerType">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>M</sifChar>
+						<cedsId>000364</cedsId>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation>The Id (GUID) of the teacher for a particular session of a class.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="teachingAssignmentRole" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId>000648</cedsId>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation>The role of the staff member with the section.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="gSessionSchedule">
+		<xs:sequence>
+			<xs:element name="termRefId" type="gRefIdPointerType" minOccurs="0"/>
+			<xs:element name="meetingTimeList" type="gMeetingTimeList" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation>The time schedule for an individual section/class.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="classRoomList" type="gRoomList" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation>The one or more rooms in which a section/class meets.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="sectionTeacherList" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>The one or more teachers assigned to a section/class for a particular session.</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="sectionTeacher" type="gSectionTeacherType" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="gSessionScheduleList">
+		<xs:sequence>
+			<xs:element name="sessionSchedule" type="gSessionSchedule" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="gSpanGap">
+		<xs:sequence>
+			<xs:element name="spanGapType" type="xs:token">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="spanGapCode" type="xs:token">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="spanGapName" type="xs:normalizedString">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="spanGapValue" type="xs:token">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="startDateTime" type="xs:dateTime">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="endDateTime" type="xs:dateTime" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="gSpanGapListType">
+		<xs:sequence>
+			<xs:element name="spanGap" type="xs:string" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="gStreetType">
+		<xs:sequence>
+			<xs:element name="line1" type="xs:normalizedString">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="line2" type="xs:normalizedString" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="line3" type="xs:normalizedString" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="complex" type="xs:normalizedString" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="streetNumber" type="xs:token" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="streetPrefix" type="xs:token" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="streetName" type="xs:normalizedString" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="streetType" type="xs:token" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="streetSuffix" type="xs:token" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="apartmentType" type="xs:token" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="apartmentNumberPrefix" type="xs:token" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="apartmentNumber" type="xs:token" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="apartmentNumberSuffix" type="xs:token" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="gTimeElementList">
+		<xs:sequence>
+			<xs:element name="timeElement" type="gTimeElementType" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="gTimeElementType">
+		<xs:sequence>
+			<xs:element name="periodType" type="xs:string">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="code" type="xs:token">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="valueDescription" type="xs:string">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="value" type="xs:string">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="startDateTime" type="xs:dateTime" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="endDateTime" type="xs:dateTime" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="spanGapList" type="gSpanGapListType" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="isCurrent" type="xs:boolean">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="gTimetableDayList">
+		<xs:sequence>
+			<xs:element name="timetableDay" type="gTimetableDayType" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="gTimetableDayType">
+		<xs:sequence>
+			<xs:element name="timetablePeriodList" type="gTimetablePeriodList" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="timetableDayIdentifier" type="xs:string">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="timetableDayName" type="xs:string">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="gTimetablePeriodList">
+		<xs:sequence>
+			<xs:element name="timetablePeriod" type="gTimetablePeriodType" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="gTimetablePeriodType">
+		<xs:sequence>
+			<xs:element name="timetablePeriodName" type="xs:token">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="timetablePeriodIdentifier" type="xs:token">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+			<xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="gYearGroupType">
+		<xs:annotation>
+			<xs:documentation>Year group or Grade Level (US).</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="gCodedElementType"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="gYearGroupList">
+		<xs:annotation>
+			<xs:documentation>Collection of year groups.  In US these are called grade levels. </xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="yearGroup" type="gYearGroupType" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId/>
+						<cedsURL/>
+					</xs:appinfo>
+					<xs:documentation/>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

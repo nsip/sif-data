@@ -1,0 +1,987 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--version 3.00.05-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.sifassociation.org/datamodel/us/3.0" targetNamespace="http://www.sifassociation.org/datamodel/us/3.0" elementFormDefault="qualified">
+	<xs:include schemaLocation="../Entity/SIFglobal.xsd"/>
+	<xs:complexType name="aeProviderType">
+		<xs:sequence>
+			<xs:element name="providerType" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId>001078</cedsId>
+						<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3779</cedsURL>
+					</xs:appinfo>
+					<xs:documentation>The type of institution responsible for providing adult education instructional services.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="providerId" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId>000781</cedsId>
+						<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3778</cedsURL>
+					</xs:appinfo>
+					<xs:documentation>A coding scheme that is used for identification and record-keeping purposes by schools, social services, or other agencies to refer to an institution.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="identifier" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId>001076</cedsId>
+						<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3777</cedsURL>
+					</xs:appinfo>
+					<xs:documentation>A unique number or alphanumeric code assigned to an institution by a school, school system, a state, or other agency or entity.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="level" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId>000178</cedsId>
+						<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3178</cedsURL>
+					</xs:appinfo>
+					<xs:documentation>A classification of whether a postsecondary institution's highest level of offering is a program of 4-years or higher (4 year), 2-but-less-than 4-years (2 year), or less than 2-years.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="refId" type="gRefIdType" use="required"/>
+	</xs:complexType>
+	<xs:element name="aeProvider" type="aeProviderType"/>
+	<xs:complexType name="aeStaffType">
+		<xs:sequence>
+			<xs:element name="name" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="firstName" type="xs:string" minOccurs="0">
+							<xs:annotation>
+								<xs:appinfo>
+									<sifChar>O</sifChar>
+									<cedsId>000115</cedsId>
+									<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3115</cedsURL>
+								</xs:appinfo>
+								<xs:documentation>The full legal first name given to a person at birth, baptism, or through legal change.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="middleName" type="xs:string" minOccurs="0">
+							<xs:annotation>
+								<xs:appinfo>
+									<sifChar>O</sifChar>
+									<cedsId>000184</cedsId>
+									<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3184</cedsURL>
+								</xs:appinfo>
+								<xs:documentation>A full legal middle name given to a person at birth, baptism, or through legal change.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="lastName" type="xs:string" minOccurs="0">
+							<xs:annotation>
+								<xs:appinfo>
+									<sifChar>O</sifChar>
+									<cedsId>000172</cedsId>
+									<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3172</cedsURL>
+								</xs:appinfo>
+								<xs:documentation>The full legal last name borne in common by members of a family.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="suffix" type="xs:string" minOccurs="0">
+							<xs:annotation>
+								<xs:appinfo>
+									<sifChar>O</sifChar>
+									<cedsId>000121</cedsId>
+									<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3121</cedsURL>
+								</xs:appinfo>
+								<xs:documentation>An appendage, if any, used to denote a person's generation in his family (e.g., Jr., Sr., III).</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="prefix" type="xs:string" minOccurs="0">
+							<xs:annotation>
+								<xs:appinfo>
+									<sifChar>O</sifChar>
+									<cedsId>000212</cedsId>
+									<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3212</cedsURL>
+								</xs:appinfo>
+								<xs:documentation>An appellation, if any, used to denote rank, placement, or status (e.g., Mr., Ms., Reverend, Sister, Dr., Colonel).</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="otherNameList" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="otherName" minOccurs="1" maxOccurs="unbounded">
+							<xs:complexType>
+								<xs:attribute name="otherNameType" type="xs:string">
+									<xs:annotation>
+										<xs:appinfo>
+											<sifChar>O</sifChar>
+											<cedsId>000634</cedsId>
+											<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3627</cedsURL>
+										</xs:appinfo>
+										<xs:documentation>The types of previous, alternate or other names for a person.</xs:documentation>
+									</xs:annotation>
+								</xs:attribute>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="staffIdSystem" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId>001074</cedsId>
+						<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3162</cedsURL>
+					</xs:appinfo>
+					<xs:documentation>A coding scheme that is used for identification and record-keeping purposes by schools, social services, registry, or other agencies to refer to a staff member.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="socialSecurityNumber" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId>000259</cedsId>
+						<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3259</cedsURL>
+					</xs:appinfo>
+					<xs:documentation>The nine-digit number of identification assigned to the person by the Social Security Administration.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="idVerification" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId>000618</cedsId>
+						<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3611</cedsURL>
+					</xs:appinfo>
+					<xs:documentation>The evidence by which a persons name, address, date of birth, etc. is confirmed.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="addressList" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="address" minOccurs="1" maxOccurs="unbounded">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="street" minOccurs="0">
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="line1" type="xs:string" minOccurs="0">
+													<xs:annotation>
+														<xs:appinfo>
+															<sifChar>O</sifChar>
+															<cedsId>000269</cedsId>
+															<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3269</cedsURL>
+														</xs:appinfo>
+														<xs:documentation>The street number and street name or post office box number of an address.</xs:documentation>
+													</xs:annotation>
+												</xs:element>
+												<xs:element name="apartmentNumber" type="xs:string" minOccurs="0">
+													<xs:annotation>
+														<xs:appinfo>
+															<sifChar>O</sifChar>
+															<cedsId>000019</cedsId>
+															<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3019</cedsURL>
+														</xs:appinfo>
+														<xs:documentation>The apartment, room, or suite number of an address.</xs:documentation>
+													</xs:annotation>
+												</xs:element>
+											</xs:sequence>
+										</xs:complexType>
+									</xs:element>
+									<xs:element name="city" type="xs:string" minOccurs="0">
+										<xs:annotation>
+											<xs:appinfo>
+												<sifChar>O</sifChar>
+												<cedsId>000040</cedsId>
+												<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3040</cedsURL>
+											</xs:appinfo>
+											<xs:documentation>The name of the city in which an address is located.</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="stateProvince" type="xs:string" minOccurs="0">
+										<xs:annotation>
+											<xs:appinfo>
+												<sifChar>O</sifChar>
+												<cedsId>000267</cedsId>
+												<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3267</cedsURL>
+											</xs:appinfo>
+											<xs:documentation>The abbreviation for the state (within the United States) or outlying area in which an address is located.</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="postalCode" type="xs:string" minOccurs="0">
+										<xs:annotation>
+											<xs:appinfo>
+												<sifChar>O</sifChar>
+												<cedsId>000214</cedsId>
+												<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3214</cedsURL>
+											</xs:appinfo>
+											<xs:documentation>A number that identifies each postal delivery area in the United States used as a portion of an address.</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="county" type="xs:string" minOccurs="0">
+										<xs:annotation>
+											<xs:appinfo>
+												<sifChar>O</sifChar>
+												<cedsId>000190</cedsId>
+												<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3190</cedsURL>
+											</xs:appinfo>
+											<xs:documentation>The name of the county, parish, borough, or comparable unit (within a state) in which an address is located.</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="country" type="xs:string" minOccurs="0">
+										<xs:annotation>
+											<xs:appinfo>
+												<sifChar>O</sifChar>
+												<cedsId>000050</cedsId>
+												<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3050</cedsURL>
+											</xs:appinfo>
+											<xs:documentation>The unique two character International Organization for Standardization (ISO) code for the country in which an address is located.</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+								</xs:sequence>
+								<xs:attribute name="addressType" type="xs:string">
+									<xs:annotation>
+										<xs:appinfo>
+											<sifChar>O</sifChar>
+											<cedsId>000722</cedsId>
+											<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3698</cedsURL>
+										</xs:appinfo>
+										<xs:documentation>The address type for a staff member.</xs:documentation>
+									</xs:annotation>
+								</xs:attribute>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="phoneNumberList" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="phoneNumber" minOccurs="1" maxOccurs="unbounded">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="phoneNumberIndicator" type="xs:string" minOccurs="0">
+										<xs:annotation>
+											<xs:appinfo>
+												<sifChar>O</sifChar>
+												<cedsId>000219</cedsId>
+												<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3219</cedsURL>
+											</xs:appinfo>
+											<xs:documentation>An indication that the telephone number should be used as the principal number for a person or organization.</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="number" type="xs:string" minOccurs="0">
+										<xs:annotation>
+											<xs:appinfo>
+												<sifChar>O</sifChar>
+												<cedsId>000279</cedsId>
+												<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3279</cedsURL>
+											</xs:appinfo>
+											<xs:documentation>The telephone number including the area code, and extension, if applicable.</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+								</xs:sequence>
+								<xs:attribute name="phoneNumberType" type="xs:string">
+									<xs:annotation>
+										<xs:appinfo>
+											<sifChar>O</sifChar>
+											<cedsId>000280</cedsId>
+											<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3280</cedsURL>
+										</xs:appinfo>
+										<xs:documentation>The type of communication number listed for a person.</xs:documentation>
+									</xs:annotation>
+								</xs:attribute>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="emailList" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="email" minOccurs="1" maxOccurs="unbounded">
+							<xs:complexType>
+								<xs:attribute name="emailType" type="xs:string">
+									<xs:annotation>
+										<xs:appinfo>
+											<sifChar>O</sifChar>
+											<cedsId>000089</cedsId>
+											<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3089</cedsURL>
+										</xs:appinfo>
+										<xs:documentation>The type of electronic mail (e-mail) address listed for a person or organization.</xs:documentation>
+									</xs:annotation>
+								</xs:attribute>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="certificationType" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId>001085</cedsId>
+						<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3775</cedsURL>
+					</xs:appinfo>
+					<xs:documentation>An indication of the category of certification a person holds.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="yearsofPriorAETeachingExperience" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId>000788</cedsId>
+						<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3774</cedsURL>
+					</xs:appinfo>
+					<xs:documentation>The total number of years that a person has previously held a teaching position in one or more adult education programs.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="adultEducationStaffClassification" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId>000786</cedsId>
+						<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3770</cedsURL>
+					</xs:appinfo>
+					<xs:documentation>The titles of employment, official status, or rank of adult education staff.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="employmentStatus" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId>001083</cedsId>
+						<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3771</cedsURL>
+					</xs:appinfo>
+					<xs:documentation>The condition under which a person has agreed to serve an employer.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="refId" type="gRefIdType" use="required"/>
+	</xs:complexType>
+	<xs:element name="aeStaff" type="aeStaffType"/>
+	<xs:complexType name="aeStudentType">
+		<xs:sequence>
+			<xs:element name="name" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="firstName" type="xs:string" minOccurs="0">
+							<xs:annotation>
+								<xs:appinfo>
+									<sifChar>O</sifChar>
+									<cedsId>000115</cedsId>
+									<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3115</cedsURL>
+								</xs:appinfo>
+								<xs:documentation>The full legal first name given to a person at birth, baptism, or through legal change.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="middleName" type="xs:string" minOccurs="0">
+							<xs:annotation>
+								<xs:appinfo>
+									<sifChar>O</sifChar>
+									<cedsId>000184</cedsId>
+									<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3184</cedsURL>
+								</xs:appinfo>
+								<xs:documentation>A full legal middle name given to a person at birth, baptism, or through legal change.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="lastName" type="xs:string" minOccurs="0">
+							<xs:annotation>
+								<xs:appinfo>
+									<sifChar>O</sifChar>
+									<cedsId>000172</cedsId>
+									<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3172</cedsURL>
+								</xs:appinfo>
+								<xs:documentation>The full legal last name borne in common by members of a family.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="suffix" type="xs:string" minOccurs="0">
+							<xs:annotation>
+								<xs:appinfo>
+									<sifChar>O</sifChar>
+									<cedsId>000121</cedsId>
+									<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3121</cedsURL>
+								</xs:appinfo>
+								<xs:documentation>An appendage, if any, used to denote a person's generation in his family (e.g., Jr., Sr., III).</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="prefix" type="xs:string" minOccurs="0">
+							<xs:annotation>
+								<xs:appinfo>
+									<sifChar>O</sifChar>
+									<cedsId>000212</cedsId>
+									<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3212</cedsURL>
+								</xs:appinfo>
+								<xs:documentation>An appellation, if any, used to denote rank, placement, or status (e.g., Mr., Ms., Reverend, Sister, Dr., Colonel).</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="otherNameList" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="otherName" minOccurs="1" maxOccurs="unbounded">
+							<xs:complexType>
+								<xs:attribute name="otherNameType" type="xs:string">
+									<xs:annotation>
+										<xs:appinfo>
+											<sifChar>O</sifChar>
+											<cedsId>000634</cedsId>
+											<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3627</cedsURL>
+										</xs:appinfo>
+										<xs:documentation>The types of previous, alternate or other names for a person.</xs:documentation>
+									</xs:annotation>
+								</xs:attribute>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="studentId" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId>001071</cedsId>
+						<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3157</cedsURL>
+					</xs:appinfo>
+					<xs:documentation>A unique number or alphanumeric code assigned to a student by a school, school system, a state, or other agency or entity.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="studentIdSystem" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId>001075</cedsId>
+						<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3163</cedsURL>
+					</xs:appinfo>
+					<xs:documentation>A coding scheme that is used for identification and record-keeping purposes by schools, social services, or other agencies to refer to a student.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="socialSecurityNumber" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId>000259</cedsId>
+						<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3259</cedsURL>
+					</xs:appinfo>
+					<xs:documentation>The nine-digit number of identification assigned to the person by the Social Security Administration.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="idVerification" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId>000618</cedsId>
+						<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3611</cedsURL>
+					</xs:appinfo>
+					<xs:documentation>The evidence by which a persons name, address, date of birth, etc. is confirmed.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="addressList" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="address" minOccurs="1" maxOccurs="unbounded">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="street" minOccurs="0">
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="line1" type="xs:string" minOccurs="0">
+													<xs:annotation>
+														<xs:appinfo>
+															<sifChar>O</sifChar>
+															<cedsId>000269</cedsId>
+															<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3269</cedsURL>
+														</xs:appinfo>
+														<xs:documentation>The street number and street name or post office box number of an address.</xs:documentation>
+													</xs:annotation>
+												</xs:element>
+												<xs:element name="apartmentNumber" type="xs:string" minOccurs="0">
+													<xs:annotation>
+														<xs:appinfo>
+															<sifChar>O</sifChar>
+															<cedsId>000019</cedsId>
+															<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3019</cedsURL>
+														</xs:appinfo>
+														<xs:documentation>The apartment, room, or suite number of an address.</xs:documentation>
+													</xs:annotation>
+												</xs:element>
+											</xs:sequence>
+										</xs:complexType>
+									</xs:element>
+									<xs:element name="city" type="xs:string" minOccurs="0">
+										<xs:annotation>
+											<xs:appinfo>
+												<sifChar>O</sifChar>
+												<cedsId>000040</cedsId>
+												<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3040</cedsURL>
+											</xs:appinfo>
+											<xs:documentation>The name of the city in which an address is located.</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="stateProvince" type="xs:string" minOccurs="0">
+										<xs:annotation>
+											<xs:appinfo>
+												<sifChar>O</sifChar>
+												<cedsId>000267</cedsId>
+												<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3267</cedsURL>
+											</xs:appinfo>
+											<xs:documentation>The abbreviation for the state (within the United States) or outlying area in which an address is located.</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="postalCode" type="xs:string" minOccurs="0">
+										<xs:annotation>
+											<xs:appinfo>
+												<sifChar>O</sifChar>
+												<cedsId>000214</cedsId>
+												<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3214</cedsURL>
+											</xs:appinfo>
+											<xs:documentation>A number that identifies each postal delivery area in the United States used as a portion of an address.</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="county" type="xs:string" minOccurs="0">
+										<xs:annotation>
+											<xs:appinfo>
+												<sifChar>O</sifChar>
+												<cedsId>000190</cedsId>
+												<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3190</cedsURL>
+											</xs:appinfo>
+											<xs:documentation>The name of the county, parish, borough, or comparable unit (within a state) in which an address is located.</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="country" type="xs:string" minOccurs="0">
+										<xs:annotation>
+											<xs:appinfo>
+												<sifChar>O</sifChar>
+												<cedsId>000050</cedsId>
+												<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3050</cedsURL>
+											</xs:appinfo>
+											<xs:documentation>The unique two character International Organization for Standardization (ISO) code for the country in which an address is located.</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+								</xs:sequence>
+								<xs:attribute name="addressType" type="xs:string">
+									<xs:annotation>
+										<xs:appinfo>
+											<sifChar>O</sifChar>
+											<cedsId>000010</cedsId>
+											<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3358</cedsURL>
+										</xs:appinfo>
+										<xs:documentation>The type of address listed for a learner or a parent, guardian, family member or related person.</xs:documentation>
+									</xs:annotation>
+								</xs:attribute>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="phoneNumberList" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="phoneNumber" minOccurs="0" maxOccurs="unbounded">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="phoneNumberIndicator" type="xs:string" minOccurs="0">
+										<xs:annotation>
+											<xs:appinfo>
+												<sifChar>O</sifChar>
+												<cedsId>000219</cedsId>
+												<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3219</cedsURL>
+											</xs:appinfo>
+											<xs:documentation>An indication that the telephone number should be used as the principal number for a person or organization.</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="number" type="xs:string" minOccurs="0">
+										<xs:annotation>
+											<xs:appinfo>
+												<sifChar>O</sifChar>
+												<cedsId>000279</cedsId>
+												<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3279</cedsURL>
+											</xs:appinfo>
+											<xs:documentation>The telephone number including the area code, and extension, if applicable.</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+								</xs:sequence>
+								<xs:attribute name="phoneNumberType" type="xs:string">
+									<xs:annotation>
+										<xs:appinfo>
+											<sifChar>O</sifChar>
+											<cedsId>000280</cedsId>
+											<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3280</cedsURL>
+										</xs:appinfo>
+										<xs:documentation>The type of communication number listed for a person.</xs:documentation>
+									</xs:annotation>
+								</xs:attribute>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="emailList" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="email" minOccurs="1" maxOccurs="unbounded">
+							<xs:complexType>
+								<xs:attribute name="emailType" type="xs:string">
+									<xs:annotation>
+										<xs:appinfo>
+											<sifChar>O</sifChar>
+											<cedsId>000089</cedsId>
+											<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3089</cedsURL>
+										</xs:appinfo>
+										<xs:documentation>The type of electronic mail (e-mail) address listed for a person or organization.</xs:documentation>
+									</xs:annotation>
+								</xs:attribute>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="birthdate" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId>000033</cedsId>
+						<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3033</cedsURL>
+					</xs:appinfo>
+					<xs:documentation>The year, month and day on which a person was born.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="sex" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId>000255</cedsId>
+						<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3255</cedsURL>
+					</xs:appinfo>
+					<xs:documentation>The concept describing the biological traits that distinguish the males and females of a species.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="americanIndianOrAlaskaNative" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId>000016</cedsId>
+						<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3655</cedsURL>
+					</xs:appinfo>
+					<xs:documentation>A person having origins in any of the original peoples of North and South America (including Central America), and who maintains cultural identification through tribal affiliation or community attachment.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="asian" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId>000020</cedsId>
+						<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3656</cedsURL>
+					</xs:appinfo>
+					<xs:documentation>A person having origins in any of the original peoples of the Far East, Southeast Asia, or the Indian Subcontinent. This area includes, for example, Cambodia, China, India, Japan, Korea, Malaysia, Pakistan, the Philippine Islands, Thailand, and Vietnam.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="blackOrAfricanAmerican" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId>000034</cedsId>
+						<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3657</cedsURL>
+					</xs:appinfo>
+					<xs:documentation>A person having origins in any of the black racial groups of Africa.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="nativeHawaiianOrOtherPacificIslander" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId>000192</cedsId>
+						<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3658</cedsURL>
+					</xs:appinfo>
+					<xs:documentation>A person having origins in any of the original peoples of Hawaii, Guam, Samoa, or other Pacific Islands.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="white" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId>000301</cedsId>
+						<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3659</cedsURL>
+					</xs:appinfo>
+					<xs:documentation>A person having origins in any of the original peoples of Europe, Middle East, or North Africa.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="hispanicOrLatinoEthnicity" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId>000144</cedsId>
+						<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3144</cedsURL>
+					</xs:appinfo>
+					<xs:documentation>An indication that the person traces his or her origin or descent to Mexico, Puerto Rico, Cuba, Central and South America, and other Spanish cultures, regardless of race.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="displacedHomemaker" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId>000084</cedsId>
+						<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3084</cedsURL>
+					</xs:appinfo>
+					<xs:documentation>A person who ; (A) (i) has worked primarily without remuneration to care for a home and family, and for that reason has diminished marketable skills; (ii) has been dependent on the income of another family member but is no longer supported by that income;</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="disabilityStatus" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId>000577</cedsId>
+						<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3569</cedsURL>
+					</xs:appinfo>
+					<xs:documentation>An indication of whether a person is classified as disabled under the American's with Disability Act (ADA).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="dislocatedWorkerStatus" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId>000776</cedsId>
+						<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3759</cedsURL>
+					</xs:appinfo>
+					<xs:documentation>An individual who has been terminated or laid off, or who has received a notice of termination or layoff from employment, or an individual who was self-employed but is unemployed as a result of general economic conditions in the community in which the ind</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="iDEA" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId>000151</cedsId>
+						<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3151</cedsURL>
+					</xs:appinfo>
+					<xs:documentation>A person having intellectual disability; hearing impairment, including deafness; speech or language impairment; visual impairment, including blindness; serious emotional disturbance (hereafter referred to as emotional disturbance); orthopedic impairment;</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="lowIncomeStatus" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId>000775</cedsId>
+						<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3758</cedsURL>
+					</xs:appinfo>
+					<xs:documentation>A person who receives or is a member of a family who receives a total family income in the 6 months prior to enrollment of 70 percent of the income standard for a family of that size or that does not exceed the poverty line, or the person is receiving or</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="publicAssistanceStatus" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId>000777</cedsId>
+						<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3760</cedsURL>
+					</xs:appinfo>
+					<xs:documentation>A person who receives financial assistance from Federal, State, or local government agencies, including Temporary Assistance for Needy Families or equivalent.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ruralResidencyStatus" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId>000778</cedsId>
+						<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3761</cedsURL>
+					</xs:appinfo>
+					<xs:documentation>A person who resides in a place with a population of less than 2,500 that is not near any metropolitan area with a population greater than 50,000, or in a city with adjacent areas of high density.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="singleParentStatus" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId>000580</cedsId>
+						<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3573</cedsURL>
+					</xs:appinfo>
+					<xs:documentation>A student who, at some time during the school year, is either a pregnant female student who is unmarried; or a male or female student who is unmarried or legally separated from a spouse and has a minor child or children.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="employedWhileEnrolled" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId>000987</cedsId>
+						<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3989</cedsURL>
+					</xs:appinfo>
+					<xs:documentation>An individual who is a paid employee or works in his or her own business, profession, or farm and at the same time is enrolled in secondary, postsecondary, or adult education.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="nAICSCode" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId>001064</cedsId>
+						<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=4070</cedsURL>
+					</xs:appinfo>
+					<xs:documentation>The North American Industry Classification System (NAICS) code associated with an individual's employment.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="employedAfterExit" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId>000988</cedsId>
+						<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3990</cedsURL>
+					</xs:appinfo>
+					<xs:documentation>An individual who is a paid employee or works in his or her own business, profession, or farm after exiting secondary, postsecondary, or adult education.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="aEPrograms" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="program" minOccurs="1" maxOccurs="unbounded">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="instructionalProgram" type="xs:string" minOccurs="0">
+										<xs:annotation>
+											<xs:appinfo>
+												<sifChar>O</sifChar>
+												<cedsId>001077</cedsId>
+												<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3765</cedsURL>
+											</xs:appinfo>
+											<xs:documentation>The type of instructional program in which an adult is enrolled.</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="enrollmentDate" type="xs:string" minOccurs="0">
+										<xs:annotation>
+											<xs:appinfo>
+												<sifChar>O</sifChar>
+												<cedsId>000324</cedsId>
+												<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3324</cedsURL>
+											</xs:appinfo>
+											<xs:documentation>The year, month and day on which a person is considered officially enrolled in the program.</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="exitDate" type="xs:string" minOccurs="0">
+										<xs:annotation>
+											<xs:appinfo>
+												<sifChar>O</sifChar>
+												<cedsId>000107</cedsId>
+												<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3107</cedsURL>
+											</xs:appinfo>
+											<xs:documentation>The year, month and day on which the student officially withdrew or graduated, i.e. the date on which the student's enrollment ended.</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="programEnvironment" type="xs:string" minOccurs="0">
+										<xs:annotation>
+											<xs:appinfo>
+												<sifChar>O</sifChar>
+												<cedsId>000782</cedsId>
+												<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3766</cedsURL>
+											</xs:appinfo>
+											<xs:documentation>The environment in which an adult participates in an instructional program.</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="intakeLevel" type="xs:string" minOccurs="0">
+										<xs:annotation>
+											<xs:appinfo>
+												<sifChar>O</sifChar>
+												<cedsId>000779</cedsId>
+												<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3763</cedsURL>
+											</xs:appinfo>
+											<xs:documentation>An individual's entering skill level, as defined by the National Reporting System for Adult Education and determined by an approved standardized assessment at program intake.</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="exitLevel" type="xs:string" minOccurs="0">
+										<xs:annotation>
+											<xs:appinfo>
+												<sifChar>O</sifChar>
+												<cedsId>000780</cedsId>
+												<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3764</cedsURL>
+											</xs:appinfo>
+											<xs:documentation>An individual's skill level, as defined by the National Reporting System for Adult Education and determined by an approved standardized assessment after a set time period or number of instructional hours.</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="goal" type="xs:string" minOccurs="0">
+										<xs:annotation>
+											<xs:appinfo>
+												<sifChar>O</sifChar>
+												<cedsId>001079</cedsId>
+												<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3767</cedsURL>
+											</xs:appinfo>
+											<xs:documentation>A person's reasons for attending an adult education class or program.</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="transitionAction" type="xs:string" minOccurs="0">
+										<xs:annotation>
+											<xs:appinfo>
+												<sifChar>O</sifChar>
+												<cedsId>000784</cedsId>
+												<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3768</cedsURL>
+											</xs:appinfo>
+											<xs:documentation>The action taken with respect to postsecondary enrollment by the learner after program exit or when co-enrolled in ABE and postsecondary with respect to enrollment in a postsecondary educational or occupational skills program building on prior services or</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="transitionDate" type="xs:string" minOccurs="0">
+										<xs:annotation>
+											<xs:appinfo>
+												<sifChar>O</sifChar>
+												<cedsId>001081</cedsId>
+												<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3769</cedsURL>
+											</xs:appinfo>
+											<xs:documentation>The year, month and day on which a person previously enrolled in adult education entered and began to receive instructional services or training at a postsecondary institution.</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="proxyContactHours" type="xs:string" minOccurs="0">
+										<xs:annotation>
+											<xs:appinfo>
+												<sifChar>O</sifChar>
+												<cedsId>000790</cedsId>
+												<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3776</cedsURL>
+											</xs:appinfo>
+											<xs:documentation>The number of instructional hours completed by an adult enrolled in a distance learning program.</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="educationLevel" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId>000141</cedsId>
+						<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3141</cedsURL>
+					</xs:appinfo>
+					<xs:documentation>The extent of formal instruction a person has received (e.g., the highest grade in school completed or its equivalent or the highest degree received).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="highSchoolDiploma" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId>000138</cedsId>
+						<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3138</cedsURL>
+					</xs:appinfo>
+					<xs:documentation>The type of diploma/credential that is awarded to a person in recognition of his/her completion of the curricular requirements.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="credentialAwardDate" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId>000081</cedsId>
+						<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3081</cedsURL>
+					</xs:appinfo>
+					<xs:documentation>The month and year on which the diploma/credential is awarded to a student in recognition of his/her completion of the curricular requirements.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="credential" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:appinfo>
+						<sifChar>O</sifChar>
+						<cedsId>000783</cedsId>
+						<cedsURL>https://ceds.ed.gov/cedselementdetails.aspx?termid=3780</cedsURL>
+					</xs:appinfo>
+					<xs:documentation>An indicator of the category of credential conferred by a state occupational licensing entity or industry organization for competency in a specific area measured by a set of pre-established standards.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="refId" type="gRefIdType" use="required"/>
+	</xs:complexType>
+	<xs:element name="aeStudent" type="aeStudentType"/>
+</xs:schema>
