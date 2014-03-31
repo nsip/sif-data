@@ -9,7 +9,7 @@ SHOW ERRORS;
 CREATE TABLE IF NOT EXISTS SchoolInfo (
 	RefId varchar(36) UNIQUE,
 	LocalId varchar(200),
-	SchoolName varchar(2000)
+	SchoolName varchar(2000),
 	StateProvinceId varchar(200),
 	CommonwealthId varchar(200),
 	-- Campus (and associated elements)
