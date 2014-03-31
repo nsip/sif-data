@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS SchoolInfo (
 	SchoolSector varchar(200),
 	OperationalStatus varchar(200),
 	IndependentSchool varchar(200),
-	SchoolType  varchar(200),
+	SchoolType varchar(200),
 	Address_StateProvince varchar(200),
 	Address_City varchar(200),
 	Address_PostalCode varchar(200),
@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS SchoolInfo (
 	Address_ARIA varchar(200),
 	Entity_Open varchar(200),
 	Entity_Close varchar(200)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET = utf8;
 
 -- TODO: Multiple entries
 -- SchoolFocusList
@@ -55,8 +55,8 @@ CREATE TABLE IF NOT EXISTS StudentPersonal (
 	StateProvinceId varchar(200),
 	Sex varchar(200),
 	BirthDate varchar(200),
-	IndigenousStatusvarchar(200),
-	CountryofBirthvarchar(200),
+	IndigenousStatus varchar(200),
+	CountryofBirth varchar(200),
 	MostRecent_YearLevel varchar(200),
 	MostRecent_Parent1Language varchar(200),
 	MostRecent_Parent2Language varchar(200),
@@ -235,7 +235,7 @@ CREATE TABLE IF NOT EXISTS Identity (
 	SchemaName varchar(200),
 	Algorithm varchar(200),
 	KeyName varchar(200),
-	AuthenticationSourceGlobalUID varchar(200),
+	AuthenticationSourceGlobalUID varchar(200)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 -- TODO: List (mutlipel passwords? but only one identity - lets just do one?)
 --	PasswordList varchar(200),
