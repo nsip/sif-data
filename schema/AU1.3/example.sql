@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS SchoolInfo (
 	SchoolSector varchar(200),
 	OperationalStatus varchar(200),
 	IndependentSchool varchar(200),
-	SchoolType varchar(200),
+	SchoolType  varchar(200),
 	Address_StateProvince varchar(200),
 	Address_City varchar(200),
 	Address_PostalCode varchar(200),
@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS SchoolInfo (
 	Entity_Close varchar(200)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
---TODO: Multiple entries
+-- TODO: Multiple entries
 -- SchoolFocusList
 -- SchoolFocusList/SchoolFocus
 -- SchoolGroupList
