@@ -41,7 +41,6 @@ my $uuid = Data::UUID->new();
 my $r = Data::RandomPerson->new();
 my $p = $r->create();
 $p->{refid} = $uuid->create_str;
-# TODO: Properly randomly generate local addresses
 $p->{address} = create_address();
 # year levels are between 1 and 12 right?
 $p->{yearlevel} = int(rand(12)) + 1;
@@ -85,6 +84,7 @@ FamilyName, GivenName, SchoolInfo_RefId, YearLevel) Values(?,?,?,?,?,?)");
 		   $student->{firstname},$student->{lastname},
 		   $ARGV[1], $student->{yearlevel});
   }
+exit(0);
 }
 
 

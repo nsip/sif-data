@@ -88,6 +88,7 @@ FamilyName, GivenName, SchoolInfo_RefId) Values(?,?,?,?,?)");
 		   $student->{firstname},$student->{lastname},
 		   $ARGV[1]);
   }
+exit(0);
 }
 
 
@@ -95,7 +96,7 @@ FamilyName, GivenName, SchoolInfo_RefId) Values(?,?,?,?,?)");
 my $sth = $dbh->prepare("SELECT * FROM SchoolInfo");
 $sth->execute();
 
-# Insert students into table
+# Insert staff into table
 while (my $row = $sth->fetchrow_hashref) {
   my $schoolid = $row->{RefId};
   #Handle range specified in command line
