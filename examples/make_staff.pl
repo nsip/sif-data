@@ -9,6 +9,10 @@ use Data::UUID;
 use Data::RandomPerson;
 use Text::CSV;
 
+## make_staff.pl a..b [school_id]
+## Inserts between a and b staff members into all schools.
+## if school_id is provide, only inserts staff into selected school.
+
 ## Copy of make_students.pl, adapted to put data in the StaffPersonal table.
 
 
