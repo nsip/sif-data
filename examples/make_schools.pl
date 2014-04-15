@@ -6,6 +6,50 @@ use Data::Dumper;
 use YAML;
 use DBI;
 use Data::UUID;
+use Data::RandomPerson;
+use Text::CSV;
+
+my @postcodes;
+my $csv = Text::CSV->new ( { binary => 1 } )  # should set binary attribute.
+  or die "Cannot use CSV: ".Text::CSV->error_diag ();
+
+open my $fh, "<:encoding(utf8)", "../data/postcodes.csv" or die "../data/postcodes.csv: $!";
+while ( my $row = $csv->getline( $fh ) ) {
+  push @postcodes, $row;
+}
+$csv->eof or $csv->error_diag();
+close $fh;
+
+sub make_new_id{
+my $uuid = Data::UUID->new();
+$uuid->create_str;
+}
+
+sub create_address{
+ #Creates an address
+
+  my $r = Data::RandomPerson->new();
+  my $p = $r->create();
+  my @roads = ("Road","Street","Court","Crescent","Drive","Avenue","Boulevard",
+"Lane","Way","Walk","Square");
+  my $stnumber = int(rand(300))+1;
+  my $index = rand @roads;
+  my $road = $roads[$index];
+  $index = rand @postcodes;
+  my @postbox = $postcodes[$index];
+  my $address = "$stnumber $p->{firstname} $road, $postbox[0][1], $postbox[0][2], $postbox[0][0]";
+  $address;
+}
+
+
+sub create_school_name{
+  my $r = Data::RandomPerson->new();
+  my $p = $r->create();
+  my @school_types = ("Academy", "Grammar", "College");
+  my $school_type = $school_types[rand @school_types];
+  my $school_name = "$p->{lastname} $school_type"; 
+  return $school_name
+}
 
 
 my $config = YAML::LoadFile($ENV{HOME} . "/.nsip_sif_data");
@@ -24,8 +68,10 @@ my $uuid2 = Data::UUID->new();
 
 # Make some schools
 
-my $sth = $dbh->prepare("INSERT INTO SchoolInfo (RefId, LocalId, SchoolName) Values(?,?,?)");
-$sth->bind_param_array(1,[$uuid1->create_str(), $uuid2->create_str()]);
-$sth->bind_param_array(2, ['60 Oxford St', '/usr/bin/perl']);
-$sth->bind_param_array(3, [ 'Trinity College', 'Perlhacker Primary']);
-$sth->execute_array({ ArrayTupleStatus => \my @tuple_status } );
+for (my $i = 0; $i < $ARGV[0] ; $i++){
+  my $address = create_address();
+  my $uuid = make_new_id();
+  my $school_name = create_school_name();
+  my $sth = $dbh->prepare("INSERT INTO SchoolInfo (RefId, LocalId, SchoolName) Values(?,?,?)");
+  $sth->execute($uuid,$address,$school_name)
+}
