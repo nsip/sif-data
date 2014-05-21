@@ -76,9 +76,22 @@ if(defined $ARGV[1]){
 
 # School Year -- Random Number between 1 and 12
 
+my $sth_tg = $dbh->prepare(q{
+	INSERT INTO TeachingGroup
+		(RefId, ShortName, LongName, LocalId, SchoolYear, SchoolInfo_RefId)
+	VALUES
+		(?, ?, ?, ?, ?, ?)
+});
+my $sth_tg_staff = $dbh->prepare(q{
+	INSERT INTO TeachingGroup_Teacher (TeachingGroup_RefId, StaffPersonal_RefId) VALUES (?, ?)
+});
+my $sth_tg_student = $dbh->prepare(q{
+	INSERT INTO TeachingGroup_Student (TeachingGroup_RefId, StudentPersonal_RefId) VALUES (?, ?)
+});
+
 my ($lower,$upper) = split(/\.\./, $ARGV[0]);
 while (my $school_row = $sth_school->fetchrow_hashref) {
-	# Insert TeachinGroupInfo
+	# Insert TeachingGroupInfo
 	my $schoolid = $school_row->{RefId};
 
 	print "SCHOOL = $schoolid\n";
@@ -99,16 +112,6 @@ while (my $school_row = $sth_school->fetchrow_hashref) {
 		push @staff, $staff_row->{RefId};
 	}
 
-	# Subject Information
-	my $uuid = Data::UUID->new();
-	my $refid = $uuid->create_str;
-	my $i = rand @subjects;
-	my $short_name = $subjects[$i];
-	my $long_name = $subject_dir{$short_name};
-	my $localid = create_room();
-	my $yearlevel = int(rand(12)) + 1;
-
-	# my $sth = $dbh->prepare("INSERT INTO StudentPersonal (RefId,
 	# ShortName, LongName, LocalId, SchoolYear, SchoolInfo_RefId)
 	# Values(?,?,?,?,?,?)");
 	# $sth->execute($refid,$short_name,$long_name,$localid,$yearlevel,$schoolid);
@@ -122,25 +125,39 @@ while (my $school_row = $sth_school->fetchrow_hashref) {
 
 	# TEACHING GROUPS 1..x
 	my $num_groups = int(rand(20 - 3)) + 3;		# XXX Configurable
-	for(my $i = 0; $i < $num_groups; $i++){
+	for(my $group_num = 0; $group_num < $num_groups; $group_num++){
 	
-		# XXX Create Teaching Group
-	
+		# Subject Information
+		my $uuid = Data::UUID->new();
+		my $refid = $uuid->create_str;
+		my $i = rand @subjects;
+		my $short_name = $subjects[$i];
+		my $long_name = $subject_dir{$short_name};
+		my $localid = create_room();
+		my $yearlevel = int(rand(12)) + 1;
+		print "\tTeaching Group = $refid - $short_name, $long_name, $localid, $yearlevel\n";
 
-		# XXX Add random staff member
+		$sth_tg->execute(
+			$refid, $short_name, $long_name, $localid, $yearlevel, $schoolid
+		);
+
 		my $staff = $staff[ int rand($#staff)]; 
-		print "\tSTAFF = $staff\n";
-	}
+		print "\t\tSTAFF = $staff\n";
+		$sth_tg_staff->execute(
+			$refid, $staff
+		);
 
-#    my $sth1 = $dbh->prepare("INSERT INTO TeachingGroup_Student (
-#TeachingGroup_RefId, StudentPersonal_RefId) Values(?,?)");
-#    $sth1->execute($refid,$student->{refid});
-#  my $sth0 = $dbh->prepare("INSERT INTO StaffPersonal (RefId, LocalId, 
-#FamilyName, GivenName, SchoolInfo_RefId) Values(?,?,?,?,?)");
-#  $sth0->execute($staff->{refid}, $staff->{address}, 
-#		 $staff->{firstname},$staff->{lastname},
-#		 $schoolid);
-#  my $sth1 = $dbh->prepare("INSERT INTO TeachingGroup_Teacher (
-#TeachingGroup_RefId, StaffPersonal_RefId) Values(?,?)");
-#  $sth1->execute($refid,$staff->{refid});
+		# STUDENTS
+		@students = sort { int(rand 3)-1 <=> int(rand 3)-1 } @students;
+
+		# XXX lower should be 10 or less if less students !
+		my $num_students = int(rand(30 - 10)) + 10;
+		for (my $student_num = 0; $student_num < $num_students; $student_num++) {
+			print "\t\tSTUDENT = " . $students[$student_num] . "\n";
+			$sth_tg_student->execute(
+				$refid, $students[$student_num]
+			);
+		}
+	}
 }
+$dbh->commit();
