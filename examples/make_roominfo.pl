@@ -1,4 +1,7 @@
 #!/usr/bin/perl
+
+die "DEPRECATE? Might be part of timetable already !";
+
 use strict;
 use warnings;
 use perl5i::2;
@@ -9,8 +12,7 @@ use Data::UUID;
 use Data::RandomPerson;
 use Text::CSV;
 
-## make_timetable.pl [school_id] makes a timetable in a given school
-
+## make_roominfo.pl 1..3 [school_id] makes a room
 
 my $config = YAML::LoadFile($ENV{HOME} . "/.nsip_sif_data");
 
@@ -22,47 +24,7 @@ my $dbh = DBI->connect(
 	{RaiseError => 1, AutoCommit => 1}
 );
 
-
 my $schoolid;
-my @postcodes;
-my $csv = Text::CSV->new ( { binary => 1 } )  # should set binary attribute.
-  or die "Cannot use CSV: ".Text::CSV->error_diag ();
-
-open my $fh, "<:encoding(utf8)", "../data/postcodes.csv" or die "../data/postcodes.csv: $!";
-while ( my $row = $csv->getline( $fh ) ) {
-  push @postcodes, $row;
-}
-$csv->eof or $csv->error_diag();
-close $fh;
-
-
-
-
-sub create_address{
-  my $r = Data::RandomPerson->new();
-  my $p = $r->create();
-  my @roads = ("Road","Street","Court","Crescent","Drive","Avenue","Boulevard",
-"Lane","Way","Walk","Square");
-  my $stnumber = int(rand(300))+1;
-  my $index = rand @roads;
-  my $road = $roads[$index];
-  $index = rand @postcodes;
-  my @postbox = $postcodes[$index];
-  my $address = "$stnumber $p->{firstname} $road, $postbox[0][1], $postbox[0][2], $postbox[0][0]";
-  $address;
-}
-
-sub create_student{
-# Make a student
-my $uuid = Data::UUID->new();
-my $r = Data::RandomPerson->new();
-my $p = $r->create();
-$p->{refid} = $uuid->create_str;
-$p->{address} = create_address();
-# year levels are between 1 and 12 right?
-$p->{yearlevel} = int(rand(12)) + 1;
-$p;
-}
 
 sub get_school_id{
   if(defined $ARGV[1]){
@@ -206,9 +168,7 @@ sub make_teaching_group{
 ShortName, LongName, LocalId, SchoolYear, SchoolInfo_RefId)
 Values(?,?,?,?,?,?)");
   $sth->execute($refid,$short_name,$long_name,$localid,$yearlevel,$schoolid);
-	return $refid;
 }
-
 
 sub make_room{
   my $refId = make_new_id();
@@ -258,30 +218,3 @@ Values(?,?,?,?,?,?,?,?,?)");
 }
 
 
-#Make the time table
-# XXX What about all schools?
-# XXX Randomness ?
-# XXX Random shared Rooms with / without overlapping time
-
-my $refId = make_new_id();
-my $schoolId = get_school_id();
-my $schoolyear = make_new_year();
-my $localid = create_address();
-my $title = "Timetable" . make_new_id();
-my $dayspercycle = make_days_per_cycle();
-my $periodspercycle = make_periods_per_cycle();
-my $sth = $dbh->prepare("INSERT INTO TimeTable(RefId,
-SchoolInfo_RefId, SchoolYear, LocalId, Title, 
-DaysPerCycle,PeriodsPerCycle) Values (?,?,?,?,?,?,?)");
-$sth->execute($refId, $schoolId, $schoolyear, $localid, $title,
-	      $dayspercycle, $periodspercycle);
-for (my $i = 0; $i < $dayspercycle; $i++){
-  make_timetable_day($i,$refId);
-  for (my $j = 0; $j < $periodspercycle; $j++){
-    make_timetable_period($refId,$i,$j);
-    my $subid = make_timetable_subject();
-    make_timetable_cell($refId, $subid, $i,$j);
-  }
-}
-#TimeTableCell
-#TimeTableSubject
