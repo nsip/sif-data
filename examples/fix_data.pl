@@ -51,6 +51,13 @@ sub create_yearlevel {
 	return int(rand(12)) + 1;
 }
 
+my @domains = qw/mail.edu.au/;
+sub create_email {
+	# Random address ?
+	# Random domain ?
+	# NO duplicates !
+}
+
 sub update {
 	my ($table, $fields, $match, $id) = @_;
 	my $SQL = ''
