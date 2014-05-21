@@ -1,0 +1,12 @@
+Module for random data
+
+module Data::RandomEducation
+
+	- Generators, such as create_address, create_email
+	- Options, such as Postcode database
+	- Defaults, and tempaltes, such as list of classes
+	- Databse schema ? Difficult
+	- Helpers for missing data?
+	- Integration of existing modules - Random Dates, Data::RandomPerson names
+	- Is there a Random Email ?
+
