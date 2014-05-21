@@ -66,6 +66,8 @@ CREATE TABLE IF NOT EXISTS StudentPersonal (
 	MostRecent_Parent2NonSchoolEducation varchar(200),
 	MostRecent_Parent1EmploymentType varchar(200),
 	MostRecent_Parent2EmploymentType varchar(200),
+	PhoneNumber varchar(200),
+	Email varchar(200),
 	FOREIGN KEY (SchoolInfo_RefId) REFERENCES SchoolInfo(RefId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -100,6 +102,8 @@ CREATE TABLE IF NOT EXISTS StaffPersonal (
 	StateProvinceId varchar(200),
 	Sex varchar(200),
 	EmploymentStatus varchar(200),
+	PhoneNumber varchar(200),
+	Email varchar(200),
 	FOREIGN KEY (SchoolInfo_RefId) REFERENCES SchoolInfo(RefId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -162,6 +166,7 @@ CREATE TABLE IF NOT EXISTS TeachingGroup (
 	LocalId varchar(200),
 	SchoolYear varchar(200),
 	SchoolInfo_RefId varchar(36),
+	KLA varchar(100),
 	FOREIGN KEY (SchoolInfo_RefId) REFERENCES SchoolInfo(RefId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
