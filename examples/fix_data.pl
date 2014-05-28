@@ -24,7 +24,18 @@ my $dbh = DBI->connect(
 
 my @sex = (qw/Male Female Male Female Male Female Male Female Unknown/);	# XXX no Unkonwn - problem with RAND ?
 my @salutation = (qw/Mr Mrs Dr Ms Miss/);
-my @kla = qw/English Mathematics Arts Technology Humanities Sports/;
+# my @kla = qw/English Mathematics Arts Technology Humanities Sports/;
+my @kla = (
+	"The Arts",
+	"The Arts",
+	"Humanities & Social Sciences",
+	"Humanities & Social Sciences",
+	"Science",
+	"Science",
+	"History",
+	"Geography",
+	"Religious Education"
+);
 my @yearlevel = (qw/P K K3 K4 PS UG 1 2 3 4 5 6 7 8 9 10 11 12/);
 my @indigenous = (
 	'Aboriginal but not Torres Strait Islander Origin',
