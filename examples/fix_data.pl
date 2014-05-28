@@ -8,6 +8,8 @@ use DBI;
 use Data::UUID;
 use Data::RandomPerson;
 use Text::CSV;
+use Data::Random qw/:all/;
+
 
 # XXX 
 #	- Add missing data to existing entries
@@ -20,7 +22,26 @@ my $dbh = DBI->connect(
 	{RaiseError => 1, AutoCommit => 1}
 );
 
-my @sex = (qw/Male Female Unknown/);	# XXX no Unkonwn - problem with RAND ?
+my @sex = (qw/Male Female Male Female Male Female Male Female Unknown/);	# XXX no Unkonwn - problem with RAND ?
+my @salutation = (qw/Mr Mrs Dr Ms Miss/);
+my @kla = qw/English Mathematics Arts Technology Humanities Sports/;
+my @yearlevel = (qw/P K K3 K4 PS UG 1 2 3 4 5 6 7 8 9 10 11 12/);
+my @indigenous = (
+	'Aboriginal but not Torres Strait Islander Origin',
+	'Torres Strait Islander but Not Aboriginal Origin',
+	'Both Torres Strait and Aboriginal Origin',
+	'Neither Aboriginal or Torres Strait Origin',
+	'Neither Aboriginal or Torres Strait Origin',
+	'Neither Aboriginal or Torres Strait Origin',
+	'Neither Aboriginal or Torres Strait Origin',
+	'Neither Aboriginal or Torres Strait Origin',
+	'Neither Aboriginal or Torres Strait Origin',
+	'Neither Aboriginal or Torres Strait Origin',
+	'Neither Aboriginal or Torres Strait Origin',
+	'Neither Aboriginal or Torres Strait Origin',
+	'Not Stated/Unknown'
+);
+
 
 # Helper functions - Put in library?
 my @postcodes;
@@ -47,8 +68,14 @@ sub create_address {
 	return $address;
 }
 
+# TODO - see alos @yearlevel
 sub create_yearlevel {
 	return int(rand(12)) + 1;
+}
+
+sub create_birthdate {
+	my ($min, $max) = @_;
+	return rand_date( min => $min, max => $max ) . '';
 }
 
 my @domains = qw/mail.edu.au/;
@@ -56,6 +83,14 @@ sub create_email {
 	# Random address ?
 	# Random domain ?
 	# NO duplicates !
+
+	my @part1 = qw/red green orange blue yellow purple orange banana apple mellon/;
+	my @domain = qw/mail.vic.edu.au people.vic.edu.au vic.edu.au dashboard.vic.edu.au/;
+	return ''
+		. $part1[int rand($#part1 + 1)]
+		. int(rand(999))
+		. '@'
+		. $domain[int rand($#domain + 1)]
 }
 
 sub update {
@@ -63,11 +98,11 @@ sub update {
 	my $SQL = ''
 		. qq{UPDATE $table SET }
 		. join(", ", map { "$_ = ?" } sort keys %$fields)
-		. " $match = ?"
+		. " WHERE $match = ?"
 	;
 	print $SQL . ", " . join(", ", ( map { $fields->{$_} } sort keys %$fields) , $id) . "\n";
-	# $sth->prepare($SQL);
-	#$sth->execute( (map { $fields->{$_} } sort keys %$fields), $id);
+	my $sth = $dbh->prepare($SQL);
+	$sth->execute( (map { $fields->{$_} } sort keys %$fields), $id);
 }
 
 # ==============================================================================
@@ -77,8 +112,76 @@ my $sth = $dbh->prepare("SELECT * FROM SchoolInfo");
 $sth->execute();
 while (my $row = $sth->fetchrow_hashref) {
 	my $change = {};
+	
+	if (keys %$change) {
+		print Dumper($change);
+		update('SchoolInfo', $change, 'RefId', $row->{RefId});
+	}
+}
+
+
+# ==============================================================================
+# StaffPersonal
+# ==============================================================================
+$sth = $dbh->prepare("SELECT * FROM StaffPersonal");
+$sth->execute();
+while (my $row = $sth->fetchrow_hashref) {
+	my $change = {};
 	if (! $row->{Sex}) {
-		$change->{Sex} = $sex[int rand($#sex)]; 
+		$change->{Sex} = $sex[int rand($#sex + 1)]; 
+	}
+	if (! $row->{Email}) {
+		$change->{Email} = create_email();
+	}
+	if (! $row->{Salutation}) {
+		$change->{Salutation} = $salutation[int rand($#salutation + 1)]; 
+	}
+	
+	if (keys %$change) {
+		print Dumper($change);
+		update('StaffPersonal', $change, 'RefId', $row->{RefId});
+	}
+}
+
+
+# ==============================================================================
+# TeachingGroup
+# ==============================================================================
+$sth = $dbh->prepare("SELECT * FROM TeachingGroup");
+$sth->execute();
+while (my $row = $sth->fetchrow_hashref) {
+	my $change = {};
+	if (! $row->{KLA}) {
+		$change->{KLA} = $kla[int rand($#kla + 1)]; 
+	}
+	
+	if (keys %$change) {
+		print Dumper($change);
+		update('TeachingGroup', $change, 'RefId', $row->{RefId});
+	}
+}
+
+# ==============================================================================
+# StudentPersonal
+# ==============================================================================
+$sth = $dbh->prepare("SELECT * FROM StudentPersonal");
+$sth->execute();
+while (my $row = $sth->fetchrow_hashref) {
+	my $change = {};
+	if (! $row->{Sex}) {
+		$change->{Sex} = $sex[int rand($#sex + 1)]; 
+	}
+	if (! $row->{Email}) {
+		$change->{Email} = create_email();
+	}
+	if (! $row->{YearLevel}) {
+		$change->{YearLevel} = $yearlevel[int rand($#yearlevel + 1)]; 
+	}
+	if (! $row->{IndigenousStatus}) {
+		$change->{IndigenousStatus} = $indigenous[int rand($#indigenous + 1)]; 
+	}
+	if (! $row->{BirthDate}) {
+		$change->{BirthDate} = create_birthdate('1994-01-01', '2009-01-01');
 	}
 	
 	if (keys %$change) {
@@ -86,4 +189,5 @@ while (my $row = $sth->fetchrow_hashref) {
 		update('StudentPersonal', $change, 'RefId', $row->{RefId});
 	}
 }
+
 

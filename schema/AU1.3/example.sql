@@ -51,11 +51,16 @@ CREATE TABLE IF NOT EXISTS StudentPersonal (
 	MiddleName varchar(2000),
 	PreferredGivenName varchar(2000),
 	SchoolInfo_RefId varchar(36), -- TODO: Might use StudentSchoolEnrollment
-	YearLevel varchar(2000),
+	YearLevel varchar(2000),		-- DI
 	StateProvinceId varchar(200),
-	Sex varchar(200),
-	BirthDate varchar(200),
-	IndigenousStatus varchar(200),
+	Sex varchar(200),		-- DI
+	BirthDate varchar(200),		-- DI
+	IndigenousStatus varchar(200),	-- DI - 1, 2, 3, 4 = 
+					-- 1  Aboriginal but not Torres Strait Islander Origin 
+					-- 2  Torres Strait Islander but Not Aboriginal Origin 
+					-- 3  Both Torres Strait and Aboriginal Origin 
+					-- 4  Neither Aboriginal or Torres Strait Origin 
+					-- 9  Not Stated/Unknown
 	CountryofBirth varchar(200),
 	MostRecent_YearLevel varchar(200),
 	MostRecent_Parent1Language varchar(200),
@@ -67,7 +72,7 @@ CREATE TABLE IF NOT EXISTS StudentPersonal (
 	MostRecent_Parent1EmploymentType varchar(200),
 	MostRecent_Parent2EmploymentType varchar(200),
 	PhoneNumber varchar(200),
-	Email varchar(200),
+	Email varchar(200),		-- DI
 	FOREIGN KEY (SchoolInfo_RefId) REFERENCES SchoolInfo(RefId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -104,6 +109,8 @@ CREATE TABLE IF NOT EXISTS StaffPersonal (
 	EmploymentStatus varchar(200),
 	PhoneNumber varchar(200),
 	Email varchar(200),
+	-- Check use of Salutation
+	Salutation varchar(25),
 	FOREIGN KEY (SchoolInfo_RefId) REFERENCES SchoolInfo(RefId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
