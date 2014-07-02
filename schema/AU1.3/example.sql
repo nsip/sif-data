@@ -1,5 +1,7 @@
 -- EXAMPLE - This example is a SCHEMA we created for SIF REST Server Perl version
 
+-- XXX Cross refernce with "Timetable Baseline Profile v0.7.docx"
+
 SHOW ERRORS;
 
 -- ----------------------------------------------------------------------
@@ -150,6 +152,8 @@ CREATE TABLE IF NOT EXISTS RoomInfo (
 	RoomNumber varchar(100),
 	Description varchar(100),
 	Capacity varchar(100),
+	RoomSize varchar(100),	-- NOTE: Size is a reserved word, using RoomSize
+	RoomType varchar(100),
 	FOREIGN KEY (SchoolInfo_RefId) REFERENCES SchoolInfo(RefId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -162,7 +166,18 @@ CREATE TABLE IF NOT EXISTS TimeTableSubject (
 	SubjectLongName varchar(200),
 	SubjectType varchar(200),
 	SchoolInfo_RefId varchar(36),
+	ProposedMinClassSize varchar(100),
+	Semester varchar(100),
+	SchoolYear varchar(100),
 	FOREIGN KEY (SchoolInfo_RefId) REFERENCES SchoolInfo(RefId)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- XXX This needs replacing. OtherCode is not meaningful.
+CREATE TABLE IF NOT EXISTS TimeTableSubject_OtherCodeList (
+	TimeTableSubject_RefId varchar(36),
+	OtherCode varchar(100),
+	OtherCode_CodeSet varchar(100)
+	FOREIGN KEY (TimeTableSubject_RefId) REFERENCES TimeTableSubject(RefId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS TeachingGroup (
@@ -199,6 +214,9 @@ CREATE TABLE IF NOT EXISTS TimeTable (
 	Title varchar(200),
 	DaysPerCycle varchar(200),
 	PeriodsPerCycle varchar(200),
+	TimeTableCreationDate varchar(100),
+	StartDate varchar(100),
+	EndDate varchar(100),
 	FOREIGN KEY (SchoolInfo_RefId) REFERENCES SchoolInfo(RefId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -214,6 +232,9 @@ CREATE TABLE IF NOT EXISTS TimeTable_Period (
 	DayId varchar(200) NOT NULL,
 	PeriodId varchar(200) NOT NULL,
 	PeriodTitle varchar(200) NOT NULL,
+	BellPeriod varchar(100),
+	StartTime varchar(100),
+	EndTime varchar(100),
 	FOREIGN KEY (TimeTable_RefId) REFERENCES TimeTable(RefId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -252,3 +273,69 @@ CREATE TABLE IF NOT EXISTS Identity (
 -- TODO: List (mutlipel passwords? but only one identity - lets just do one?)
 --	PasswordList varchar(200),
 --	PasswordList/Password varchar(200),
+
+CREATE TABLE IF NOT EXISTS ScheduledActivity (
+	RefId varchar(36) UNIQUE,
+
+	SchoolInfo_RefId varchar(36),
+	TimeTableCell_RefId varchar(36),
+	TimeTable_RefId varchar(36),
+	TimeTableSubject_RefId varchar(36),
+
+	DayId varchar(100),
+	PeriodId varchar(100),
+	Date varchar(100),
+	StartTime varchar(100),
+	FinishTime varchar(100),
+	CellType varchar(100),
+	Location varchar(100),
+	Type varchar(100),
+	Name varchar(100),
+	Comment varchar(100),
+	YearLevels varchar(100),
+	Override varchar(100),
+	DateOfOverride varchar(100),
+
+	-- TODO
+	-- Addresses
+	-- Addresses/Address
+
+	FOREIGN KEY (SchoolInfo_RefId) REFERENCES SchoolInfo(RefId),
+	FOREIGN KEY (TimeTableCell_RefId) REFERENCES TimeTableCell(RefId),
+	FOREIGN KEY (TimeTable_RefId) REFERENCES TimeTable(RefId),
+	FOREIGN KEY (TimeTableSubject_RefId) REFERENCES TimeTableSubject(RefId)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS ScheduledActivity_Student (
+	ScheduledActivity_RefId varchar(36),
+	StudentPersonal_RefId varchar(36),
+	FOREIGN KEY (ScheduledActivity_RefId) REFERENCES ScheduledActivity(RefId),
+	FOREIGN KEY (StudentPersonal_RefId) REFERENCES StudentPersonal(RefId)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS ScheduledActivity_Teacher (
+	ScheduledActivity_RefId varchar(36),
+	TeacherPersonal_RefId varchar(36),
+	StartTime varchar(100),
+	FinishTime varchar(100),
+	Credit varchar(100),
+	Supervision varchar(100),
+	Weighting varchar(100),
+	FOREIGN KEY (ScheduledActivity_RefId) REFERENCES ScheduledActivity(RefId),
+	FOREIGN KEY (TeacherPersonal_RefId) REFERENCES TeacherPersonal(RefId)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS ScheduledActivity_Room (
+	ScheduledActivity_RefId varchar(36),
+	RoomInfo_RefId varchar(36),
+	FOREIGN KEY (ScheduledActivity_RefId) REFERENCES ScheduledActivity(RefId),
+	FOREIGN KEY (RoomInfo_RefId) REFERENCES RoomInfo(RefId)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS ScheduledActivity_TeachingGroup (
+	ScheduledActivity_RefId varchar(36),
+	TeachingGroup_RefId varchar(36),
+	FOREIGN KEY (ScheduledActivity_RefId) REFERENCES ScheduledActivity(RefId),
+	FOREIGN KEY (TeachingGroup_RefId) REFERENCES TeachingGroup(RefId)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
