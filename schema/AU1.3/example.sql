@@ -32,7 +32,8 @@ CREATE TABLE IF NOT EXISTS SchoolInfo (
 	Address_SchoolGeographicLocation varchar(200),
 	Address_ARIA varchar(200),
 	Entity_Open varchar(200),
-	Entity_Close varchar(200)
+	Entity_Close varchar(200),
+  ZoneId varchar(36)
 ) ENGINE=InnoDB DEFAULT CHARSET = utf8;
 
 -- TODO: Multiple entries
