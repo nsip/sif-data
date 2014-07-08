@@ -177,7 +177,7 @@ CREATE TABLE IF NOT EXISTS TimeTableSubject (
 CREATE TABLE IF NOT EXISTS TimeTableSubject_OtherCodeList (
 	TimeTableSubject_RefId varchar(36),
 	OtherCode varchar(100),
-	OtherCode_CodeSet varchar(100)
+	OtherCode_CodeSet varchar(100),
 	FOREIGN KEY (TimeTableSubject_RefId) REFERENCES TimeTableSubject(RefId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -321,9 +321,9 @@ CREATE TABLE IF NOT EXISTS ScheduledActivity_Teacher (
 	FinishTime varchar(100),
 	Credit varchar(100),
 	Supervision varchar(100),
-	Weighting varchar(100),
-	FOREIGN KEY (ScheduledActivity_RefId) REFERENCES ScheduledActivity(RefId),
-	FOREIGN KEY (TeacherPersonal_RefId) REFERENCES TeacherPersonal(RefId)
+	Weighting varchar(100)
+	-- FOREIGN KEY (ScheduledActivity_RefId) REFERENCES ScheduledActivity(RefId),
+	-- FOREIGN KEY (TeacherPersonal_RefId) REFERENCES TeacherPersonal(RefId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS ScheduledActivity_Room (
