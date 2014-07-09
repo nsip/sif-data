@@ -1,3 +1,7 @@
+#!/bin/sh
+
+# TODO - Load the database & 
+
 make_schools.pl 10
 #make_roominfo.pl
 make_staff.pl 25
