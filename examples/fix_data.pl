@@ -53,7 +53,21 @@ my @indigenous = (
 	'Not Stated/Unknown'
 );
 
+# 10% JunPri?, 10% Middle School 20% Secondary 50% Primary and 10% Pri/Sec?
 my @campus = (
+	'JunPri',
+	'Middle',
+	'Prim',
+	'Prim',
+	'Prim',
+	'Prim',
+	'Prim',
+	'Sec',
+	'Sec',
+	'Pri/Sec',
+);
+
+my @full_campus = (
 	'Camp',
 	'Commty',
 	'EarlyCh',
