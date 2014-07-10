@@ -53,6 +53,27 @@ my @indigenous = (
 	'Not Stated/Unknown'
 );
 
+my @campus = (
+	'Camp',
+	'Commty',
+	'EarlyCh',
+	'JunPri',
+	'Kgarten',
+	'Kind',
+	'Lang',
+	'MCH',
+	'Middle',
+	'Other',
+	'PreSch',
+	'Pri/Sec',
+	'Prim',
+	'Sec',
+	'Senior',
+	'Special',
+	'Specif',
+	'Supp',
+	'Unknown',
+);
 
 # Helper functions - Put in library?
 my @postcodes;
@@ -124,6 +145,15 @@ $sth->execute();
 while (my $row = $sth->fetchrow_hashref) {
 	my $change = {};
 	
+	if (! $row->{CampusSchoolCampusId}) {
+		$change->{CampusSchoolCampusId} = int(rand(25))+1;
+	}
+	if (! $row->{CampusAdminStatus}) {
+		$change->{CampusAdminStatus} = rand(10) > 8 ? 'Y' : 'N';
+	}
+	if (! $row->{CampusCampusType}) {
+		$change->{CampusCampusType} = $campus[int rand($#campus + 1)]
+	}
 	if (keys %$change) {
 		print Dumper($change);
 		update('SchoolInfo', $change, 'RefId', $row->{RefId});

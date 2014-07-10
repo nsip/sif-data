@@ -214,11 +214,14 @@ sub make_room{
   my $refId = make_new_id();
   my $roomNumber = rand(1000) + 1;
   my $description = "Just another room";
-  my $capacity = rand(50) + 10;
+  my $capacity = int(rand(30) + 20);
+  my $size = int(rand(5) + 2);
+  my @types = ("Classroom", "Classroom", "Classroom", "Classroom", "Classroom", "Classroom", "Art", "Basketball court");
+  my $type = $types[rand @types];
   my $sth = $dbh->prepare("INSERT INTO RoomInfo (RefId,
-SchoolInfo_RefId, RoomNumber, Description, Capacity)
-Values(?,?,?,?,?)");
-  $sth->execute($refId,$schoolid,$roomNumber,$description,$capacity);
+SchoolInfo_RefId, RoomNumber, Description, Capacity, RoomSize, RoomType)
+Values(?,?,?,?,?,?,?)");
+  $sth->execute($refId,$schoolid,$roomNumber,$description,$capacity,$size,$type);
   return $refId;
 }
 
@@ -265,7 +268,7 @@ Values(?,?,?,?,?,?,?,?,?)");
 
 my $refId = make_new_id();
 my $schoolId = get_school_id();
-my $schoolyear = make_new_year();
+my $schoolyear = "2014"; # make_new_year();
 my $localid = create_address();
 my $title = "Timetable" . make_new_id();
 my $dayspercycle = make_days_per_cycle();
