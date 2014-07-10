@@ -14,10 +14,9 @@ CREATE TABLE IF NOT EXISTS SchoolInfo (
 	SchoolName varchar(2000),
 	StateProvinceId varchar(200),
 	CommonwealthId varchar(200),
-	-- Campus (and associated elements)
-	-- Campus/SchoolCampusId
-	-- Campus/AdminStatus 
-	-- Campus/CampusType
+	CampusSchoolCampusId varchar(200),
+	CampusAdminStatus varchar(100),
+	CampusCampusType varchar(100),
 	SchoolSector varchar(200),
 	OperationalStatus varchar(200),
 	IndependentSchool varchar(200),
@@ -215,6 +214,8 @@ CREATE TABLE IF NOT EXISTS TeachingGroup_Student (
 CREATE TABLE IF NOT EXISTS TeachingGroup_Teacher (
 	TeachingGroup_RefId varchar(36),
 	StaffPersonal_RefId varchar(36),
+	TeacherAssociation  varchar(100),   -- NOTE: This is NOT StaffPersonal.Association
+	TeacherLocalId      varchar(100),   -- NOTE: This is NOT StaffPersonal.LocalId - this is a different LocalId
 	FOREIGN KEY (TeachingGroup_RefId) REFERENCES TeachingGroup(RefId),
 	FOREIGN KEY (StaffPersonal_RefId) REFERENCES StaffPersonal(RefId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -328,14 +329,15 @@ CREATE TABLE IF NOT EXISTS ScheduledActivity_Student (
 
 CREATE TABLE IF NOT EXISTS ScheduledActivity_Teacher (
 	ScheduledActivity_RefId varchar(36),
-	TeacherPersonal_RefId varchar(36),
+	StaffPersonal_RefId varchar(36),
+	TeacherLocalId varchar(100),      -- LMM added because TT Vendors will supply this
 	StartTime varchar(100),
 	FinishTime varchar(100),
 	Credit varchar(100),
 	Supervision varchar(100),
-	Weighting varchar(100)
-	-- FOREIGN KEY (ScheduledActivity_RefId) REFERENCES ScheduledActivity(RefId),
-	-- FOREIGN KEY (TeacherPersonal_RefId) REFERENCES TeacherPersonal(RefId)
+	Weighting varchar(100),
+	FOREIGN KEY (ScheduledActivity_RefId) REFERENCES ScheduledActivity(RefId),
+	FOREIGN KEY (StaffPersonal_RefId) REFERENCES StaffPersonal(RefId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS ScheduledActivity_Room (
