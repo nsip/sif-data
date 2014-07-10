@@ -97,7 +97,19 @@ CREATE TABLE IF NOT EXISTS StudentPersonal (
 -- PersonInfo/EmailList/Email 
 -- PersonInfo/EmailList/Email/Type 
 
--- TODO: StudentSchoolEnrollment
+CREATE TABLE IF NOT EXISTS StudentSchoolEnrollment (
+	RefId varchar(36) UNIQUE,
+	StudentPersonal_RefId varchar(36),
+	SchoolInfo_RefId varchar(36),
+	MembershipType varchar(10), 
+	SchoolYear varchar(10), 
+	TimeFrame varchar(10), 
+	YearLevel varchar(10), 
+	FTE varchar(5),
+	EntryDate varchar(25),
+	FOREIGN KEY (SchoolInfo_RefId) REFERENCES SchoolInfo(RefId),
+	FOREIGN KEY (StudentPersonal_RefId) REFERENCES StudentPersonal(RefId)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS StaffPersonal (
 	RefId varchar(36) UNIQUE,

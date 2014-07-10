@@ -146,10 +146,10 @@ while (my $row = $sth->fetchrow_hashref) {
 	my $change = {};
 	
 	if (! $row->{CampusSchoolCampusId}) {
-		$change->{CampusSchoolCampusId} = int(rand(25))+1;
+		$change->{CampusSchoolCampusId} = int(rand(4))+1;
 	}
 	if (! $row->{CampusAdminStatus}) {
-		$change->{CampusAdminStatus} = rand(10) > 8 ? 'Y' : 'N';
+		$change->{CampusAdminStatus} = rand(10) > 8 ? 'N' : 'Y';
 	}
 	if (! $row->{CampusCampusType}) {
 		$change->{CampusCampusType} = $campus[int rand($#campus + 1)]
