@@ -2,11 +2,11 @@
 
 # TODO - Load the database & 
 
-make_schools.pl 10
+perl make_schools.pl 10
 #make_roominfo.pl
-make_staff.pl 25
-make_students.pl 100
-make_teaching_group.pl 10
-make_timetable.pl 10
+perl make_staff.pl 25
+perl make_students.pl 100
+perl make_teaching_group.pl 10
+perl make_timetable.pl 10
 
-fix_data.pl
+perl fix_data.pl
