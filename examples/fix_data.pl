@@ -235,6 +235,27 @@ while (my $row = $sth->fetchrow_hashref) {
 }
 
 # ==============================================================================
+# RoomInfo
+# ==============================================================================
+$sth = $dbh->prepare("SELECT * FROM RoomInfo");
+$sth->execute();
+while (my $row = $sth->fetchrow_hashref) {
+	my $change = {};
+	if (! $row->{RoomSize}) {
+		$change->{RoomSize} = int(rand(5) + 2);
+	}
+	if (! $row->{RoomType}) {
+		my @types = ("Classroom", "Classroom", "Classroom", "Classroom", "Classroom", "Classroom", "Art", "Basketball court");
+		$change->{RoomType} = $types[rand @types];
+	}
+	
+	if (keys %$change) {
+		print Dumper($change);
+		update('RoomInfo', $change, 'RefId', $row->{RefId});
+	}
+}
+
+# ==============================================================================
 # StudentPersonal
 # ==============================================================================
 $sth = $dbh->prepare("SELECT * FROM StudentPersonal");
