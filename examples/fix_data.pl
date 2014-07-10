@@ -137,6 +137,24 @@ sub update {
 	$sth->execute( (map { $fields->{$_} } sort keys %$fields), $id);
 }
 
+sub insert {
+	my ($table, $fields) = @_;
+	my $SQL = ''
+		. qq{INSERT INTO $table (}
+		. join(", ", map { "$_" } sort keys %$fields)
+		. ") VALUES (" . join(",", map {"?"} sort keys %$fields)
+		. ")"
+	;
+	print $SQL . ", " . join(", ", ( map { $fields->{$_} } sort keys %$fields) ) . "\n";
+	my $sth = $dbh->prepare($SQL);
+	$sth->execute( (map { $fields->{$_} } sort keys %$fields));
+}
+
+sub make_new_id{
+	my $uuid = Data::UUID->new();
+	return $uuid->create_str;
+}
+
 # ==============================================================================
 # SchoolInfo
 # ==============================================================================
@@ -207,6 +225,7 @@ while (my $row = $sth->fetchrow_hashref) {
 # ==============================================================================
 $sth = $dbh->prepare("SELECT * FROM StudentPersonal");
 $sth->execute();
+my $sth_bit = $dbh->prepare("SELECT * FROM StudentSchoolEnrollment WHERE StudentPersonal_RefId = ?");
 while (my $row = $sth->fetchrow_hashref) {
 	my $change = {};
 	if (! $row->{Sex}) {
@@ -229,6 +248,19 @@ while (my $row = $sth->fetchrow_hashref) {
 		print Dumper($change);
 		update('StudentPersonal', $change, 'RefId', $row->{RefId});
 	}
-}
 
+	$sth_bit->execute($row->{RefId});
+	if (! $sth_bit->fetchrow_hashref) {
+		insert('StudentSchoolEnrollment', {
+			RefId => make_new_id(),
+			StudentPersonal_RefId => $row->{RefId},
+			MembershipType => '01',
+			SchoolYear => '2014',
+			TimeFrame => 'C',
+			YearLevel => int(rand(12) + 1),	# XXX primary vs secondary
+			FTE => '1.0',
+			EntryDate => '2014-01-25',
+		});
+	}
+}
 
