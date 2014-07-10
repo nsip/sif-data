@@ -235,6 +235,20 @@ while (my $row = $sth->fetchrow_hashref) {
 }
 
 # ==============================================================================
+# TimeTable_Period
+# ==============================================================================
+$sth = $dbh->prepare("SELECT * FROM TimeTable_Period");
+$sth->execute();
+while (my $row = $sth->fetchrow_hashref) {
+	my $change = {};
+	# TODO
+	if (keys %$change) {
+		print Dumper($change);
+		update('TimeTable_Period', $change, 'RefId', $row->{RefId});
+	}
+}
+
+# ==============================================================================
 # RoomInfo
 # ==============================================================================
 $sth = $dbh->prepare("SELECT * FROM RoomInfo");
