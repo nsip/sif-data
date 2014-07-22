@@ -81,7 +81,7 @@ if(defined $ARGV[1]){
     my  $sth0 = $dbh->prepare("INSERT INTO StudentPersonal (RefId, LocalId,
 FamilyName, GivenName, SchoolInfo_RefId, YearLevel) Values(?,?,?,?,?,?)");
     $sth0->execute($student->{refid}, $student->{address}, 
-		   $student->{firstname},$student->{lastname},
+		   $student->{lastname},$student->{firstname},
 		   $ARGV[1], $student->{yearlevel});
   }
 exit(0);
@@ -104,7 +104,7 @@ while (my $row = $sth->fetchrow_hashref) {
     my  $sth0 = $dbh->prepare("INSERT INTO StudentPersonal (RefId, LocalId, 
 FamilyName, GivenName, SchoolInfo_RefId, YearLevel) Values(?,?,?,?,?,?)");
     $sth0->execute($student->{refid}, $student->{address}, 
-		   $student->{firstname},$student->{lastname},
+		   $student->{lastname},$student->{firstname},
 		   $schoolid, $student->{yearlevel});
   }
 }

@@ -169,10 +169,13 @@ sub make_new_id{
 	return $uuid->create_str;
 }
 
+my $sth;
+my $sth_bit;
+
 # ==============================================================================
 # SchoolInfo
 # ==============================================================================
-my $sth = $dbh->prepare("SELECT * FROM SchoolInfo");
+$sth = $dbh->prepare("SELECT * FROM SchoolInfo");
 $sth->execute();
 while (my $row = $sth->fetchrow_hashref) {
 	my $change = {};
@@ -198,6 +201,7 @@ while (my $row = $sth->fetchrow_hashref) {
 # ==============================================================================
 $sth = $dbh->prepare("SELECT * FROM StaffPersonal");
 $sth->execute();
+$sth_bit = $dbh->prepare("SELECT * FROM StaffAssignment WHERE StaffPersonal_RefId = ?");
 while (my $row = $sth->fetchrow_hashref) {
 	my $change = {};
 	if (! $row->{Sex}) {
@@ -213,6 +217,18 @@ while (my $row = $sth->fetchrow_hashref) {
 	if (keys %$change) {
 		print Dumper($change);
 		update('StaffPersonal', $change, 'RefId', $row->{RefId});
+	}
+
+	$sth_bit->execute($row->{RefId});
+	if (! $sth_bit->fetchrow_hashref) {
+		insert('StaffAssignment', {
+			RefId => make_new_id(),
+			SchoolInfo_RefId => $row->{SchoolInfo_RefId},
+			SchoolYear => '2014',
+			StaffPersonal_RefId => $row->{RefId},
+			Description => '',
+			PrimaryAssignment => 'U',
+		});
 	}
 }
 
@@ -274,7 +290,7 @@ while (my $row = $sth->fetchrow_hashref) {
 # ==============================================================================
 $sth = $dbh->prepare("SELECT * FROM StudentPersonal");
 $sth->execute();
-my $sth_bit = $dbh->prepare("SELECT * FROM StudentSchoolEnrollment WHERE StudentPersonal_RefId = ?");
+$sth_bit = $dbh->prepare("SELECT * FROM StudentSchoolEnrollment WHERE StudentPersonal_RefId = ?");
 while (my $row = $sth->fetchrow_hashref) {
 	my $change = {};
 	if (! $row->{Sex}) {
@@ -303,6 +319,7 @@ while (my $row = $sth->fetchrow_hashref) {
 		insert('StudentSchoolEnrollment', {
 			RefId => make_new_id(),
 			StudentPersonal_RefId => $row->{RefId},
+			SchoolInfo_RefId => $row->{SchoolInfo_RefId},
 			MembershipType => '01',
 			SchoolYear => '2014',
 			TimeFrame => 'C',

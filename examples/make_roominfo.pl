@@ -191,7 +191,7 @@ sub make_new_staff{
   my $sth0 = $dbh->prepare("INSERT INTO StaffPersonal (RefId, LocalId,
 FamilyName, GivenName, SchoolInfo_RefId) Values(?,?,?,?,?)");
   $sth0->execute($staff->{refid}, $staff->{address}, 
-		 $staff->{firstname},$staff->{lastname},
+		 $staff->{lastname},$staff->{firstname},
 		 $schoolid);
   return $staff->{refid};
 }
