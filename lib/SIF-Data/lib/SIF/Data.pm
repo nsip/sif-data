@@ -50,6 +50,24 @@ sub new {
 	return $self;
 }
 
+=head2 Connect to database 
+
+=cut
+
+sub db_connect {
+	my $config = YAML::LoadFile($ENV{HOME} . "/.nsip_sif_data");
+
+	# Connect to database
+	my $dbh = DBI->connect(
+		$config->{mysql_dsn},
+		$config->{mysql_user},
+		$config->{mysql_password},
+		{RaiseError => 1, AutoCommit => 1}
+	);
+
+	return ($config, $dbh);
+}
+
 =head2 Create a new id
 
 =cut
@@ -72,8 +90,13 @@ sub create_school_name{
         return $school_name
 }
 
+=head2 Create Local Id    
 
+=cut
 
+sub create_localid {
+        return (int(rand(99999)) + 1000);
+}
 
 
 
