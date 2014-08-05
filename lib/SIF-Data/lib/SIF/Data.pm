@@ -3,7 +3,11 @@ package SIF::Data;
 use 5.006;
 use strict;
 use warnings FATAL => 'all';
+use Text::CSV;
 use Data::UUID;
+use Data::RandomPerson;
+use YAML;
+use DBI;
 
 =head1 NAME
 

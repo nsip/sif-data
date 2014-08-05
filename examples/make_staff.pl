@@ -3,11 +3,6 @@ use strict;
 use warnings;
 use perl5i::2;
 use Data::Dumper;
-use YAML;
-use DBI;
-use Data::UUID;
-use Data::RandomPerson;
-use Text::CSV;
 use SIF::Data;
 
 ## make_staff.pl a..b [school_id]
@@ -15,9 +10,6 @@ use SIF::Data;
 ## if school_id is provide, only inserts staff into selected school.
 
 ## Copy of make_students.pl, adapted to put data in the StaffPersonal table.
-
-
-# Helper functions - Put in library?
 
 my $sd = SIF::Data->new();
 

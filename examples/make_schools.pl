@@ -3,10 +3,6 @@ use strict;
 use warnings;
 use perl5i::2;
 use Data::Dumper;
-use YAML;
-use DBI;
-use Data::UUID;
-use Data::RandomPerson;
 use SIF::Data;
 
 my $sd = SIF::Data->new();
