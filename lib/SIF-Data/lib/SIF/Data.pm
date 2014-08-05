@@ -3,6 +3,7 @@ package SIF::Data;
 use 5.006;
 use strict;
 use warnings FATAL => 'all';
+use Data::UUID;
 
 =head1 NAME
 
@@ -35,19 +36,29 @@ if you don't export anything, such as for a purely object-oriented module.
 
 =head1 SUBROUTINES/METHODS
 
-=head2 function1
+=head2 new
 
 =cut
 
-sub function1 {
+sub new {
+	my ($class, %opts) = @_;
+ 
+	my $self = bless {}, ref($class) || $class;
+ 
+#	$self->{template_path} = $opts{template_path} // $INCLUDE_PATH;
+ 
+	return $self;
 }
 
-=head2 function2
+=head3 Create a new id
 
 =cut
 
-sub function2 {
+sub make_new_id {
+	my $uuid = Data::UUID->new();
+	$uuid->create_str;
 }
+
 
 =head1 AUTHOR
 
