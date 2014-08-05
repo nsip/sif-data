@@ -50,7 +50,7 @@ sub new {
 	return $self;
 }
 
-=head3 Create a new id
+=head2 Create a new id
 
 =cut
 
@@ -58,6 +58,23 @@ sub make_new_id {
 	my $uuid = Data::UUID->new();
 	$uuid->create_str;
 }
+
+=head2 Create school name
+
+=cut
+
+sub create_school_name{
+        my $r = Data::RandomPerson->new();
+        my $p = $r->create();
+        my @school_types = ("Academy", "Grammar", "College");
+        my $school_type = $school_types[rand @school_types];
+        my $school_name = "$p->{lastname} $school_type";
+        return $school_name
+}
+
+
+
+
 
 
 =head1 AUTHOR
