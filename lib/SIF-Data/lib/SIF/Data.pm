@@ -98,6 +98,66 @@ sub create_localid {
         return (int(rand(99999)) + 1000);
 }
 
+=head2 Create Student     
+
+=cut
+
+sub create_student{
+        # Make a student
+        my $uuid = Data::UUID->new();
+        my $r = Data::RandomPerson->new();
+        my $p = $r->create();
+        $p->{refid} = $uuid->create_str;
+        # TODO: Properly randomly generate local addresses
+        $p->{address} = create_address();
+        # year levels are between 1 and 12 right?
+        $p->{yearlevel} = int(rand(12)) + 1;
+        $p;
+}
+
+
+=head2 Create Postcodes   
+
+=cut
+
+sub create_postcodes {
+	my @postcodes;
+	my $csv = Text::CSV->new ( { binary => 1 } )  # should set binary attribute.
+	  or die "Cannot use CSV: ".Text::CSV->error_diag ();
+
+	open my $fh, "<:encoding(utf8)", "../data/postcodes.csv" or die "../data/postcodes.csv: $!";
+	while ( my $row = $csv->getline( $fh ) ) {
+        	push @postcodes, $row;
+	}
+	$csv->eof or $csv->error_diag();
+	close $fh;
+
+	return @postcodes;
+}
+
+=head2 Create Address     
+
+=cut
+
+sub create_address{
+	my (@postcodes) = create_postcodes();
+
+        my $r = Data::RandomPerson->new();
+        my $p = $r->create();
+        my @roads = ("Road","Street","Court","Crescent","Drive","Avenue",
+        "Boulevard", "Lane","Way","Walk","Square");
+        my $stnumber = int(rand(300))+1;
+        my $index = rand @roads;
+        my $road = $roads[$index];
+        $index = rand @postcodes;
+        my @postbox = $postcodes[$index];
+        my $address = "$stnumber $p->{firstname} $road, $postbox[0][1], $postbox[0][2], $postbox[0][0]";
+        $address;
+}
+
+
+
+
 
 
 =head1 AUTHOR
