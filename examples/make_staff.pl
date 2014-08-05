@@ -29,7 +29,7 @@ if(defined $ARGV[1]){
 	  print "Provided RefId does not exist";
 	  exit(1);
 	}
-	# Insert students into specified school
+	# Insert staff into specified school
 	my ($lower,$upper) = split(/\.\./, $ARGV[0]);
         if (! defined $upper) {
 		$upper = $lower;
@@ -71,7 +71,7 @@ while (my $row = $sth->fetchrow_hashref) {
 		my  $sth0 = $dbh->prepare("INSERT INTO StaffPersonal (RefId, 
 		LocalId, FamilyName, GivenName, SchoolInfo_RefId) 
 		Values(?,?,?,?,?)");
-	  $sth0->execute($student->{refid}, $local_id, 
+		$sth0->execute($student->{refid}, $local_id, 
 		 $student->{lastname},$student->{firstname},
 		 $schoolid);
 	}

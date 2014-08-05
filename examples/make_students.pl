@@ -3,88 +3,44 @@ use strict;
 use warnings;
 use perl5i::2;
 use Data::Dumper;
-use YAML;
-use DBI;
-use Data::UUID;
-use Data::RandomPerson;
-use Text::CSV;
+use SIF::Data;
 
-# Helper functions - Put in library?
-my @postcodes;
-my $csv = Text::CSV->new ( { binary => 1 } )  # should set binary attribute.
-  or die "Cannot use CSV: ".Text::CSV->error_diag ();
+my $sd = SIF::Data->new();
 
-open my $fh, "<:encoding(utf8)", "../data/postcodes.csv" or die "../data/postcodes.csv: $!";
-while ( my $row = $csv->getline( $fh ) ) {
-  push @postcodes, $row;
-}
-$csv->eof or $csv->error_diag();
-close $fh;
+my ($config, $dbh) = $sd->db_connect();
 
-sub create_address{
-  my $r = Data::RandomPerson->new();
-  my $p = $r->create();
-  my @roads = ("Road","Street","Court","Crescent","Drive","Avenue","Boulevard",
-"Lane","Way","Walk","Square");
-  my $stnumber = int(rand(300))+1;
-  my $index = rand @roads;
-  my $road = $roads[$index];
-  $index = rand @postcodes;
-  my @postbox = $postcodes[$index];
-  my $address = "$stnumber $p->{firstname} $road, $postbox[0][1], $postbox[0][2], $postbox[0][0]";
-  $address;
-}
-
-sub create_student{
-# Make a student
-my $uuid = Data::UUID->new();
-my $r = Data::RandomPerson->new();
-my $p = $r->create();
-$p->{refid} = $uuid->create_str;
-$p->{address} = create_address();
-# year levels are between 1 and 12 right?
-$p->{yearlevel} = int(rand(12)) + 1;
-$p;
-}
-
-
-
-
-my $config = YAML::LoadFile($ENV{HOME} . "/.nsip_sif_data");
-
-# Connect to database
-my $dbh = DBI->connect(
-	$config->{mysql_dsn}, 
-	$config->{mysql_user}, 
-	$config->{mysql_password},
-	{RaiseError => 1, AutoCommit => 1}
-);
 
 # Check second command line argument
 if(defined $ARGV[1]){
-# Check to see if school exists
-  my $sth = $dbh->prepare("SELECT RefId from SchoolInfo WHERE RefId = \"$ARGV[1]\"");
-  $sth->execute();
-  my $i = 0;
-  while(my $row = $sth->fetchrow_hashref){
-    $i++;
-  }
-  if ($i == 0){
-    print "Provided RefId does not exist";
-    exit(1);
-  }
-  # Insert students into specified school
-  my ($lower,$upper) = split(/\.\./, $ARGV[0]);
-  my $num_students = int(rand($upper - $lower)) + $lower;
-  for(my $i = 0; $i < $num_students; $i++){
-    my $student = create_student();
-    my  $sth0 = $dbh->prepare("INSERT INTO StudentPersonal (RefId, LocalId,
-FamilyName, GivenName, SchoolInfo_RefId, YearLevel) Values(?,?,?,?,?,?)");
-    $sth0->execute($student->{refid}, $student->{address}, 
-		   $student->{lastname},$student->{firstname},
-		   $ARGV[1], $student->{yearlevel});
-  }
-exit(0);
+	# Check to see if school exists
+	my $sth = $dbh->prepare("SELECT RefId from SchoolInfo WHERE RefId = \"$ARGV[1]\"");
+	$sth->execute();
+	my $i = 0;
+	while(my $row = $sth->fetchrow_hashref){
+		$i++;
+	}
+	if ($i == 0){
+		print "Provided RefId does not exist";
+		exit(1);
+	}
+	# Insert students into specified school
+	my ($lower,$upper) = split(/\.\./, $ARGV[0]);
+	if (! defined $upper) {
+		$upper = $lower;
+		$lower = 1;
+	}
+	my $num_students = int(rand($upper - $lower)) + $lower;
+	for(my $i = 0; $i < $num_students; $i++){
+		my $student = $sd->create_student();
+		my $local_id = $sd->create_localid(); 
+		my  $sth0 = $dbh->prepare("INSERT INTO StudentPersonal (RefId, 
+		LocalId, FamilyName, GivenName, SchoolInfo_RefId, YearLevel) 
+		Values(?,?,?,?,?,?)");
+		$sth0->execute($student->{refid}, $local_id, 
+		 $student->{lastname},$student->{firstname},
+		 $ARGV[1], $student->{yearlevel});
+	}
+	exit(0);
 }
 
 
@@ -94,21 +50,22 @@ $sth->execute();
 
 # Insert students into table
 while (my $row = $sth->fetchrow_hashref) {
-  my $schoolid = $row->{RefId};
-  #Handle range specified in command line
-  my ($lower,$upper) = split(/\.\./, $ARGV[0]);
-  my $num_students = int(rand($upper - $lower)) + $lower;
-  for(my $i = 0; $i < $num_students; $i++){
-    my $student = create_student();
-    
-    my  $sth0 = $dbh->prepare("INSERT INTO StudentPersonal (RefId, LocalId, 
-FamilyName, GivenName, SchoolInfo_RefId, YearLevel) Values(?,?,?,?,?,?)");
-    $sth0->execute($student->{refid}, $student->{address}, 
-		   $student->{lastname},$student->{firstname},
-		   $schoolid, $student->{yearlevel});
-  }
+	my $schoolid = $row->{RefId};
+	#Handle range specified in command line
+	my ($lower,$upper) = split(/\.\./, $ARGV[0]);
+	if (! defined $upper) {
+		$upper = $lower;
+		$lower = 1;
+	}
+	my $num_students = int(rand($upper - $lower)) + $lower;
+	for(my $i = 0; $i < $num_students; $i++){
+		my $student = $sd->create_student();
+		my $local_id = $sd->create_localid(); 
+		my  $sth0 = $dbh->prepare("INSERT INTO StudentPersonal (RefId, 
+		LocalId, FamilyName, GivenName, SchoolInfo_RefId, YearLevel) 
+		Values(?,?,?,?,?,?)");
+		$sth0->execute($student->{refid}, $local_id, 
+		 $student->{lastname},$student->{firstname},
+		 $schoolid, $student->{yearlevel});
+	}
 }
-
-
-
-
