@@ -6,7 +6,7 @@ use SIF::Data;
 use Getopt::Long;
 
 # Get and process command line options
-my ($limit, $schools, $students, $staff, $rooms, $groups, $fix) = get_args();
+my ($limit, $schools, $students, $staff, $rooms, $groups, $fix, $create_db, $db_name) = get_args();
 
 my ($sch_lower, $sch_upper, $num_schools) = create_schools($schools);
 
@@ -19,6 +19,11 @@ my ($rooms_lower, $rooms_upper, $num_rooms) = create_rooms($rooms);
 my ($groups_lower, $groups_upper, $num_groups) = create_groups($groups);
 
 my ($result) = fix_data($fix);
+
+my ($new_db_name) = create_database($create_db);
+
+my ($old_db_name) = get_db_name($db_name);
+
 
 #--------------------------------------------------
 print "Limit = $limit \n" if (defined $limit);
@@ -49,6 +54,14 @@ if ( $fix) {
 	print " Data Fix = $fix - Result is $result\n";
 }
 
+if (defined $new_db_name) {
+	print " create new db - named $new_db_name\n";
+}
+
+if (defined $old_db_name) {
+	print " use database -  named $old_db_name\n";
+}
+
 #-------------------------------------------------
 
 
@@ -60,12 +73,14 @@ sub get_args {
 	my $help  = 0;
 	my $limit = undef;
 
-	my $schools  = undef;
-	my $students = undef;
-	my $staff    = undef;
-	my $rooms    = undef;
+	my $schools   = undef;
+	my $students  = undef;
+	my $staff     = undef;
+	my $rooms     = undef;
 	my $groups    = undef;
-	my $fix   = 0;
+	my $fix       = 0;
+	my $create_db = undef;
+        my $db_name   = undef;
 
 	my $result = GetOptions (
 		"limit=i" => \$limit,
@@ -75,14 +90,16 @@ sub get_args {
 		"create-staff=s"              => \$staff,
 		"create-rooms=s"              => \$rooms,
 		"create-teaching-groups=s"    => \$groups,
-		"fix"                         => \$fix	
+		"fix"                         => \$fix,
+		"create-database=s"           => \$create_db,
+                "database=s"                  => \$db_name,
 	);
 
 	if ($help) {
 		usage_exit();
 	}
 
-	return ($limit, $schools, $students, $staff, $rooms, $groups, $fix);
+	return ($limit, $schools, $students, $staff, $rooms, $groups, $fix, $create_db, $db_name);
 }
 
 sub usage_exit {
@@ -108,6 +125,10 @@ Sample usage is:
 						# Create random 7-20 groups
   
   ./create_sif_data.pl -fix              	# Update missing data  
+
+  ./create_sif_data.pl -create-database=name	# Create new database  
+
+  ./create_sif_data.pl -database=name_of_db	# Use the named database
 
 
 EOT
@@ -227,7 +248,27 @@ sub fix_data {
 	return ($result);
 }
 
+sub create_database {
+	my ($create_db) = @_;
 
+	my $name;
+
+        $name = $create_db if (defined $create_db);
+
+	return ($name);
+
+}
+
+
+sub get_db_name {
+	my ($db_name) = @_;
+
+	my $name;
+
+        $name = $db_name if (defined $db_name);
+
+	return ($name);
+}
 
 
 
