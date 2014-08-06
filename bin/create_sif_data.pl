@@ -80,7 +80,7 @@ sub get_args {
 	my $groups    = undef;
 	my $fix       = 0;
 	my $create_db = undef;
-        my $db_name   = undef;
+	my $db_name   = undef;
 
 	my $result = GetOptions (
 		"limit=i" => \$limit,
@@ -92,7 +92,7 @@ sub get_args {
 		"create-teaching-groups=s"    => \$groups,
 		"fix"                         => \$fix,
 		"create-database=s"           => \$create_db,
-                "database=s"                  => \$db_name,
+		"database=s"                  => \$db_name,
 	);
 
 	if ($help) {
@@ -163,6 +163,7 @@ sub create_students {
 	my ($students) = @_;
 
 	my ($stu_lower, $stu_upper, $num_students);
+	#TODO put following code in a subroutine
 	if (defined $students) {
 		($stu_lower, $stu_upper) = split(/\.\./, $students);
 		if (! defined $stu_upper) {
@@ -253,7 +254,7 @@ sub create_database {
 
 	my $name;
 
-        $name = $create_db if (defined $create_db);
+	$name = $create_db if (defined $create_db);
 
 	return ($name);
 
@@ -265,7 +266,7 @@ sub get_db_name {
 
 	my $name;
 
-        $name = $db_name if (defined $db_name);
+	$name = $db_name if (defined $db_name);
 
 	return ($name);
 }
