@@ -6,11 +6,19 @@ use SIF::Data;
 use Getopt::Long;
 
 # Get and process command line options
-my ($limit, $schools, $students) = get_args();
+my ($limit, $schools, $students, $staff, $rooms, $groups, $fix) = get_args();
 
 my ($sch_lower, $sch_upper, $num_schools) = create_schools($schools);
 
 my ($stu_lower, $stu_upper, $num_students) = create_students($students);
+
+my ($staff_lower, $staff_upper, $num_staff) = create_staff($staff);
+
+my ($rooms_lower, $rooms_upper, $num_rooms) = create_rooms($rooms);
+
+my ($groups_lower, $groups_upper, $num_groups) = create_groups($groups);
+
+my ($result) = fix_data($fix);
 
 #--------------------------------------------------
 print "Limit = $limit \n" if (defined $limit);
@@ -25,6 +33,22 @@ if (defined $students) {
 }
 
 
+if (defined $staff) {
+	print " Staff = $staff   lower = $staff_lower .. upper = $staff_upper  number = $num_staff\n"
+}
+
+if (defined $rooms) {
+	print " Rooms = $rooms   lower = $rooms_lower .. upper = $rooms_upper  number = $num_rooms\n"
+}
+
+if (defined $groups) {
+	print " Groups = $groups   lower = $groups_lower .. upper = $groups_upper  number = $num_groups\n"
+}
+
+if ( $fix) {
+	print " Data Fix = $fix - Result is $result\n";
+}
+
 #-------------------------------------------------
 
 
@@ -38,19 +62,27 @@ sub get_args {
 
 	my $schools  = undef;
 	my $students = undef;
+	my $staff    = undef;
+	my $rooms    = undef;
+	my $groups    = undef;
+	my $fix   = 0;
 
 	my $result = GetOptions (
 		"limit=i" => \$limit,
 		"help"    => \$help,
-		"create-schools=s"   => \$schools,
-		"create-students=s"  => \$students,
+		"create-schools=s"            => \$schools,
+		"create-students=s"           => \$students,
+		"create-staff=s"              => \$staff,
+		"create-rooms=s"              => \$rooms,
+		"create-teaching-groups=s"    => \$groups,
+		"fix"                         => \$fix	
 	);
 
 	if ($help) {
 		usage_exit();
 	}
 
-	return ($limit, $schools, $students);
+	return ($limit, $schools, $students, $staff, $rooms, $groups, $fix);
 }
 
 sub usage_exit {
@@ -66,7 +98,17 @@ Sample usage is:
   ./create_sif_data.pl -create-schools=16	# Create 16 schools
   ./create_sif_data.pl -create-schools=6..14	# Create random 6-14 schools
 
-  ./create_sif_data.pl -create-studentss=8..21	# Create random 8-21 students
+  ./create_sif_data.pl -create-students=8..21	# Create random 8-21 students
+
+  ./create_sif_data.pl -create-staff=5..20	# Create random 5-20 staff
+
+  ./create_sif_data.pl -create-rooms=3..5	# Create random 3-5 rooms
+
+  ./create_sif_data.pl -create-teaching-groups=7..20
+						# Create random 7-20 groups
+  
+  ./create_sif_data.pl -fix              	# Update missing data  
+
 
 EOT
 
@@ -89,9 +131,9 @@ sub create_schools {
 			usage_exit();
 		}
 
-	}
+		# Process school creation for $num_schools
 
-	# Process school creation for $num_schools
+	}
 
 	return ($sch_lower, $sch_upper, $num_schools);
 }
@@ -108,14 +150,82 @@ sub create_students {
         	}
 
 		$num_students = int(rand($stu_upper - $stu_lower)) + $stu_lower;
-	}
 
-	# Process student creation for $num_students
+		# Process student creation for $num_students
+
+	}
 
 	return ($stu_lower, $stu_upper, $num_students);
 }
 
+sub create_staff {
+	my ($staff) = @_;
 
+	my ($staff_lower, $staff_upper, $num_staff);
+	if (defined $staff) {
+		($staff_lower, $staff_upper) = split(/\.\./, $staff);
+		if (! defined $staff_upper) {
+                	$staff_upper = $staff_lower;
+                	$staff_lower = 1;
+        	}
+
+		$num_staff = int(rand($staff_upper - $staff_lower)) + $staff_lower;
+		# Process staff creation for $num_staff
+
+	}
+
+	return ($staff_lower, $staff_upper, $num_staff);
+}
+
+sub create_rooms {
+	my ($rooms) = @_;
+
+	my ($rooms_lower, $rooms_upper, $num_rooms);
+	if (defined $rooms) {
+		($rooms_lower, $rooms_upper) = split(/\.\./, $rooms);
+		if (! defined $rooms_upper) {
+                	$rooms_upper = $rooms_lower;
+                	$rooms_lower = 1;
+        	}
+
+		$num_rooms = int(rand($rooms_upper - $rooms_lower)) + $rooms_lower;
+		# Process rooms creation for $num_rooms
+
+	}
+
+	return ($rooms_lower, $rooms_upper, $num_rooms);
+}
+
+sub create_groups {
+	my ($groups) = @_;
+
+	my ($groups_lower, $groups_upper, $num_groups);
+	if (defined $groups) {
+		($groups_lower, $groups_upper) = split(/\.\./, $groups);
+		if (! defined $groups_upper) {
+                	$groups_upper = $groups_lower;
+                	$groups_lower = 1;
+        	}
+
+		$num_groups = int(rand($groups_upper - $groups_lower)) + $groups_lower;
+		# Process groups creation for $num_groups
+
+	}
+
+	return ($groups_lower, $groups_upper, $num_groups);
+}
+
+sub fix_data {
+	my ($fix) = @_;
+
+	my $result = '';
+	if ($fix) {
+		$result = 'ok';
+
+	}
+
+	return ($result);
+}
 
 
 
