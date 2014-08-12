@@ -10,7 +10,11 @@ my $sd = SIF::Data->new();
 # Get and process command line options
 my ($limit, $schools, $students, $staff, $rooms, $groups, $fix, $create_db, $db_name) = get_args();
 
-print "db_name = $db_name\n";
+if (defined $create_db) {
+	$db_name = create_database($create_db);
+}
+
+print "db_name = $db_name\n" if (defined $db_name);;
 
 my($config, $dbh) = $sd->db_connect($db_name);
 
@@ -27,8 +31,6 @@ my ($rooms_lower, $rooms_upper, $num_rooms) = create_rooms($rooms);
 my ($groups_lower, $groups_upper, $num_groups) = create_groups($groups);
 
 my ($result) = fix_data($fix);
-
-my ($new_db_name) = create_database($create_db);
 
 
 #--------------------------------------------------
@@ -58,14 +60,6 @@ if (defined $groups) {
 
 if ( $fix) {
 	print " Data Fix = $fix - Result is $result\n";
-}
-
-if (defined $new_db_name) {
-	print " create new db - named $new_db_name\n";
-}
-
-if (defined $old_db_name) {
-	print " use database -  named $old_db_name\n";
 }
 
 #-------------------------------------------------
@@ -232,14 +226,20 @@ sub fix_data {
 }
 
 sub create_database {
-	my ($create_db) = @_;
+	my ($db_name) = @_;
 
-	my $name;
+	die "Bad db name" if ($db_name =~ m/[\/|\.|;|\s]+/);
 
-	$name = $create_db if (defined $create_db);
+	my $dbh = DBI->connect("dbi:mysql:", undef, undef);
+	$dbh->do("CREATE DATABASE $db_name");
 
-	return ($name);
+	system("/usr/bin/mysql $db_name < ../schema/common/create.sql") == 0
+		or die "system call to create.sql failed\n";
 
+	system("/usr/bin/mysql $db_name < ../schema/AU1.3/example.sql") == 0
+		or die "system call to example.sql failed\n";
+	
+	return ($db_name);
 }
 
 sub get_data_range {
