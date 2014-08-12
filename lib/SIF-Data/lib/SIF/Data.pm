@@ -59,16 +59,18 @@ sub new {
 =cut
 
 sub db_connect {
-	my ($db_name) = @_;
+	my ($self, $db_name) = @_;
 
 	my $config = YAML::LoadFile($ENV{HOME} . "/.nsip_sif_data");
 
 	# Connect to database
 	
 	my $dsn = $config->{mysql_dsn};
+
 	if (defined $db_name) {
           $dsn = "dbi:mysql:$db_name";
 	}
+
 	my $dbh = DBI->connect(
 		$dsn,
 		$config->{mysql_user},

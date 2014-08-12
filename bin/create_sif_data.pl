@@ -8,7 +8,7 @@ use Getopt::Long;
 my $sd = SIF::Data->new();
 
 # Get and process command line options
-my ($limit, $schools, $students, $staff, $rooms, $groups, $fix, $create_db, $db_name) = get_args();
+my ($schools, $students, $staff, $rooms, $groups, $fix, $create_db, $db_name) = get_args();
 
 if (defined $create_db) {
 	$db_name = create_database($create_db);
@@ -18,7 +18,7 @@ print "db_name = $db_name\n" if (defined $db_name);;
 
 my($config, $dbh) = $sd->db_connect($db_name);
 
-exit;
+# exit;
 
 my ($sch_lower, $sch_upper, $num_schools) = create_schools($schools);
 
@@ -34,7 +34,6 @@ my ($result) = fix_data($fix);
 
 
 #--------------------------------------------------
-print "Limit = $limit \n" if (defined $limit);
 
 if (defined $schools) {
 	$sch_upper = "" if (! defined $sch_upper);
@@ -71,7 +70,6 @@ exit 0;
 sub get_args {
 	my $all   = 0;
 	my $help  = 0;
-	my $limit = undef;
 
 	my $schools   = undef;
 	my $students  = undef;
@@ -83,7 +81,6 @@ sub get_args {
 	my $db_name   = undef;
 
 	my $result = GetOptions (
-		"limit=i" => \$limit,
 		"help"    => \$help,
 		"create-schools=s"            => \$schools,
 		"create-students=s"           => \$students,
@@ -104,7 +101,7 @@ sub get_args {
 			usage_exit();
 	}
 
-	return ($limit, $schools, $students, $staff, $rooms, $groups, $fix, $create_db, $db_name);
+	return ($schools, $students, $staff, $rooms, $groups, $fix, $create_db, $db_name);
 }
 
 sub usage_exit {
