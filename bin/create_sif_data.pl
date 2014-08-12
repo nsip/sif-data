@@ -7,10 +7,10 @@ use Getopt::Long;
 
 my $sd = SIF::Data->new();
 
-my($config, $dbh) = $sd->db_connect();
-
 # Get and process command line options
 my ($limit, $schools, $students, $staff, $rooms, $groups, $fix, $create_db, $db_name) = get_args();
+
+my($config, $dbh) = $sd->db_connect();
 
 my ($sch_lower, $sch_upper, $num_schools) = create_schools($schools);
 
@@ -114,23 +114,23 @@ Sample usage is:
   ./create_sif_data.pl		# Create/Update default database and
 				# populate with dummy data
 
-  ./create_sif_data.pl -l 5	# Limit number of rows of data generated
+  ./create_sif_data.pl --l 5	# Limit number of rows of data generated
 
-  ./create_sif_data.pl -create-schools=16	# Create 16 schools
-  ./create_sif_data.pl -create-schools=6..14	# Create random 6-14 schools
+  ./create_sif_data.pl --create-schools=16	# Create 16 schools
+  ./create_sif_data.pl --create-schools=6..14	# Create random 6-14 schools
 
-  ./create_sif_data.pl -create-students=8..21	# Create random 8-21 students
+  ./create_sif_data.pl --create-students=8..21	# Create random 8-21 students
 
-  ./create_sif_data.pl -create-staff=5..20	# Create random 5-20 staff
+  ./create_sif_data.pl --create-staff=5..20	# Create random 5-20 staff
 
-  ./create_sif_data.pl -create-rooms=3..5	# Create random 3-5 rooms
+  ./create_sif_data.pl --create-rooms=3..5	# Create random 3-5 rooms
 
-  ./create_sif_data.pl -create-teaching-groups=7..20
+  ./create_sif_data.pl --create-teaching-groups=7..20
 						# Create random 7-20 groups
   
-  ./create_sif_data.pl -fix              	# Update missing data  
+  ./create_sif_data.pl --fix           		# Update missing data  
 
-  ./create_sif_data.pl -create-database=name	# Create new database  
+  ./create_sif_data.pl --create-database=name	# Create new database  
 
   ./create_sif_data.pl -database=name_of_db	# Use the named database
 
