@@ -5,6 +5,10 @@ use perl5i::2;
 use SIF::Data;
 use Getopt::Long;
 
+my $sd = SIF::Data->new();
+
+my($config, $dbh) = $sd->db_connect();
+
 # Get and process command line options
 my ($limit, $schools, $students, $staff, $rooms, $groups, $fix, $create_db, $db_name) = get_args();
 
@@ -153,7 +157,9 @@ sub create_schools {
 		}
 
 		# Process school creation for $num_schools
+		my ($done) = make_schools($num_schools);
 
+		print "\n $done schools created \n";
 	}
 
 	return ($sch_lower, $sch_upper, $num_schools);
@@ -162,79 +168,53 @@ sub create_schools {
 sub create_students {
 	my ($students) = @_;
 
-	my ($stu_lower, $stu_upper, $num_students);
-	#TODO put following code in a subroutine
 	if (defined $students) {
-		($stu_lower, $stu_upper) = split(/\.\./, $students);
-		if (! defined $stu_upper) {
-                	$stu_upper = $stu_lower;
-                	$stu_lower = 1;
-        	}
-
-		$num_students = int(rand($stu_upper - $stu_lower)) + $stu_lower;
+		my ($stu_lower, $stu_upper, $num_students) = get_data_range($students);
 
 		# Process student creation for $num_students
 
-	}
+		return ($stu_lower, $stu_upper, $num_students);
 
-	return ($stu_lower, $stu_upper, $num_students);
+	}
 }
 
 sub create_staff {
 	my ($staff) = @_;
 
-	my ($staff_lower, $staff_upper, $num_staff);
 	if (defined $staff) {
-		($staff_lower, $staff_upper) = split(/\.\./, $staff);
-		if (! defined $staff_upper) {
-                	$staff_upper = $staff_lower;
-                	$staff_lower = 1;
-        	}
+		my ($staff_lower, $staff_upper, $num_staff) = get_data_range($staff);
 
-		$num_staff = int(rand($staff_upper - $staff_lower)) + $staff_lower;
 		# Process staff creation for $num_staff
 
-	}
+		return ($staff_lower, $staff_upper, $num_staff);
 
-	return ($staff_lower, $staff_upper, $num_staff);
+	}
 }
 
 sub create_rooms {
 	my ($rooms) = @_;
 
-	my ($rooms_lower, $rooms_upper, $num_rooms);
 	if (defined $rooms) {
-		($rooms_lower, $rooms_upper) = split(/\.\./, $rooms);
-		if (! defined $rooms_upper) {
-                	$rooms_upper = $rooms_lower;
-                	$rooms_lower = 1;
-        	}
+		my ($rooms_lower, $rooms_upper, $num_rooms) = get_data_range($rooms);
 
-		$num_rooms = int(rand($rooms_upper - $rooms_lower)) + $rooms_lower;
 		# Process rooms creation for $num_rooms
 
-	}
+		return ($rooms_lower, $rooms_upper, $num_rooms);
 
-	return ($rooms_lower, $rooms_upper, $num_rooms);
+	}
 }
 
 sub create_groups {
 	my ($groups) = @_;
 
-	my ($groups_lower, $groups_upper, $num_groups);
 	if (defined $groups) {
-		($groups_lower, $groups_upper) = split(/\.\./, $groups);
-		if (! defined $groups_upper) {
-                	$groups_upper = $groups_lower;
-                	$groups_lower = 1;
-        	}
+		my ($groups_lower, $groups_upper, $num_groups) = get_data_range($groups);
 
-		$num_groups = int(rand($groups_upper - $groups_lower)) + $groups_lower;
 		# Process groups creation for $num_groups
 
-	}
+		return ($groups_lower, $groups_upper, $num_groups);
 
-	return ($groups_lower, $groups_upper, $num_groups);
+	}
 }
 
 sub fix_data {
@@ -270,6 +250,49 @@ sub get_db_name {
 
 	return ($name);
 }
+
+sub get_data_range {
+	my ($data) = @_;
+	my $number;
+
+	my ($lower, $upper) = split(/\.\./, $data);
+	if (! defined $upper) {
+		$upper = $lower;
+		$lower = 1;
+	}
+
+	$number = int(rand($upper - $lower)) + $lower;
+
+	return ($lower, $upper, $number);
+}
+
+sub make_schools {
+	my ($schools) = @_;
+
+	my $cnt = 0;
+	for (my $i = 0; $i < $schools ; $i++){
+		my $local_id = $sd->create_localid();
+		my $uuid = $sd->make_new_id();
+		my $school_name = $sd->create_school_name();
+		my $sth = $dbh->prepare("INSERT INTO SchoolInfo (RefId, LocalId, SchoolName) Values(?,?,?)");
+		$sth->execute($uuid,$local_id,$school_name);
+
+		++$cnt;
+	}
+	return ($cnt);
+}
+
+sub make_students {
+	my ($studentsw) = @_;
+
+	my $cnt = 0;
+
+}
+
+
+
+
+
 
 
 
