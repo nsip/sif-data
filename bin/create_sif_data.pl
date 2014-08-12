@@ -10,8 +10,11 @@ my $sd = SIF::Data->new();
 # Get and process command line options
 my ($limit, $schools, $students, $staff, $rooms, $groups, $fix, $create_db, $db_name) = get_args();
 
+print "db_name = $db_name\n";
 
-my($config, $dbh) = $sd->db_connect();
+my($config, $dbh) = $sd->db_connect($db_name);
+
+exit;
 
 my ($sch_lower, $sch_upper, $num_schools) = create_schools($schools);
 
@@ -26,8 +29,6 @@ my ($groups_lower, $groups_upper, $num_groups) = create_groups($groups);
 my ($result) = fix_data($fix);
 
 my ($new_db_name) = create_database($create_db);
-
-my ($old_db_name) = get_db_name($db_name);
 
 
 #--------------------------------------------------
@@ -239,17 +240,6 @@ sub create_database {
 
 	return ($name);
 
-}
-
-
-sub get_db_name {
-	my ($db_name) = @_;
-
-	my $name;
-
-	$name = $db_name if (defined $db_name);
-
-	return ($name);
 }
 
 sub get_data_range {
