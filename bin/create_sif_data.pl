@@ -10,6 +10,7 @@ my $sd = SIF::Data->new();
 # Get and process command line options
 my ($limit, $schools, $students, $staff, $rooms, $groups, $fix, $create_db, $db_name) = get_args();
 
+
 my($config, $dbh) = $sd->db_connect();
 
 my ($sch_lower, $sch_upper, $num_schools) = create_schools($schools);
@@ -103,6 +104,11 @@ sub get_args {
 		usage_exit();
 	}
 
+	if ($create_db && $db_name) {
+			print "Cannot specify both --create-database and --database in one command\n";
+			usage_exit();
+	}
+
 	return ($limit, $schools, $students, $staff, $rooms, $groups, $fix, $create_db, $db_name);
 }
 
@@ -110,11 +116,6 @@ sub usage_exit {
 	print <<'EOT';
 
 Sample usage is:
-
-  ./create_sif_data.pl		# Create/Update default database and
-				# populate with dummy data
-
-  ./create_sif_data.pl --l 5	# Limit number of rows of data generated
 
   ./create_sif_data.pl --create-schools=16	# Create 16 schools
   ./create_sif_data.pl --create-schools=6..14	# Create random 6-14 schools
