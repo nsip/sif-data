@@ -8,7 +8,9 @@ use Getopt::Long;
 my $sd = SIF::Data->new();
 
 # Get and process command line options
-my ($schools, $students, $staff, $rooms, $groups, $fix, $create_db, $db_name) = get_args();
+my ($schools, $students, $staff, 
+	$rooms, $groups, $fix, $create_db, 
+	$db_name, $school_id) = get_args();
 
 if (defined $create_db) {
 	$db_name = create_database($create_db);
@@ -18,15 +20,23 @@ print "db_name = $db_name\n" if (defined $db_name);;
 
 my($config, $dbh) = $sd->db_connect($db_name);
 
+if (defined $school_id) {
+	my $val = validate_school_id($school_id);
+	if (! $val) {
+		print "$school_id is not a valid school reference/n";
+		usage_exit();
+	}
+}
+
 my $num_schools = create_schools($schools);
 
 my $num_students = create_students($students);
 
 my $num_staff = create_staff($staff);
 
-my ($rooms_lower, $rooms_upper, $num_rooms) = create_rooms($rooms);
+my $num_rooms = create_rooms($rooms);
 
-my ($groups_lower, $groups_upper, $num_groups) = create_groups($groups);
+my ($num_groups) = create_groups($groups);
 
 my $result = fix_data($fix);
 
@@ -48,11 +58,11 @@ if (defined $staff) {
 }
 
 if (defined $rooms) {
-	print " Rooms = $rooms   lower = $rooms_lower .. upper = $rooms_upper  number = $num_rooms\n"
+	print " Rooms = $num_rooms\n"
 }
 
 if (defined $groups) {
-	print " Groups = $groups   lower = $groups_lower .. upper = $groups_upper  number = $num_groups\n"
+	print " Groups = $num_groups\n"
 }
 
 if ( $fix) {
@@ -77,6 +87,7 @@ sub get_args {
 	my $fix       = 0;
 	my $create_db = undef;
 	my $db_name   = undef;
+	my $school_id = undef;
 
 	my $result = GetOptions (
 		"help"    => \$help,
@@ -88,6 +99,7 @@ sub get_args {
 		"fix"                         => \$fix,
 		"create-database=s"           => \$create_db,
 		"database=s"                  => \$db_name,
+		"school_id=s"                 => \$school_id,
 	);
 
 	if ($help) {
@@ -95,11 +107,15 @@ sub get_args {
 	}
 
 	if ($create_db && $db_name) {
-			print "Cannot specify both --create-database and --database in one command\n";
-			usage_exit();
+		print "Cannot specify both --create-database and --database in one command\n";
+		usage_exit();
+	}
+	if ($create_db && $school_id) {
+		print "Cannot specify both --create-database and --school_id in the same command\n";
+		usage_exit();
 	}
 
-	return ($schools, $students, $staff, $rooms, $groups, $fix, $create_db, $db_name);
+	return ($schools, $students, $staff, $rooms, $groups, $fix, $create_db, $db_name, $school_id);
 }
 
 sub usage_exit {
@@ -109,6 +125,10 @@ Sample usage is:
 
   ./create_sif_data.pl --create-schools=16	# Create 16 schools
   ./create_sif_data.pl --create-schools=6..14	# Create random 6-14 schools
+
+	Following commands affect all schools in the database unless a school
+	RefId is specified as follows
+	   --school_id=4002EF5E-22A8-11E4-B112-958031DE1888    
 
   ./create_sif_data.pl --create-students=8..21	# Create random 8-21 students
 
@@ -153,7 +173,7 @@ sub create_schools {
 		print "\n $done schools created \n";
 	}
 
-	return ($num_schools);
+	return ($schools);
 }
 
 sub create_students {
@@ -166,7 +186,6 @@ sub create_students {
 		print "\n $done students created \n";
 
 		return ($students);
-
 	}
 }
 
@@ -179,8 +198,7 @@ sub create_staff {
 
 		print "\n $done staff created \n";
 
-		return ($num_staff);
-
+		return ($staff);
 	}
 }
 
@@ -188,12 +206,12 @@ sub create_rooms {
 	my ($rooms) = @_;
 
 	if (defined $rooms) {
-		my ($rooms_lower, $rooms_upper, $num_rooms) = get_data_range($rooms);
 
-		# Process rooms creation for $num_rooms
+		my ($done) = make_rooms($rooms);
 
-		return ($rooms_lower, $rooms_upper, $num_rooms);
+		print "\n $done rooms created \n";
 
+		return ($rooms);
 	}
 }
 
@@ -201,12 +219,12 @@ sub create_groups {
 	my ($groups) = @_;
 
 	if (defined $groups) {
-		my ($groups_lower, $groups_upper, $num_groups) = get_data_range($groups);
 
-		# Process groups creation for $num_groups
+		my ($done) = make_groups($groups);
 
-		return ($groups_lower, $groups_upper, $num_groups);
+		print "\n $done groups created \n";
 
+		return ($groups);
 	}
 }
 
@@ -326,7 +344,7 @@ sub make_staff {
 	$sth->execute();
 
 	# Insert staff into table
-		while (my $row = $sth->fetchrow_hashref) {
+	while (my $row = $sth->fetchrow_hashref) {
 		my $schoolid = $row->{RefId};
 
 		my ($num_staff) = get_range($staff);
@@ -345,6 +363,64 @@ sub make_staff {
 		}
 	}
 	return ($cnt);
+}
+
+sub make_rooms {
+	my ($rooms) = @_;
+
+	my $cnt = 0;
+
+	# Get School Info
+	my $sth = $dbh->prepare("SELECT * FROM SchoolInfo");
+	$sth->execute();
+
+	# Insert rooms into table
+	while (my $row = $sth->fetchrow_hashref) {
+		my $schoolid = $row->{RefId};
+
+		my ($num_rooms) = get_range($rooms);
+
+		for(my $i = 0; $i < $num_rooms; $i++){
+			my $refId = $sd->make_new_id();
+			my $roomNumber = int(rand(1000) + 1);
+			my $description = "Just another room";
+			my $capacity = int(rand(50) + 10);
+			my $sth = $dbh->prepare("INSERT INTO RoomInfo (RefId,
+				SchoolInfo_RefId, RoomNumber, Description, Capacity)
+				Values(?,?,?,?,?)");
+			$sth->execute($refId,$schoolid,$roomNumber,$description,$capacity);
+			++$cnt;
+		}
+	}
+	return ($cnt);
+}
+
+sub make_groups {
+	my ($groups) = @_;
+
+	my $cnt = 0;
+
+	# Get School Info
+	my $sth = $dbh->prepare("SELECT * FROM SchoolInfo");
+	$sth->execute();
+
+	# Insert groups into table
+
+}
+
+
+
+sub validate_school_id {
+	my ($school) = @_;
+
+    my $sth = $dbh->prepare("SELECT RefId from SchoolInfo WHERE RefId = \"$school\"");
+    $sth->execute();
+    my $val = 0;
+    while(my $row = $sth->fetchrow_hashref){
+      $val++;
+    }
+
+	return ($val);
 }
 
 
