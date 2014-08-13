@@ -99,7 +99,7 @@ sub get_args {
 		"fix"                         => \$fix,
 		"create-database=s"           => \$create_db,
 		"database=s"                  => \$db_name,
-		"school_id=s"                 => \$school_id,
+		"school-id=s"                 => \$school_id,
 	);
 
 	if ($help) {
@@ -128,7 +128,7 @@ Sample usage is:
 
 	Following commands affect all schools in the database unless a school
 	RefId is specified as follows
-	   --school_id=4002EF5E-22A8-11E4-B112-958031DE1888    
+	   --school-id=4002EF5E-22A8-11E4-B112-958031DE1888    
 
   ./create_sif_data.pl --create-students=8..21	# Create random 8-21 students
 
@@ -184,9 +184,8 @@ sub create_students {
 		my ($done) = make_students($students);
 
 		print "\n $done students created \n";
-
-		return ($students);
 	}
+	return ($students);
 }
 
 sub create_staff {
@@ -197,9 +196,8 @@ sub create_staff {
 		my ($done) = make_staff($staff);
 
 		print "\n $done staff created \n";
-
-		return ($staff);
 	}
+	return ($staff);
 }
 
 sub create_rooms {
@@ -210,9 +208,8 @@ sub create_rooms {
 		my ($done) = make_rooms($rooms);
 
 		print "\n $done rooms created \n";
-
-		return ($rooms);
 	}
+	return ($rooms);
 }
 
 sub create_groups {
@@ -223,9 +220,8 @@ sub create_groups {
 		my ($done) = make_groups($groups);
 
 		print "\n $done groups created \n";
-
-		return ($groups);
 	}
+	return ($groups);
 }
 
 sub fix_data {
@@ -255,21 +251,6 @@ sub create_database {
 		or die "system call to example.sql failed\n";
 	
 	return ($db_name);
-}
-
-sub get_data_range {
-	my ($data) = @_;
-	my $number;
-
-	my ($lower, $upper) = split(/\.\./, $data);
-	if (! defined $upper) {
-		$upper = $lower;
-		$lower = 1;
-	}
-
-	$number = int(rand($upper - $lower)) + $lower;
-
-	return ($lower, $upper, $number);
 }
 
 sub get_range {
