@@ -41,7 +41,7 @@ if (defined $schools) {
 }
 
 if (defined $students) {
-	print " Students = $students   lower = $stu_lower .. upper = $stu_upper  number = $num_students\n"
+	print " Students = $students   \n"
 }
 
 
@@ -162,9 +162,12 @@ sub create_students {
 	my ($students) = @_;
 
 	if (defined $students) {
-		my ($stu_lower, $stu_upper, $num_students) = get_data_range($students);
+#		my ($stu_lower, $stu_upper, $num_students) = get_data_range($students);
 
 		# Process student creation for $num_students
+		my ($done) = make_students($students);
+
+		print "\n $done students created \n";
 
 		return ($stu_lower, $stu_upper, $num_students);
 
@@ -254,6 +257,21 @@ sub get_data_range {
 	return ($lower, $upper, $number);
 }
 
+sub get_range {
+	my ($data) = @_;
+	my $number;
+
+	my ($lower, $upper) = split(/\.\./, $data);
+	if (! defined $upper) {
+		$upper = $lower;
+		$lower = 1;
+	}
+
+	$number = int(rand($upper - $lower)) + $lower;
+
+	return ($number);
+}
+
 sub make_schools {
 	my ($schools) = @_;
 
@@ -271,10 +289,34 @@ sub make_schools {
 }
 
 sub make_students {
-	my ($studentsw) = @_;
+	my ($students) = @_;
 
 	my $cnt = 0;
 
+	# Get School Info
+	my $sth = $dbh->prepare("SELECT * FROM SchoolInfo");
+	$sth->execute();
+
+	# Insert students into table
+	while (my $row = $sth->fetchrow_hashref) {
+		my $schoolid = $row->{RefId};
+
+		my ($num_students) = get_range($students);
+
+		for(my $i = 0; $i < $num_students; $i++){
+		    my $student = $sd->create_student();
+		    my $local_id = $sd->create_localid();
+		    my  $sth0 = $dbh->prepare("INSERT INTO StudentPersonal (RefId,
+		    LocalId, FamilyName, GivenName, SchoolInfo_RefId, YearLevel)
+		    Values(?,?,?,?,?,?)");
+		    $sth0->execute($student->{refid}, $local_id,
+		    $student->{lastname},$student->{firstname},
+		    $schoolid, $student->{yearlevel});
+
+			++$cnt;
+		}
+	}
+	return ($cnt);
 }
 
 
