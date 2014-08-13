@@ -18,26 +18,24 @@ print "db_name = $db_name\n" if (defined $db_name);;
 
 my($config, $dbh) = $sd->db_connect($db_name);
 
-# exit;
+my $num_schools = create_schools($schools);
 
-my ($sch_lower, $sch_upper, $num_schools) = create_schools($schools);
+my $num_students = create_students($students);
 
-my ($stu_lower, $stu_upper, $num_students) = create_students($students);
-
-my ($staff_lower, $staff_upper, $num_staff) = create_staff($staff);
+my $num_staff = create_staff($staff);
 
 my ($rooms_lower, $rooms_upper, $num_rooms) = create_rooms($rooms);
 
 my ($groups_lower, $groups_upper, $num_groups) = create_groups($groups);
 
-my ($result) = fix_data($fix);
+my $result = fix_data($fix);
 
 
 #--------------------------------------------------
 
+print "\n";
 if (defined $schools) {
-	$sch_upper = "" if (! defined $sch_upper);
-	print " Schools = $schools    lower = $sch_lower .. upper = $sch_upper  number = $num_schools\n";
+	print " Schools = $num_schools\n";
 }
 
 if (defined $students) {
@@ -46,7 +44,7 @@ if (defined $students) {
 
 
 if (defined $staff) {
-	print " Staff = $staff   lower = $staff_lower .. upper = $staff_upper  number = $num_staff\n"
+	print " Staff = $staff  \n"
 }
 
 if (defined $rooms) {
@@ -155,21 +153,19 @@ sub create_schools {
 		print "\n $done schools created \n";
 	}
 
-	return ($sch_lower, $sch_upper, $num_schools);
+	return ($num_schools);
 }
 
 sub create_students {
 	my ($students) = @_;
 
 	if (defined $students) {
-#		my ($stu_lower, $stu_upper, $num_students) = get_data_range($students);
 
-		# Process student creation for $num_students
 		my ($done) = make_students($students);
 
 		print "\n $done students created \n";
 
-		return ($stu_lower, $stu_upper, $num_students);
+		return ($students);
 
 	}
 }
@@ -178,11 +174,12 @@ sub create_staff {
 	my ($staff) = @_;
 
 	if (defined $staff) {
-		my ($staff_lower, $staff_upper, $num_staff) = get_data_range($staff);
 
-		# Process staff creation for $num_staff
+		my ($done) = make_staff($staff);
 
-		return ($staff_lower, $staff_upper, $num_staff);
+		print "\n $done staff created \n";
+
+		return ($num_staff);
 
 	}
 }
@@ -319,8 +316,36 @@ sub make_students {
 	return ($cnt);
 }
 
+sub make_staff {
+	my ($staff) = @_;
 
+	my $cnt = 0;
 
+	# Get School Info
+	my $sth = $dbh->prepare("SELECT * FROM SchoolInfo");
+	$sth->execute();
+
+	# Insert staff into table
+		while (my $row = $sth->fetchrow_hashref) {
+		my $schoolid = $row->{RefId};
+
+		my ($num_staff) = get_range($staff);
+
+		for(my $i = 0; $i < $num_staff; $i++){
+			my $staff = $sd->create_student();
+			my $local_id = $sd->create_localid();
+			my  $sth0 = $dbh->prepare("INSERT INTO StaffPersonal (RefId,
+			LocalId, FamilyName, GivenName, SchoolInfo_RefId)
+			Values(?,?,?,?,?)");
+			$sth0->execute($staff->{refid}, $local_id,
+			$staff->{lastname},$staff->{firstname},
+			$schoolid);
+
+			++$cnt;
+		}
+	}
+	return ($cnt);
+}
 
 
 
