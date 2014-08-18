@@ -30,13 +30,13 @@ if (defined $school_id) {
 
 my $num_schools = create_schools($schools);
 
-my $num_students = create_students($students);
+my $num_students = create_students($students, $school_id);
 
-my $num_staff = create_staff($staff);
+my $num_staff = create_staff($staff, $school_id);
 
-my $num_rooms = create_rooms($rooms);
+my $num_rooms = create_rooms($rooms, $school_id);
 
-my ($num_groups) = create_groups($groups);
+my ($num_groups) = create_groups($groups, $school_id);
 
 my $result = fix_data($fix);
 
@@ -113,16 +113,21 @@ sub get_args {
 	++$elements if ($groups);
 
 	if ($create_db && $db_name) {
-		print "Cannot specify both --create-database and --database in one command\n";
+		print "\nCannot specify both --create-database and --database in one command\n";
 		usage_exit();
 	}
 	if ($create_db && $school_id) {
-		print "Cannot specify both --create-database and --school_id in the same command\n";
+		print "\nCannot specify both --create-database and --school_id in the same command\n";
+		usage_exit();
+	}
+
+	if ($schools && $school_id) {
+		print "\nCannot specify both --create-schools and --school_id in the same command\n";
 		usage_exit();
 	}
 
 	if ($create_db && $elements && (! $schools)) {
-		print "Must include create-schools when creating database and other elements\n";
+		print "\nMust include create-schools when creating database and other elements\n";
 		usage_exit();
 	}
 
@@ -188,11 +193,11 @@ sub create_schools {
 }
 
 sub create_students {
-	my ($students) = @_;
+	my ($students, $school) = @_;
 
 	if (defined $students) {
 
-		my ($done) = make_students($students);
+		my ($done) = make_students($students, $school);
 
 		print "\n $done students created \n";
 	}
@@ -200,11 +205,11 @@ sub create_students {
 }
 
 sub create_staff {
-	my ($staff) = @_;
+	my ($staff, $school) = @_;
 
 	if (defined $staff) {
 
-		my ($done) = make_staff($staff);
+		my ($done) = make_staff($staff, $school);
 
 		print "\n $done staff created \n";
 	}
@@ -212,11 +217,11 @@ sub create_staff {
 }
 
 sub create_rooms {
-	my ($rooms) = @_;
+	my ($rooms, $school) = @_;
 
 	if (defined $rooms) {
 
-		my ($done) = make_rooms($rooms);
+		my ($done) = make_rooms($rooms, $school);
 
 		print "\n $done rooms created \n";
 	}
@@ -224,11 +229,11 @@ sub create_rooms {
 }
 
 sub create_groups {
-	my ($groups) = @_;
+	my ($groups, $school) = @_;
 
 	if (defined $groups) {
 
-		my ($done) = make_groups($groups);
+		my ($done) = make_groups($groups, $school);
 
 		print "\n $done groups created \n";
 	}
@@ -298,12 +303,17 @@ sub make_schools {
 }
 
 sub make_students {
-	my ($students) = @_;
+	my ($students, $school) = @_;
 
 	my $cnt = 0;
 
 	# Get School Info
-	my $sth = $dbh->prepare("SELECT * FROM SchoolInfo");
+	my $sth;
+	if (defined $school) {
+		$sth = $dbh->prepare("SELECT * from SchoolInfo WHERE RefId = \"$school\"");
+	} else {
+		$sth = $dbh->prepare("SELECT * FROM SchoolInfo");
+	}
 	$sth->execute();
 
 	# Insert students into table
@@ -329,12 +339,17 @@ sub make_students {
 }
 
 sub make_staff {
-	my ($staff) = @_;
+	my ($staff, $school) = @_;
 
 	my $cnt = 0;
 
 	# Get School Info
-	my $sth = $dbh->prepare("SELECT * FROM SchoolInfo");
+	my $sth;
+	if (defined $school) {
+		$sth = $dbh->prepare("SELECT * from SchoolInfo WHERE RefId = \"$school\"");
+	} else {
+		$sth = $dbh->prepare("SELECT * FROM SchoolInfo");
+	}
 	$sth->execute();
 
 	# Insert staff into table
@@ -360,12 +375,17 @@ sub make_staff {
 }
 
 sub make_rooms {
-	my ($rooms) = @_;
+	my ($rooms, $school) = @_;
 
 	my $cnt = 0;
 
 	# Get School Info
-	my $sth = $dbh->prepare("SELECT * FROM SchoolInfo");
+	my $sth;
+	if (defined $school) {
+		$sth = $dbh->prepare("SELECT * from SchoolInfo WHERE RefId = \"$school\"");
+	} else {
+		$sth = $dbh->prepare("SELECT * FROM SchoolInfo");
+	}
 	$sth->execute();
 
 	# Insert rooms into table
@@ -390,12 +410,17 @@ sub make_rooms {
 }
 
 sub make_groups {
-	my ($groups) = @_;
+	my ($groups, $school) = @_;
 
 	my $cnt = 0;
 
 	# Get School Info
-	my $sth = $dbh->prepare("SELECT * FROM SchoolInfo");
+	my $sth;
+	if (defined $school) {
+		$sth = $dbh->prepare("SELECT * from SchoolInfo WHERE RefId = \"$school\"");
+	} else {
+		$sth = $dbh->prepare("SELECT * FROM SchoolInfo");
+	}
 	$sth->execute();
 
 	# Insert groups into table
