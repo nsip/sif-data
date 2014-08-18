@@ -106,12 +106,23 @@ sub get_args {
 		usage_exit();
 	}
 
+	my $elements = 0;
+	++$elements if ($students);
+	++$elements if ($staff);
+	++$elements if ($rooms);
+	++$elements if ($groups);
+
 	if ($create_db && $db_name) {
 		print "Cannot specify both --create-database and --database in one command\n";
 		usage_exit();
 	}
 	if ($create_db && $school_id) {
 		print "Cannot specify both --create-database and --school_id in the same command\n";
+		usage_exit();
+	}
+
+	if ($create_db && $elements && (! $schools)) {
+		print "Must include create-schools when creating database and other elements\n";
 		usage_exit();
 	}
 
@@ -139,11 +150,11 @@ Sample usage is:
   ./create_sif_data.pl --create-teaching-groups=7..20
 						# Create random 7-20 groups
   
-  ./create_sif_data.pl --fix           		# Update missing data  
-
   ./create_sif_data.pl --create-database=name	# Create new database  
 
   ./create_sif_data.pl -database=name_of_db	# Use the named database
+
+  ./create_sif_data.pl --fix           		# Update missing data  
 
 
 EOT
@@ -256,6 +267,8 @@ sub create_database {
 sub get_range {
 	my ($data) = @_;
 	my $number;
+
+	$data =~ s/-/\.\./;
 
 	my ($lower, $upper) = split(/\.\./, $data);
 	if (! defined $upper) {
