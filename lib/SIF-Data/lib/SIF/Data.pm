@@ -167,7 +167,51 @@ sub create_address{
         $address;
 }
 
+=head2 Create TimeTable elements
 
+=cut
+
+sub make_new_year{
+	my $year = int(rand(12)) + 1;
+	return $year;
+}
+
+sub make_days_per_cycle {
+	return 10;
+}
+
+sub make_periods_per_cycle {
+	return 6;
+}
+
+
+sub make_short_name {
+	my @subjects = ("MAT", "ENG", "PHYS", "BIO", "CHEM", "COMP",
+          "VIS", "ECON", "HIST");
+	my $short_name = $subjects[rand @subjects];
+	return $short_name;
+}
+
+sub make_long_name {
+	my %subject_dir = (
+		"MAT" => "Mathematics",
+		"ENG" => "English",
+		"PHYS" => "Physics",
+		"BIO" => "Biology",
+		"CHEM" => "Chemistry",
+		"COMP" => "Computer Science",
+		"VIS" => "Visual Design",
+		"ECON" => "Economics",
+		"HIST" => "History"
+	);
+	return $subject_dir{$_[0]};
+}
+
+sub make_subject_type {
+	my @types = ("Core","Elective","?");
+	my $i = rand @types;
+	return $types[$i];
+}
 
 
 
