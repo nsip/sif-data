@@ -193,6 +193,8 @@ sub make_short_name {
 }
 
 sub make_long_name {
+	my ($self, $short_name) = @_;
+
 	my %subject_dir = (
 		"MAT" => "Mathematics",
 		"ENG" => "English",
@@ -204,7 +206,7 @@ sub make_long_name {
 		"ECON" => "Economics",
 		"HIST" => "History"
 	);
-	return $subject_dir{$_[0]};
+	return $subject_dir{$short_name};
 }
 
 sub make_subject_type {

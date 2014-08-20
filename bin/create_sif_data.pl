@@ -420,7 +420,7 @@ sub make_rooms {
 		for(my $i = 0; $i < $num_rooms; $i++){
 			my $refId = $sd->make_new_id();
 			my $roomNumber = int(rand(1000) + 1);
-			my $description = "Just another room";
+			my $description = "Room $roomNumber";
 			my $capacity = int(rand(50) + 10);
 			my $sth = $dbh->prepare("INSERT INTO RoomInfo (RefId,
 				SchoolInfo_RefId, RoomNumber, Description, Capacity)
@@ -466,7 +466,7 @@ sub make_groups {
 			print "\n$done rooms created for school_id $schoolid\n";
 		}
 
-		$room_sth = $dbh->prepare($select);
+#		$room_sth = $dbh->prepare($select);
 		$room_sth->execute();
 
 		while (my $room = $room_sth->fetchrow_hashref) {
@@ -474,6 +474,36 @@ sub make_groups {
 			# Insert TeachinGroupInfo
 			my ($refid) = make_teaching_group($schoolid, $roomid);
 			++$room_cnt;
+
+			# select students - or create them
+			$groups =~ s/-/\.\./;
+			my ($lower, $upper) = split(/\.\./, $groups);
+			if (! defined $upper) {
+		    	$upper = $lower;
+		    	$lower = 1;
+			}
+			my (@students) = get_students($schoolid, $lower, $upper);
+
+			@students = sort { int(rand 3)-1 <=> int(rand 3)-1 } @students;
+
+			my $num_students = int(rand($upper - $lower)) + $lower;
+        	for (my $student_num = 0; $student_num < $num_students; $student_num++) {
+				if (defined $students[$student_num]) {
+					my $sth_tg_student = $dbh->prepare(q{
+						INSERT INTO TeachingGroup_Student 
+						(TeachingGroup_RefId, StudentPersonal_RefId) 
+						VALUES (?, ?)
+ 					});
+
+					$sth_tg_student->execute(
+						$refid, $students[$student_num]
+					);
+				}
+			}
+
+			# select staff - or create them
+			# my $select_staff = "SELECT RefId from StaffPersonal WHERE SchoolInfo_RefId = \"$schoolid\"";
+
 		}
 		++$cnt;
 	}
@@ -497,7 +527,41 @@ sub make_teaching_group {
 	return $refid;
 }
 
+sub get_students {
+	my ($school, $lower, $upper)= @_;
 
+	my @student_list;
+	my $select = "SELECT RefId from StudentPersonal WHERE SchoolInfo_RefId = \"$school\"";
+	my $sth;
+	$sth = $dbh->prepare($select);
+	$sth->execute();
+
+	my $students = 0;
+	while (my $student_row = $sth->fetchrow_hashref) {
+		++$students;
+	}	
+
+	if (! $students) {
+		my $min = $upper * 2;
+		my $max = $upper * 10;
+# for testing
+$min = 4;
+$max = 8;
+		my ($done) = make_students("$min..$max", $school);
+		print "\n$done students created for school $school\n";
+	}
+
+	$sth->execute();
+	while (my $student_row = $sth->fetchrow_hashref) {
+		push @student_list, $student_row->{RefId};	
+	}
+	return @student_list;
+}
+
+sub get_staff {
+
+
+}
 
 
 
