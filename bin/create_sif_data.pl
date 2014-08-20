@@ -425,10 +425,14 @@ sub make_rooms {
 			my $roomNumber = int(rand(1000) + 1);
 			my $description = "Room $roomNumber";
 			my $capacity = int(rand(50) + 10);
+			my $roomsize = $sd->make_room_size();
+			my $roomtype = $sd->make_room_type();
 			my $sth = $dbh->prepare("INSERT INTO RoomInfo (RefId,
-				SchoolInfo_RefId, RoomNumber, Description, Capacity)
-				Values(?,?,?,?,?)");
-			$sth->execute($refId,$schoolid,$roomNumber,$description,$capacity);
+				SchoolInfo_RefId, RoomNumber, Description, Capacity,
+				RoomSize, RoomType)
+				Values(?,?,?,?,?,?,?)");
+			$sth->execute($refId, $schoolid, $roomNumber, $description, 
+				$capacity, $roomsize, $roomtype);
 			++$cnt;
 		}
 	}

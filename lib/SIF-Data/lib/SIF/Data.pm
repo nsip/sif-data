@@ -167,6 +167,20 @@ sub create_address{
 	$address;
 }
 
+=head2 Create Room elements
+
+=cut
+sub make_room_size {
+	return (int(rand(5) + 2));
+}
+
+sub make_room_type {
+	my @types = ("Classroom", "Classroom", "Classroom", "Classroom", 
+	"Classroom", "Classroom", "Art", "Basketball court");
+	return $types[rand @types];
+}
+
+
 =head2 Create TimeTable elements
 
 =cut
