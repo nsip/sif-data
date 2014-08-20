@@ -121,7 +121,7 @@ sub create_student{
         my $p = $r->create();
         $p->{refid} = $uuid->create_str;
         # TODO: Properly randomly generate local addresses
-        $p->{address} = create_address();
+        # $p->{address} = create_address();
         # year levels are between 1 and 12 right?
         $p->{yearlevel} = int(rand(12)) + 1;
         $p;
@@ -215,6 +215,9 @@ sub make_subject_type {
 	return $types[$i];
 }
 
+sub make_cell_type{
+	my @celltypes = ("Teaching","Lunch");
+}
 
 
 

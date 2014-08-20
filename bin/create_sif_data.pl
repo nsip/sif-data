@@ -28,6 +28,9 @@ if (defined $school_id) {
 	}
 }
 
+my @postcodes = $sd->create_postcodes();
+
+
 my $num_schools = create_schools($schools);
 
 my $num_students = create_students($students, $school_id);
@@ -90,11 +93,11 @@ sub get_args {
 	my $staff     = undef;
 	my $rooms     = undef;
 	my $groups    = undef;
-	my $fix       = 0;
+	my $fix       = undef;
 	my $create_db = undef;
 	my $db_name   = undef;
 	my $school_id = undef;
-	my $ttable    = 0;
+	my $ttable    = undef;
 
 	my $result = GetOptions (
 		"help"						  => \$help,
@@ -140,7 +143,7 @@ sub get_args {
 		usage_exit();
 	}
 
-	return ($schools, $students, $staff, $rooms, $groups, $fix, $create_db, $db_name, $school_id);
+	return ($schools, $students, $staff, $rooms, $groups, $fix, $create_db, $db_name, $ttable,  $school_id);
 }
 
 sub usage_exit {
@@ -510,7 +513,7 @@ sub make_groups {
 			@staff = sort { int(rand 3)-1 <=> int(rand 3)-1 } @staff;
 
 			my $num_staff = int(rand($upper - $lower)) + $lower;
-        	for (my $staff_num = 0; $staff_num < $num_staff; $staff_num++) {
+			for (my $staff_num = 0; $staff_num < $num_staff; $staff_num++) {
 				if (defined $staff[$staff_num]) {
 					my $sth_tg_staff = $dbh->prepare(q{
 						INSERT INTO TeachingGroup_Teacher
@@ -564,8 +567,8 @@ sub get_students {
 		my $min = $upper * 2;
 		my $max = $upper * 10;
 # for testing
-$min = 4;
-$max = 8;
+# $min = 4;
+# $max = 8;
 		my ($done) = make_students("$min..$max", $school);
 		print "\n$done students created for school $school\n";
 	}
@@ -593,8 +596,8 @@ sub get_staff {
 
 	if (! $staff) {
 # for testing
-$min = 4;
-$max = 8;
+# $min = 4;
+# $max = 8;
 		my ($done) = make_staff("$min..$max", $school);
 		print "\n$done staff created for school $school\n";
 	}
@@ -605,11 +608,6 @@ $max = 8;
 	}
 	return @staff_list;
 }
-
-
-
-
-
 
 sub make_ttable {
 	my ($ttable, $school) = @_;
@@ -628,12 +626,12 @@ sub make_ttable {
 	while (my $row = $school_sth->fetchrow_hashref) {
 		my $schoolid = $row->{RefId};
 
-		my $refid = make_new_id();
+		my $refid = $sd->make_new_id();
 		my $schoolyear = "2014"; # make_new_year();
 		my $localid = $sd->create_localid();
 		my $title = "Timetable" . $refid;
-		my $dayspercycle = make_days_per_cycle();
-		my $periodspercycle = make_periods_per_cycle();
+		my $dayspercycle = $sd->make_days_per_cycle();
+		my $periodspercycle = $sd->make_periods_per_cycle();
 		my $sth = $dbh->prepare("INSERT INTO TimeTable(RefId,
 			SchoolInfo_RefId, SchoolYear, LocalId, Title,
 			DaysPerCycle,PeriodsPerCycle) Values (?,?,?,?,?,?,?)");
@@ -650,13 +648,13 @@ sub make_ttable {
 	}
 }
 
- sub make_timetable_cell {
+sub make_timetable_cell {
 	my ($ttid, $ttsid, $dayid, $periodid) = @_;
 
-	my $refid = make_new_id();
+	my $refid = $sd->make_new_id();
 	my $tgid = make_teaching_group();;
 	my $rmid = make_room();
-	my $celltype = make_cell_type();
+	my $celltype = $sd->make_cell_type();
 	my $staffid = make_new_staff();
 	my $sth = $dbh->prepare("INSERT INTO TimeTableCell (RefId,
 		TimeTable_RefId, TimeTableSubject_RefId, TeachingGroup_RefId,
@@ -689,13 +687,13 @@ sub make_timetable_period {
 }
 
 sub make_timetable_subject {
-	my $refId = make_new_id();
-	my $acyear = make_new_year();
+	my $refId = $sd->make_new_id();
+	my $acyear = $sd->make_new_year();
 	my $code = int(rand(10)) . int(rand(10)) . int(rand(10));
-	my $shortname = make_short_name();
-	my $longname = make_long_name($shortname);
+	my $shortname = $sd->make_short_name();
+	my $longname = $sd->make_long_name($shortname);
 	my $subjectid = "$shortname $code";
-	my $subjecttype = make_subject_type();
+	my $subjecttype = $sd->make_subject_type();
 	my $sth = $dbh->prepare("INSERT INTO TimeTableSubject (RefId,
 		SubjectLocalId,AcademicYear,Faculty,SubjectShortName,
 		SubjectLongName,SubjectType,SchoolInfo_RefId)
