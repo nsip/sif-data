@@ -462,8 +462,8 @@ sub make_groups {
 		}
 		
 		if (! $rooms) {
-			my ($done) = make_rooms("5-10", $schoolid);
-			print "\n$done rooms created for school_id $schoolid\n";
+			my ($rooms) = make_rooms("5-10", $schoolid);
+			print "\n$rooms rooms created for school_id $schoolid\n";
 		}
 
 #		$room_sth = $dbh->prepare($select);
@@ -502,8 +502,27 @@ sub make_groups {
 			}
 
 			# select staff - or create them
-			# my $select_staff = "SELECT RefId from StaffPersonal WHERE SchoolInfo_RefId = \"$schoolid\"";
+			$lower = $rooms + 2;
+			$upper = $rooms * 2;
 
+			my (@staff) = get_staff($schoolid, $lower, $upper);
+
+			@staff = sort { int(rand 3)-1 <=> int(rand 3)-1 } @staff;
+
+			my $num_staff = int(rand($upper - $lower)) + $lower;
+        	for (my $staff_num = 0; $staff_num < $num_staff; $staff_num++) {
+				if (defined $staff[$staff_num]) {
+					my $sth_tg_staff = $dbh->prepare(q{
+						INSERT INTO TeachingGroup_Teacher
+						(TeachingGroup_RefId, StaffPersonal_RefId) 
+						VALUES (?, ?)
+ 					});
+
+					$sth_tg_staff->execute(
+						$refid, $staff[$staff_num]
+					);
+				}
+			}
 		}
 		++$cnt;
 	}
@@ -559,8 +578,32 @@ $max = 8;
 }
 
 sub get_staff {
+	my ($school, $min, $max)= @_;
 
+	my @staff_list;
+	my $select = "SELECT RefId from StaffPersonal WHERE SchoolInfo_RefId = \"$school\"";
+	my $sth;
+	$sth = $dbh->prepare($select);
+	$sth->execute();
 
+	my $staff = 0;
+	while (my $staff_row = $sth->fetchrow_hashref) {
+		++$staff;
+	}	
+
+	if (! $staff) {
+# for testing
+$min = 4;
+$max = 8;
+		my ($done) = make_staff("$min..$max", $school);
+		print "\n$done staff created for school $school\n";
+	}
+
+	$sth->execute();
+	while (my $staff_row = $sth->fetchrow_hashref) {
+		push @staff_list, $staff_row->{RefId};	
+	}
+	return @staff_list;
 }
 
 

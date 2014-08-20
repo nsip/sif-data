@@ -154,17 +154,17 @@ sub create_postcodes {
 sub create_address{
 	my (@postcodes) = create_postcodes();
 
-        my $r = Data::RandomPerson->new();
-        my $p = $r->create();
-        my @roads = ("Road","Street","Court","Crescent","Drive","Avenue",
-        "Boulevard", "Lane","Way","Walk","Square");
-        my $stnumber = int(rand(300))+1;
-        my $index = rand @roads;
-        my $road = $roads[$index];
-        $index = rand @postcodes;
-        my @postbox = $postcodes[$index];
-        my $address = "$stnumber $p->{firstname} $road, $postbox[0][1], $postbox[0][2], $postbox[0][0]";
-        $address;
+	my $r = Data::RandomPerson->new();
+	my $p = $r->create();
+	my @roads = ("Road","Street","Court","Crescent","Drive","Avenue",
+	"Boulevard", "Lane","Way","Walk","Square");
+	my $stnumber = int(rand(300))+1;
+	my $index = rand @roads;
+	my $road = $roads[$index];
+	$index = rand @postcodes;
+	my @postbox = $postcodes[$index];
+	my $address = "$stnumber $p->{firstname} $road, $postbox[0][1], $postbox[0][2], $postbox[0][0]";
+	$address;
 }
 
 =head2 Create TimeTable elements
