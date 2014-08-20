@@ -303,8 +303,7 @@ sub get_range {
 
 	my ($lower, $upper) = split(/\.\./, $data);
 	if (! defined $upper) {
-		$upper = $lower;
-		$lower = 1;
+		return $lower;
 	}
 
 	$number = int(rand($upper - $lower)) + $lower;
