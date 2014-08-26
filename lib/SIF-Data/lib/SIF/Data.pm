@@ -231,6 +231,8 @@ sub make_subject_type {
 
 sub make_cell_type{
 	my @celltypes = ("Teaching","Lunch");
+	my $i = rand @celltypes;
+	return $celltypes[$i];
 }
 
 

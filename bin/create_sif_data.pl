@@ -30,56 +30,22 @@ if (defined $school_id) {
 
 my @postcodes = $sd->create_postcodes();
 
-
-my $num_schools = create_schools($schools);
-
-my $num_students = create_students($students, $school_id);
-
-my $num_staff = create_staff($staff, $school_id);
-
-my $num_rooms = create_rooms($rooms, $school_id);
-
-my ($num_groups) = create_groups($groups, $school_id);
-
-my ($num_ttable) = create_ttable($ttable, $school_id);
-
-my $result = fix_data($fix);
-
-
-#--------------------------------------------------
-
-print "\n";
-if (defined $schools) {
-	print " Schools = $num_schools\n";
-}
-
-if (defined $students) {
-	print " Students = $students   \n"
-}
-
-
-if (defined $staff) {
-	print " Staff = $staff  \n"
-}
-
-if (defined $rooms) {
-	print " Rooms = $num_rooms\n"
-}
-
-if (defined $groups) {
-	print " Groups = $num_groups\n"
-}
-
 if ($ttable) {
-	print " TTables = Yes\n"
+	create_ttable($ttable, $school_id);
+} else {
+
+	create_schools($schools);
+
+	create_students($students, $school_id);
+
+	create_staff($staff, $school_id);
+
+	create_rooms($rooms, $school_id);
+
+	create_groups($groups, $school_id);
+
+	fix_data($fix);
 }
-
-if ( $fix) {
-	print " Data Fix = $fix - Result is $result\n";
-}
-
-#-------------------------------------------------
-
 
 exit 0;
 
@@ -109,7 +75,7 @@ sub get_args {
 		"fix"                         => \$fix,
 		"create-database=s"           => \$create_db,
 		"database=s"                  => \$db_name,
-		"create-time-tables"		  => \$ttable,
+		"create-time-table=s"		  => \$ttable,
 		"school-id=s"                 => \$school_id,
 	);
 
@@ -122,7 +88,7 @@ sub get_args {
 	++$elements if ($staff);
 	++$elements if ($rooms);
 	++$elements if ($groups);
-	++$elements if ($ttable);
+#	++$elements if ($ttable);
 
 	if ($create_db && $db_name) {
 		print "\nCannot specify both --create-database and --database in one command\n";
@@ -143,6 +109,19 @@ sub get_args {
 		usage_exit();
 	}
 
+	if ($ttable) {
+		my $err = 0;
+		++$err if ($elements);
+		++$err if ($schools);
+		++$err if ($create_db);
+		if ($err){
+			print "\ncreate-time-table must be called on an existing school as a stand-alone cammand\n         (--database is allowed)\n";
+			usage_exit();
+		}
+
+		$school_id = $ttable;
+	}
+
 	return ($schools, $students, $staff, $rooms, $groups, $fix, $create_db, $db_name, $ttable,  $school_id);
 }
 
@@ -157,7 +136,7 @@ Sample usage is:
 
   ./create_sif_data.pl --create-schools=16	# Create 16 schools
   ./create_sif_data.pl --create-schools=6..14	# Create random 6-14 schools
-
+  -----------------------------------------------------------------------
 	Following commands affect all schools in the database unless a school
 	RefId is specified as follows
 	   --school-id=4002EF5E-22A8-11E4-B112-958031DE1888    
@@ -170,9 +149,10 @@ Sample usage is:
 
   ./create_sif_data.pl --create-teaching-groups=7..20
 						# Create  with random 7-20 students 
-  
-  ./create_sif_data.pl --create-time-tables	# Requires schools to have been
-					 created (can be in a single command)
+  -----------------------------------------------------------------------
+  ./create_sif_data.pl --create-time-table=school_id
+          # Creates a new Teaching Group and Timetable in selected school
+            Requires school to have been created
   
   ./create_sif_data.pl --fix           		# Update missing data  
 
@@ -223,7 +203,7 @@ sub create_staff {
 
 	if (defined $staff) {
 
-		my ($done) = make_staff($staff, $school);
+		my ($done, $xxx) = make_staff($staff, $school);
 
 		print "\n $done staff created \n";
 	}
@@ -235,7 +215,7 @@ sub create_rooms {
 
 	if (defined $rooms) {
 
-		my ($done) = make_rooms($rooms, $school);
+		my ($done, $xxx) = make_rooms($rooms, $school);
 
 		print "\n $done rooms created \n";
 	}
@@ -259,9 +239,9 @@ sub create_ttable {
 
 	if (defined $ttable) {
 
-		my ($done) = make_ttable($school);
+		my ($done, $cells) = make_ttable($school);
 
-		print "\n $done ttable created \n";
+		print "\n $done time table created - $cells cells \n";
 	}
 	return ($ttable);
 }
@@ -322,6 +302,8 @@ sub make_schools {
 		my $sth = $dbh->prepare("INSERT INTO SchoolInfo (RefId, LocalId, SchoolName) Values(?,?,?)");
 		$sth->execute($uuid,$local_id,$school_name);
 
+		print "\nSchool RefId = $uuid";
+
 		++$cnt;
 	}
 	return ($cnt);
@@ -378,6 +360,7 @@ sub make_staff {
 	$sth->execute();
 
 	# Insert staff into table
+	my $refid; 
 	while (my $row = $sth->fetchrow_hashref) {
 		my $schoolid = $row->{RefId};
 
@@ -392,11 +375,11 @@ sub make_staff {
 			$sth0->execute($staff->{refid}, $local_id,
 			$staff->{lastname},$staff->{firstname},
 			$schoolid);
-
+			$refid = $staff->{refid};
 			++$cnt;
 		}
 	}
-	return ($cnt);
+	return ($cnt, $refid);
 }
 
 sub make_rooms {
@@ -414,13 +397,14 @@ sub make_rooms {
 	$sth->execute();
 
 	# Insert rooms into table
+	my $refId;
 	while (my $row = $sth->fetchrow_hashref) {
 		my $schoolid = $row->{RefId};
 
 		my ($num_rooms) = get_range($rooms);
 
 		for(my $i = 0; $i < $num_rooms; $i++){
-			my $refId = $sd->make_new_id();
+			$refId = $sd->make_new_id();
 			my $roomNumber = int(rand(1000) + 1);
 			my $description = "Room $roomNumber";
 			my $capacity = int(rand(50) + 10);
@@ -435,7 +419,7 @@ sub make_rooms {
 			++$cnt;
 		}
 	}
-	return ($cnt);
+	return ($cnt, $refId);
 }
 
 sub make_groups {
@@ -468,7 +452,7 @@ sub make_groups {
 		}
 		
 		if (! $rooms) {
-			my ($rooms) = make_rooms("5-10", $schoolid);
+			my ($rooms, $xxx) = make_rooms("5-10", $schoolid);
 			print "\n$rooms rooms created for school_id $schoolid\n";
 		}
 
@@ -601,7 +585,7 @@ sub get_staff {
 # for testing
 # $min = 4;
 # $max = 8;
-		my ($done) = make_staff("$min..$max", $school);
+		my ($done, $xxx) = make_staff("$min..$max", $school);
 		print "\n$done staff created for school $school\n";
 	}
 
@@ -613,17 +597,14 @@ sub get_staff {
 }
 
 sub make_ttable {
-	my ($ttable, $school) = @_;
+	my ($school) = @_;
 
 	my $cnt = 0;
+	my $cells = 0;
 
 	# Get School Info
 	my $school_sth;
-	if (defined $school) {
-		$school_sth = $dbh->prepare("SELECT * from SchoolInfo WHERE RefId = \"$school\"");
-	} else {
-		$school_sth = $dbh->prepare("SELECT * FROM SchoolInfo");
-	}
+	$school_sth = $dbh->prepare("SELECT * from SchoolInfo WHERE RefId = \"$school\"");
 	$school_sth->execute();
 
 	while (my $row = $school_sth->fetchrow_hashref) {
@@ -645,27 +626,80 @@ sub make_ttable {
 			for (my $j = 0; $j < $periodspercycle; $j++){
 				make_timetable_period($refid,$i,$j);
 				my $subid = make_timetable_subject();
-				make_timetable_cell($refid, $subid, $i,$j);
+				my $done = make_timetable_cell($refid, $subid, $schoolid, $i, $j);
+				$cells += $done;
 			}
 		}
+		++$cnt
 	}
-}
+	return ($cnt, $cells);
+} 
 
 sub make_timetable_cell {
-	my ($ttid, $ttsid, $dayid, $periodid) = @_;
+	my ($ttid, $ttsid, $school, $dayid, $periodid) = @_;
 
 	my $refid = $sd->make_new_id();
-	my $tgid = make_teaching_group();;
-	my $rmid = make_room();
+
+	# Get or make room
+	my $select = "SELECT * FROM RoomInfo WHERE SchoolInfo_RefId = \"$school\"";
+	my $room_sth = $dbh->prepare($select);
+	$room_sth->execute();
+	my $rooms = 0;
+
+	while (my $room = $room_sth->fetchrow_hashref) {
+		++$rooms;
+	}
+	my $rmid;	
+	if (! $rooms) {
+		my ($xxx, $roomid) = make_rooms(1, $school);
+		$rmid = $roomid;
+	} else {
+		my $c = 0;
+		my $r = int(rand($rooms));
+		$room_sth->execute();
+		while (my $row = $room_sth->fetchrow_hashref) {
+			$rmid = $row->{RefId} if ($c == $r);
+			++$c;
+		}
+	}
+
+	# Get or make staff
+	$select = "SELECT * FROM StaffPersonal WHERE SchoolInfo_RefId = \"$school\"";
+
+	my $staff_sth = $dbh->prepare($select);
+	$staff_sth->execute();
+	my $num_staff = 0;
+
+	while (my $staff = $staff_sth->fetchrow_hashref) {
+		++$num_staff;
+	}
+
+	my $staffid;	
+	if (! $num_staff) {
+		my ($xxx, $stid) = make_staff(1, $school);
+		$staffid = $stid;
+	} else {
+		my $c = 0;
+		my $r = int(rand($num_staff));
+		$staff_sth->execute();
+		while (my $row = $staff_sth->fetchrow_hashref) {
+			$staffid = $row->{RefId} if ($c == $r);
+			++$c;
+		}
+	}
+
+	my $tgid = make_teaching_group($school, $rmid);;
+
 	my $celltype = $sd->make_cell_type();
-	my $staffid = make_new_staff();
+
 	my $sth = $dbh->prepare("INSERT INTO TimeTableCell (RefId,
 		TimeTable_RefId, TimeTableSubject_RefId, TeachingGroup_RefId,
 		RoomInfo_RefId,CellType, PeriodId, DayId, StaffPersonal_RefId)
 		Values(?,?,?,?,?,?,?,?,?)");
 	$sth->execute($refid, $ttid, $ttsid, $tgid, $rmid, $celltype,
 		$periodid, $dayid, $staffid);
-	return $refid;
+	my $done = 1;
+	return $done;
 }
 
 sub make_timetable_day {
