@@ -1,0 +1,8 @@
+mysql_dsn: dbi:mysqlPP:database=X;host=sifau.cspvdo7mmaoe.ap-southeast-2.rds.amazonaws.com
+mysql_dsn_hits: dbi:mysqlPP:database=hits;host=sifau.cspvdo7mmaoe.ap-southeast-2.rds.amazonaws.com
+mysql_dsn_sif: dbi:mysqlPP:database=hits_sif3_infra;host=sifau.cspvdo7mmaoe.ap-southeast-2.rds.amazonaws.com
+mysql_dsn_template: dbi:mysqlPP:database=TEMPLATE;host=sifau.cspvdo7mmaoe.ap-southeast-2.rds.amazonaws.com
+mysql_database: X
+mysql_server: sifau.cspvdo7mmaoe.ap-southeast-2.rds.amazonaws.com
+mysql_user: TODO
+mysql_password: TODO
