@@ -235,6 +235,21 @@ sub make_cell_type{
 	return $celltypes[$i];
 }
 
+sub make_kla {
+# my @kla = qw/English Mathematics Arts Technology Humanities Sports/;
+	my @kla = (
+		"The Arts",
+		"The Arts",
+		"Humanities & Social Sciences",
+		"Humanities & Social Sciences",
+		"Science",
+		"Science",
+		"History",
+		"Geography",
+		"Religious Education"
+	);
+	return $kla[int rand($#kla + 1)];
+}
 
 
 =head1 AUTHOR

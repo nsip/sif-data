@@ -251,8 +251,10 @@ sub fix_data {
 
 	my $result = '';
 	if ($fix) {
-		$result = 'ok';
 
+		my $kla = $sd->make_kla;
+		$result = 'ok';
+		print " KLA = $kla $result\n";
 	}
 
 	return ($result);
