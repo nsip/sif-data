@@ -23,7 +23,7 @@ my($config, $dbh) = $sd->db_connect($db_name);
 if (defined $school_id) {
 	my $val = validate_school_id($school_id);
 	if (! $val) {
-		print "$school_id is not a valid school reference/n";
+		print "$school_id is not a valid school reference\n";
 		usage_exit();
 	}
 }
@@ -132,7 +132,7 @@ Sample usage is:
 
   ./create_sif_data.pl --create-database=name	# Create new database  
 
-  ./create_sif_data.pl -database=name_of_db	# Use the named database
+  ./create_sif_data.pl --database=name_of_db	# Use the named database
 
   ./create_sif_data.pl --create-schools=16	# Create 16 schools
   ./create_sif_data.pl --create-schools=6..14	# Create random 6-14 schools
