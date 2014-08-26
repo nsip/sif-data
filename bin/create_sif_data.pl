@@ -12,6 +12,7 @@ my ($schools, $students, $staff,
 	$rooms, $groups, $fix, $create_db, 
 	$db_name, $ttable, $school_id) = get_args();
 
+# XXX need config to do this - move code to SIF::Data (maybe $sd->db_create($dbname) instead of db_connect
 if (defined $create_db) {
 	$db_name = create_database($create_db);
 }
@@ -261,11 +262,30 @@ sub fix_data {
 sub create_database {
 	my ($db_name) = @_;
 
+	# XXX This code, config, connecting to DB, correct name/password
+	# 	appears in the Library, maybe move this code there?
+
+	# XXX These ones won't work due to remote server names missing etc.
+	# 	Fix this using dsn template
 	die "Bad db name" if ($db_name =~ m/[\/|\.|;|\s]+/);
 
-	my $dbh = DBI->connect("dbi:mysql:", undef, undef);
+	# CREATE DB
+	my $dsn = $config->{mysql_dsn_template};
+	$dsn =~ s/TEMPLATE//;
+	print STDERR "DEBUG CREAT DSN $dsn\n";
+	my $dbh = DBI->connect($dsn, $config->{mysql_user}, $config->{mysql_password});
 	$dbh->do("CREATE DATABASE $db_name");
 
+	# CONNECT TO DB
+	$dsn = $config->{mysql_dsn_template};
+	$dsn =~ s/TEMPLATE/$db_name/;
+	print STDERR "DEBUG $dsn\n";
+	$dbh = DBI->connect($dsn, $config->{mysql_user}, $config->{mysql_password});
+
+	die "XXX You must now manually create the Schema...";
+
+	# XXX Could replace these by reading file, split on ";" ?
+	# 	DBD::mysql has a parameter mysql_multi_statements:
 	system("/usr/bin/mysql $db_name < ../schema/common/create.sql") == 0
 		or die "system call to create.sql failed\n";
 

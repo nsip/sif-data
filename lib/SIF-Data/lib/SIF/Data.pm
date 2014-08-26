@@ -66,10 +66,12 @@ sub db_connect {
 	# Connect to database
 	
 	my $dsn = $config->{mysql_dsn};
-
 	if (defined $db_name) {
-          $dsn = "dbi:mysql:$db_name";
+		# e.g. mysql_dsn_template: dbi:mysql:database=TEMPLATE;host=sifau.cspvdo7mmaoe.ap-southeast-2.rds.amazonaws.com
+		$dsn = $config->{mysql_dsn_template};
+		$dsn =~ s/TEMPLATE/$db_name/;
 	}
+	print STDERR "DEBUG: DSN = $dsn\n";
 
 	my $dbh = DBI->connect(
 		$dsn,
