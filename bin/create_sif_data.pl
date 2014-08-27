@@ -729,27 +729,21 @@ sub make_timetable_subject {
 sub validate_school_id {
 	my ($school) = @_;
 
-    my $sth = $dbh->prepare("SELECT RefId from SchoolInfo WHERE RefId = \"$school\"");
+    my $sth = $dbh->prepare("SELECT count(*) AS cnt from SchoolInfo WHERE RefId = \"$school\"");
     $sth->execute();
-    my $val = 0;
-    while(my $row = $sth->fetchrow_hashref){
-      $val++;
-    }
 
-	return ($val);
+    my $row = $sth->fetchrow_hashref;
+	return ($row->{cnt});
 }
 
 sub check_schools {
 
     my $val = 0;
-    my $sth = $dbh->prepare("SELECT RefId from SchoolInfo");
+    my $sth = $dbh->prepare("SELECT count(*) AS cnt from SchoolInfo");
     $sth->execute();
 
-    while(my $row = $sth->fetchrow_hashref){
-      $val++;
-    }
-
-	return ($val);
+    my $row = $sth->fetchrow_hashref;
+	return ($row->{cnt});
 }
 
 

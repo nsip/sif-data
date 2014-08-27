@@ -67,13 +67,13 @@ sub db_connect {
 	my $dsn = $config->{mysql_driver} . ':';	
 	$dsn .= $config->{mysql_dsn};
 	$dsn .= ';host=' . $config->{mysql_host} if (defined $config->{mysql_host});
-	$dsn .= ';' . $config->{mysql_port} if (defined $config->{mysql_port});
+	$dsn .= ';port=' . $config->{mysql_port} if (defined $config->{mysql_port});
 
 	if (defined $db_name) {
 		$dsn = $config->{mysql_driver} . ':';
 		$dsn .= $config->{mysql_dsn_template};
 		$dsn .= ';host=' . $config->{mysql_host} if (defined $config->{mysql_host});
-		$dsn .= ';' . $config->{mysql_port} if (defined $config->{mysql_port});
+		$dsn .= ';port=' . $config->{mysql_port} if (defined $config->{mysql_port});
 		$dsn =~ s/TEMPLATE/$db_name/;
 	}
 	#print STDERR "DEBUG: DSN = $dsn\n";
@@ -94,40 +94,37 @@ sub db_connect {
 sub create_database {
 	my ($self, $db_name) = @_;
 
-    # XXX These ones won't work due to remote server names missing etc.
-    #   Fix this using dsn template
-    
 	die "Bad db name" if ($db_name =~ m/[\/|\.|;|\s]+/);
 
 	my $config = YAML::LoadFile($ENV{HOME} . "/.nsip_sif_data");
 
-    # CREATE DB
+	# CREATE DB
 	my $dsn = $config->{mysql_driver} . ':';
 	$dsn .= $config->{mysql_dsn_template};
 		$dsn .= ';host=' . $config->{mysql_host} if (defined $config->{mysql_host});
-		$dsn .= ';' . $config->{mysql_port} if (defined $config->{mysql_port});
-    $dsn =~ s/TEMPLATE//;
+		$dsn .= ';port=' . $config->{mysql_port} if (defined $config->{mysql_port});
+	$dsn =~ s/TEMPLATE//;
 
 	# print STDERR "DEBUG: DSN = $dsn\n";
 
-    my $dbh = DBI->connect($dsn, $config->{mysql_user}, $config->{mysql_password});
-    $dbh->do("CREATE DATABASE $db_name");
+	my $dbh = DBI->connect($dsn, $config->{mysql_user}, $config->{mysql_password});
+	$dbh->do("CREATE DATABASE $db_name");
 
-    # XXX Could replace these by reading file, split on ";" ?
-    #   DBD::mysql has a parameter mysql_multi_statements: and do()
-	# TODO as per point 3 of Ticket 77
+	# XXX Could replace these system calls by reading file, split on ";" ?
+	#   DBD::mysql has a parameter mysql_multi_statements: and do()
+	#  as per point 3 of Ticket 77
 	my $sys = '';
 	$sys .= " -u$config->{mysql_user}" if (defined $config->{mysql_user});
 	$sys .= " -p$config->{mysql_password}" if (defined $config->{mysql_password});
 	$sys .= " -h$config->{mysql_host}" if (defined $config->{mysql_host});
 
-    system("/usr/bin/mysql $sys $db_name < ../schema/common/create.sql") == 0
-        or die "system call to create.sql failed\n";
+	system("/usr/bin/mysql $sys $db_name < ../schema/common/create.sql") == 0
+		or die "system call to create.sql failed\n";
 
-    system("/usr/bin/mysql $sys $db_name < ../schema/AU1.3/example.sql") == 0
-        or die "system call to example.sql failed\n";
+	system("/usr/bin/mysql $sys $db_name < ../schema/AU1.3/example.sql") == 0
+		or die "system call to example.sql failed\n";
 
-    return ($db_name);
+	return ($db_name);
 }
 
 =head2 Create a new id
