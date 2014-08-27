@@ -100,13 +100,18 @@ sub create_database {
 
 	my $dsn = $config->{mysql_driver} . ':';
 	$dsn .= $config->{mysql_dsn_template};
-		$dsn .= ';host=' . $config->{mysql_host} if (defined $config->{mysql_host});
-		$dsn .= ';port=' . $config->{mysql_port} if (defined $config->{mysql_port});
+	$dsn .= ';host=' . $config->{mysql_host} if (defined $config->{mysql_host});
+	$dsn .= ';port=' . $config->{mysql_port} if (defined $config->{mysql_port});
 	$dsn =~ s/TEMPLATE//;
 
 	# print STDERR "DEBUG: DSN = $dsn\n";
 
-	my $dbh = DBI->connect($dsn, $config->{mysql_user}, $config->{mysql_password});
+	my $dbh = DBI->connect(
+		$dsn, 
+		$config->{mysql_user}, 
+		$config->{mysql_password},
+	 	{RaiseError => 1}
+	);
 	$dbh->do("CREATE DATABASE $db_name");
 
 	# XXX Could replace these system calls by reading file, split on ";" ?
@@ -116,9 +121,6 @@ sub create_database {
 	$sys .= " -u$config->{mysql_user}" if (defined $config->{mysql_user});
 	$sys .= " -p$config->{mysql_password}" if (defined $config->{mysql_password});
 	$sys .= " -h$config->{mysql_host}" if (defined $config->{mysql_host});
-
-	system("/usr/bin/mysql $sys $db_name < ../schema/common/create.sql") == 0
-		or die "system call to create.sql failed\n";
 
 	system("/usr/bin/mysql $sys $db_name < ../schema/AU1.3/example.sql") == 0
 		or die "system call to example.sql failed\n";
