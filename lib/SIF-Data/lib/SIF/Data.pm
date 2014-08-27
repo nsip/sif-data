@@ -98,7 +98,6 @@ sub create_database {
 
 	my $config = YAML::LoadFile($ENV{HOME} . "/.nsip_sif_data");
 
-	# CREATE DB
 	my $dsn = $config->{mysql_driver} . ':';
 	$dsn .= $config->{mysql_dsn_template};
 		$dsn .= ';host=' . $config->{mysql_host} if (defined $config->{mysql_host});
