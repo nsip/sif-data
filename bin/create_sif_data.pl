@@ -10,7 +10,7 @@ my $sd = SIF::Data->new();
 # Get and process command line options
 my ($schools, $students, $staff, 
 	$rooms, $groups, $fix, $create_db, 
-	$db_name, $ttable, $school_id) = get_args();
+	$db_name, $ttable, $school_id, $elements) = get_args();
 
 if (defined $create_db) {
 	$db_name = $sd->create_database($create_db);
@@ -24,6 +24,13 @@ if (defined $school_id) {
 	my $val = validate_school_id($school_id);
 	if (! $val) {
 		print "$school_id is not a valid school reference\n";
+		usage_exit();
+	}
+}
+
+if ($elements && (! $schools)) {
+	if (! check_schools()) {
+		print "\nNo schools exist\nSchools must exist or be created when creating other elements\n";
 		usage_exit();
 	}
 }
@@ -122,7 +129,7 @@ sub get_args {
 		$school_id = $ttable;
 	}
 
-	return ($schools, $students, $staff, $rooms, $groups, $fix, $create_db, $db_name, $ttable,  $school_id);
+	return ($schools, $students, $staff, $rooms, $groups, $fix, $create_db, $db_name, $ttable,  $school_id, $elements);
 }
 
 sub usage_exit {
@@ -732,7 +739,18 @@ sub validate_school_id {
 	return ($val);
 }
 
+sub check_schools {
 
+    my $val = 0;
+    my $sth = $dbh->prepare("SELECT RefId from SchoolInfo");
+    $sth->execute();
+
+    while(my $row = $sth->fetchrow_hashref){
+      $val++;
+    }
+
+	return ($val);
+}
 
 
 
