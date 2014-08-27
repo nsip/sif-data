@@ -16,7 +16,7 @@ if (defined $create_db) {
 	$db_name = $sd->create_database($create_db);
 }
 
-print "db_name = $db_name\n" if (defined $db_name);;
+print "db_name = $db_name\n" if (defined $db_name);
 
 my($config, $dbh) = $sd->db_connect($db_name);
 
@@ -95,7 +95,6 @@ sub get_args {
 	++$elements if ($staff);
 	++$elements if ($rooms);
 	++$elements if ($groups);
-#	++$elements if ($ttable);
 
 	if ($create_db && $db_name) {
 		print "\nCannot specify both --create-database and --database in one command\n";
@@ -122,7 +121,7 @@ sub get_args {
 		++$err if ($schools);
 		++$err if ($create_db);
 		if ($err){
-			print "\ncreate-time-table must be called on an existing school as a stand-alone cammand\n         (--database is allowed)\n";
+			print "\ncreate-time-table must be called on an existing school as a stand-alone command\n         (--database is allowed)\n";
 			usage_exit();
 		}
 
@@ -746,69 +745,3 @@ sub check_schools {
 	return ($row->{cnt});
 }
 
-
-
-=notes
-#perl make_schools.pl 10
-##make_roominfo.pl
-#perl make_staff.pl 25
-#perl make_students.pl 100
-#perl make_teaching_group.pl 10
-#perl make_timetable.pl 10
-#
-#perl fix_data.pl
-
-=head1 COMMENTS
-
-COMMAND LINE INPUT
-
-
-	 Generate NSW Time Table Example Database
-	 Configuration
-	 	Read the YML file as per exsiting make_schools.pl - to get DBI connection details
-	 Create new Database OR point to a database (command line parameter)
-	 	CREATE DATABASE X
-	 	schema/common/*
-	 	schema/AU1.3/*
-	 Generate and Insert Schools
-	 	Command line x..y schools -
-			??? What if they already exist
-			-create-schools=3 - create 3 MORE schools
-			-create-schools=3..7 - random 3 to 7 schools
-	 Generate Students
-		 Command line x..y students per school
-			-create-studnnts=200..400
-		 Read SELECT on existing schools
-		 For each school
-			Check students numbers match request range
-			Else create students
-	 Generate Staff
-		create-staff=5..20
-		AS per Students
-	 Generate Rooms
-		create-rooms=3..5
-		Generate some random rooms as per make_roominfo and fix_data
-	 Generate Teaching Groups
-		create-teaching-group=7..20
-		Select Schools
-		Select Rooms - if there are no rooms, error
-		Randomly select a teacher
-		Randomly select some students - theoretically command line option to say how many students in a teaching group - e.g. 10-30
-	Generate Time Table
-		Read teaching groups
-		Assign each one to a TimeTable as per make_timetable
-
-	Update NSW Time Table Example Database
-		In theory can just run the code above
-
-	Fix Broken Data
-		Old database, where these scripts have been updated or some data in
-		the Database (maybe imported manually from somewhere else) has
-		missing ifnormaiton
-	command line option --fix
-		like fix_data.pl
-		Iterate over all the known types of tables, and patch missing
-		information
-		. e.g. Title (Mr/Mrs) is missing from Staff member.
-		. e.g. Birtday is missing
-=end
