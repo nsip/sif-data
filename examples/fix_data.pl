@@ -147,6 +147,7 @@ sub update {
 		. " WHERE $match = ?"
 	;
 	print $SQL . ", " . join(", ", ( map { $fields->{$_} } sort keys %$fields) , $id) . "\n";
+return; # XXX
 	my $sth = $dbh->prepare($SQL);
 	$sth->execute( (map { $fields->{$_} } sort keys %$fields), $id);
 }
@@ -160,6 +161,7 @@ sub insert {
 		. ")"
 	;
 	print $SQL . ", " . join(", ", ( map { $fields->{$_} } sort keys %$fields) ) . "\n";
+return; # XXX
 	my $sth = $dbh->prepare($SQL);
 	$sth->execute( (map { $fields->{$_} } sort keys %$fields));
 }
