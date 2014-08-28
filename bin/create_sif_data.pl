@@ -320,7 +320,7 @@ sub make_schools {
 		my $sth = $dbh->prepare("INSERT INTO SchoolInfo (RefId, LocalId, SchoolName) Values(?,?,?)");
 		$sth->execute($uuid,$local_id,$school_name);
 
-		print "\nSchool RefId = $uuid";
+		print "School RefId = $uuid\n" unless ($silent);
 
 		++$cnt;
 	}

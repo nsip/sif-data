@@ -11,32 +11,25 @@ use DBI;
 
 =head1 NAME
 
-SIF::Data - The great new SIF::Data!
+SIF::Data - Create school info (Students, Staff, Schools, Timetables, etc)
 
 =head1 VERSION
 
-Version 1.00
+Version 1.01
 
 =cut
 
-our $VERSION = '1.00';
+our $VERSION = '1.01';
 
 
 =head1 SYNOPSIS
 
-Quick summary of what the module does.
-
-Perhaps a little code snippet.
+Create National Schools Interoperability Program schema data (Students, Staff, Schools, Timetables, etc)
 
     use SIF::Data;
 
-    my $foo = SIF::Data->new();
+    my $sd = SIF::Data->new();
     ...
-
-=head1 EXPORT
-
-A list of functions that can be exported.  You can delete this section
-if you don't export anything, such as for a purely object-oriented module.
 
 =head1 SUBROUTINES/METHODS
 
@@ -84,7 +77,7 @@ sub db_connect {
 	return ($config, $dbh, $dsn);
 }
 
-=head2 Create a new DataBASE
+=head2 Create a new Database
 
 =cut
 
@@ -131,13 +124,18 @@ sub create_database {
 
 =head2 Create a new id
 
+    use SIF::Data;
+
+    my $sd = SIF::Data->new();
+    my $id = $sd->make_new_id();
+
 =cut
 
 sub make_new_id {
 	my ($self) = @_;
 
 	my $uuid = Data::UUID->new();
-	$uuid->create_str;
+	$uuid->create_hex;  # was create_str() before #78
 }
 
 =head2 Create school name
@@ -172,10 +170,9 @@ sub create_localid {
 sub create_student{
 	my ($self) = @_;
 
-	my $uuid = Data::UUID->new();
 	my $r = Data::RandomPerson->new();
 	my $p = $r->create();
-	$p->{refid} = $uuid->create_str;
+	$p->{refid} = $self->make_new_id;
 	# TODO: Properly randomly generate local addresses
 	# $p->{address} = create_address();
 	# year levels are between 1 and 12 right?
