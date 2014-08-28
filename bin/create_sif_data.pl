@@ -213,7 +213,7 @@ sub create_schools {
 		# Process school creation for $num_schools
 		my ($done) = make_schools($num_schools);
 
-		print "\n $done schools created \n";
+		print "\n$done schools created \n" unless ($silent);
 	}
 
 	return ($schools);
@@ -226,7 +226,7 @@ sub create_students {
 
 		my ($done) = make_students($students, $school);
 
-		print "\n $done students created \n";
+		print "\n$done students created \n" unless ($silent);
 	}
 	return ($students);
 }
@@ -238,7 +238,7 @@ sub create_staff {
 
 		my ($done, $xxx) = make_staff($staff, $school);
 
-		print "\n $done staff created \n";
+		print "\n$done staff created \n" unless ($silent);
 	}
 	return ($staff);
 }
@@ -250,7 +250,7 @@ sub create_rooms {
 
 		my ($done, $xxx) = make_rooms($rooms, $school);
 
-		print "\n $done rooms created \n";
+		print "\n$done rooms created \n" unless ($silent);
 	}
 	return ($rooms);
 }
@@ -262,7 +262,7 @@ sub create_groups {
 
 		my ($schools, $rooms) = make_groups($students, $school);
 
-		print "\n $schools schools processed - $rooms groups created \n";
+		print "\n$schools schools processed - $rooms groups created \n" unless ($silent);
 	}
 	return ($students);
 }
@@ -274,7 +274,7 @@ sub create_ttable {
 
 		my ($done, $cells) = make_ttable($school);
 
-		print "\n $done time table created - $cells cells \n";
+		print "\n$done time table created - $cells cells \n" unless ($silent);
 	}
 	return ($ttable);
 }
@@ -471,7 +471,7 @@ sub make_groups {
 		
 		if (! $rooms) {
 			my ($rooms, $xxx) = make_rooms("5-10", $schoolid);
-			print "\n$rooms rooms created for school_id $schoolid\n";
+			print "\n$rooms rooms created for school_id $schoolid\n" unless ($silent);
 		}
 
 #		$room_sth = $dbh->prepare($select);
@@ -540,18 +540,25 @@ sub make_groups {
 sub make_teaching_group {
 	my ($schoolid, $roomid) = @_;
 
-	# Insert TeachinGroupInfo
-	my $refid = $sd->make_new_id();
-	my $short_name = $sd->make_short_name();
-	my $long_name = $sd->make_long_name($short_name);
-	my $localid = $roomid;
-	my $yearlevel = int(rand(12)) + 1;
-	my $sth = $dbh->prepare("INSERT INTO TeachingGroup (RefId,
-		ShortName, LongName, LocalId, SchoolYear, SchoolInfo_RefId)
-		Values(?,?,?,?,?,?)");
-	$sth->execute($refid, $short_name, $long_name, $localid, $yearlevel,
-		$schoolid);
-	return $refid;
+	my $data = $sd->create_TeachinGroup({
+		schoolid => $schoolid,
+		roomid   => $roomid
+	});
+
+	my $sth = $dbh->prepare("
+		INSERT INTO TeachingGroup (
+			RefId, ShortName, LongName, LocalId, SchoolYear, SchoolInfo_RefId, KLA
+		)
+		values (
+			?,?,?,?,?,?,?
+		)
+	");
+	$sth->execute(
+		$data->{refid}, $data->{short_name}, $data->{long_name}, $data->{localid}, $data->{yearlevel}, 
+		$data->{schoolid}, $data->{kla}
+	);
+
+	return $data->{refid};
 }
 
 sub get_students {
@@ -572,7 +579,7 @@ sub get_students {
 		my $min = $upper * 2;
 		my $max = $upper * 10;
 		my ($done) = make_students("$min..$max", $school);
-		print "\n$done students created for school $school\n";
+		print "\n$done students created for school $school\n" unless ($silent);
 	}
 
 	$sth->execute();
@@ -598,7 +605,7 @@ sub get_staff {
 
 	if (! $staff) {
 		my ($done, $xxx) = make_staff("$min..$max", $school);
-		print "\n$done staff created for school $school\n";
+		print "\n$done staff created for school $school\n" unless ($silent);
 	}
 
 	$sth->execute();

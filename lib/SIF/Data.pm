@@ -15,11 +15,11 @@ SIF::Data - Create school info (Students, Staff, Schools, Timetables, etc)
 
 =head1 VERSION
 
-Version 1.01
+Version 1.02
 
 =cut
 
-our $VERSION = '1.01';
+our $VERSION = '1.02';
 
 
 =head1 SYNOPSIS
@@ -314,7 +314,6 @@ sub make_cell_type{
 sub make_kla {
 	my ($self) = @_;
 
-# my @kla = qw/English Mathematics Arts Technology Humanities Sports/;
 	my @kla = (
 		"The Arts",
 		"The Arts",
@@ -326,9 +325,22 @@ sub make_kla {
 		"Geography",
 		"Religious Education"
 	);
+
 	return $kla[int rand($#kla + 1)];
 }
 
+sub create_TeachinGroup {
+	my ($self, $data) = @_;
+
+	$data->{refid}      = $self->make_new_id();
+	$data->{short_name} = $self->make_short_name();
+	$data->{long_name}  = $self->make_long_name($data->{short_name});
+	$data->{localid}    = $data->{roomid};
+	$data->{yearlevel}  = int(rand(12)) + 1;
+	$data->{kla}        = $self->make_kla();
+
+	return $data;
+}
 
 =head1 AUTHOR
 
