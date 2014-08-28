@@ -69,8 +69,8 @@ sub db_connect {
 
 	my $dsn = $config->{mysql_driver} . ':';
 	$dsn .= 'database=' . $db_name;
-	$dsn .= ';host=' . $config->{mysql_host} if (defined $config->{mysql_host});
-	$dsn .= ';port=' . $config->{mysql_port} if (defined $config->{mysql_port});
+	$dsn .= ';host='    . $config->{mysql_host} if (defined $config->{mysql_host});
+	$dsn .= ';port='    . $config->{mysql_port} if (defined $config->{mysql_port});
 
 	my $dbh = DBI->connect(
 		$dsn,
@@ -93,12 +93,8 @@ sub create_database {
 	my $config = YAML::LoadFile($ENV{HOME} . "/.nsip_sif_data");
 
 	my $dsn = $config->{mysql_driver} . ':';
-	$dsn .= $config->{mysql_database_template};
-	$dsn .= ';host=' . $config->{mysql_host} if (defined $config->{mysql_host});
-	$dsn .= ';port=' . $config->{mysql_port} if (defined $config->{mysql_port});
-	$dsn =~ s/TEMPLATE//;
-
-	# print STDERR "DEBUG: DSN = $dsn\n";
+	$dsn .= ';host='    . $config->{mysql_host} if (defined $config->{mysql_host});
+	$dsn .= ';port='    . $config->{mysql_port} if (defined $config->{mysql_port});
 
 	my $dbh = DBI->connect(
 		$dsn, 
@@ -107,14 +103,16 @@ sub create_database {
 	 	{RaiseError => 1}
 	);
 	$dbh->do("CREATE DATABASE $db_name");
+	$dbh->disconnect;
 
 	# XXX Could replace these system calls by reading file, split on ";" ?
-	#   DBD::mysql has a parameter mysql_multi_statements: and do()
-	#  as per point 3 of Ticket 77
+	# DBD::mysql has a parameter mysql_multi_statements: and do()
+	# as per point 3 of Ticket 77
 	my $sys = '';
-	$sys .= " -u$config->{mysql_user}" if (defined $config->{mysql_user});
+	$sys .= " -u$config->{mysql_user}"     if (defined $config->{mysql_user});
 	$sys .= " -p$config->{mysql_password}" if (defined $config->{mysql_password});
-	$sys .= " -h$config->{mysql_host}" if (defined $config->{mysql_host});
+	$sys .= " -h$config->{mysql_host}"     if (defined $config->{mysql_host});
+	$sys .= " -P$config->{mysql_port}"     if (defined $config->{mysql_port});
 
 	system("/usr/bin/mysql $sys $db_name < ../schema/AU1.3/example.sql") == 0
 		or die "system call to example.sql failed\n";
