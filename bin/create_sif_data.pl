@@ -1,13 +1,23 @@
 #!/usr/bin/perl
+# Name: create_sif_data.pl
+#		By default the program assumes: 
+#		1) It is being run from the top-level repository directory (and that 'data' and 'schema' are subdirectories 
+#		   of the current directory)
+# 		2) That the user has a ~/.nsip_sif_data config file
+#
+#       To run the program from elsewhere, specify the location of the 'data' and 'schema' directories in the 
+#		~/.nsip_sif_data config file
+#
 # Usage:
-# Specify the database on the command line: 
-#     ./create_sif_data.pl --database=siftest01  --create-schools=1
+#		Specify the database on the command line: 
+#			./create_sif_data.pl --database=siftest01  --create-schools=1
 #
-# Use the database found in the ~/.nsip_sif_data file: 
-#     ./create_sif_data.pl --create-schools=1
+#		Use the database found in the ~/.nsip_sif_data file: 
+#			./create_sif_data.pl --create-schools=1
 #
-# See the usage() function below for more examples
-# See the sample .nsip_sif_data file on github.
+# Help:
+#		See the usage() function below for more command line options and examples or run ./create_sif_data.pl --help
+#		See the sample .nsip_sif_data file on github.
 
 use strict;
 use warnings;
@@ -170,6 +180,14 @@ Sample usage is:
             Requires school to have been created
   
   ./create_sif_data.pl --fix           		# Update missing data  
+
+  By default the program assumes:
+  1) It is being run from the top-level repository directory (and that 'data' and 'schema' are subdirectories
+     of the current directory)
+  2) That the user has a ~/.nsip_sif_data config file
+
+  To run the program from elsewhere, specify the location of the 'data' and 'schema' directories in the
+  ~/.nsip_sif_data config file
 
 EOT
 

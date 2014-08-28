@@ -7,6 +7,8 @@
 #   mysql_port
 #   mysql_user
 #   mysql_password
+#   data_dir
+#   schema_dir
 
 #
 # A local db using the current login name and no password
@@ -31,3 +33,9 @@
 # mysql_host: ec2-99-999-99-99.ap-southeast-2.compute.amazonaws.com
 # mysql_user: john
 # mysql_password: 8jhguyg78 
+
+#
+# Specify alternate locations for the data and schema directories
+#
+# data_dir: /tmp/data
+# schema_dir: /tmp/schema

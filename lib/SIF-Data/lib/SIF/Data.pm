@@ -15,11 +15,11 @@ SIF::Data - The great new SIF::Data!
 
 =head1 VERSION
 
-Version 0.01
+Version 1.00
 
 =cut
 
-our $VERSION = '0.01';
+our $VERSION = '1.00';
 
 
 =head1 SYNOPSIS
@@ -78,6 +78,9 @@ sub db_connect {
 		$config->{mysql_password},
 		{RaiseError => 1, AutoCommit => 1}
 	);
+
+	$self->{config} = $config;
+
 	return ($config, $dbh, $dsn);
 }
 
@@ -113,9 +116,15 @@ sub create_database {
 	$sys .= " -p$config->{mysql_password}" if (defined $config->{mysql_password});
 	$sys .= " -h$config->{mysql_host}"     if (defined $config->{mysql_host});
 	$sys .= " -P$config->{mysql_port}"     if (defined $config->{mysql_port});
+	$sys .= " -P$config->{mysql_port}"     if (defined $config->{mysql_port});
 
-	system("/usr/bin/mysql $sys $db_name < ../schema/AU1.3/example.sql") == 0
-		or die "system call to example.sql failed\n";
+	my $schema_dir = './schema/AU1.3';
+	$schema_dir = "$config->{schema_dir}"  if (defined $config->{schema_dir});
+
+	system("/usr/bin/mysql $sys $db_name < $schema_dir/example.sql") == 0
+		or die "system call to $schema_dir/example.sql failed\n";
+
+	$self->{config} = $config;
 
 	return ($db_name);
 }
@@ -125,6 +134,8 @@ sub create_database {
 =cut
 
 sub make_new_id {
+	my ($self) = @_;
+
 	my $uuid = Data::UUID->new();
 	$uuid->create_str;
 }
@@ -134,12 +145,14 @@ sub make_new_id {
 =cut
 
 sub create_school_name{
-        my $r = Data::RandomPerson->new();
-        my $p = $r->create();
-        my @school_types = ("Academy", "Grammar", "College");
-        my $school_type = $school_types[rand @school_types];
-        my $school_name = "$p->{lastname} $school_type";
-        return $school_name
+	my ($self) = @_;
+
+	my $r = Data::RandomPerson->new();
+	my $p = $r->create();
+	my @school_types = ("Academy", "Grammar", "College");
+	my $school_type = $school_types[rand @school_types];
+	my $school_name = "$p->{lastname} $school_type";
+	return $school_name
 }
 
 =head2 Create Local Id    
@@ -147,7 +160,9 @@ sub create_school_name{
 =cut
 
 sub create_localid {
-        return (int(rand(99999)) + 1000);
+	my ($self) = @_;
+
+	return (int(rand(99999)) + 1000);
 }
 
 =head2 Create Student     
@@ -155,16 +170,17 @@ sub create_localid {
 =cut
 
 sub create_student{
-        # Make a student
-        my $uuid = Data::UUID->new();
-        my $r = Data::RandomPerson->new();
-        my $p = $r->create();
-        $p->{refid} = $uuid->create_str;
-        # TODO: Properly randomly generate local addresses
-        # $p->{address} = create_address();
-        # year levels are between 1 and 12 right?
-        $p->{yearlevel} = int(rand(12)) + 1;
-        $p;
+	my ($self) = @_;
+
+	my $uuid = Data::UUID->new();
+	my $r = Data::RandomPerson->new();
+	my $p = $r->create();
+	$p->{refid} = $uuid->create_str;
+	# TODO: Properly randomly generate local addresses
+	# $p->{address} = create_address();
+	# year levels are between 1 and 12 right?
+	$p->{yearlevel} = int(rand(12)) + 1;
+	$p;
 }
 
 
@@ -173,11 +189,16 @@ sub create_student{
 =cut
 
 sub create_postcodes {
+	my ($self) = @_;
+
 	my @postcodes;
 	my $csv = Text::CSV->new ( { binary => 1 } )  # should set binary attribute.
 	  or die "Cannot use CSV: ".Text::CSV->error_diag ();
 
-	open my $fh, "<:encoding(utf8)", "../data/postcodes.csv" or die "../data/postcodes.csv: $!";
+	my $data_dir = './data';
+	$data_dir = "$self->{config}->{data_dir}"  if (defined $self->{config}->{data_dir});
+
+	open my $fh, "<:encoding(utf8)", "$data_dir/postcodes.csv" or die "$data_dir/postcodes.csv: $!";
 	while ( my $row = $csv->getline( $fh ) ) {
         	push @postcodes, $row;
 	}
@@ -192,6 +213,8 @@ sub create_postcodes {
 =cut
 
 sub create_address{
+	my ($self) = @_;
+
 	my (@postcodes) = create_postcodes();
 
 	my $r = Data::RandomPerson->new();
@@ -211,10 +234,14 @@ sub create_address{
 
 =cut
 sub make_room_size {
+	my ($self) = @_;
+
 	return (int(rand(5) + 2));
 }
 
 sub make_room_type {
+	my ($self) = @_;
+
 	my @types = ("Classroom", "Classroom", "Classroom", "Classroom", 
 	"Classroom", "Classroom", "Art", "Basketball court");
 	return $types[rand @types];
@@ -226,20 +253,28 @@ sub make_room_type {
 =cut
 
 sub make_new_year{
+	my ($self) = @_;
+
 	my $year = int(rand(12)) + 1;
 	return $year;
 }
 
 sub make_days_per_cycle {
+	my ($self) = @_;
+
 	return 10;
 }
 
 sub make_periods_per_cycle {
+	my ($self) = @_;
+
 	return 6;
 }
 
 
 sub make_short_name {
+	my ($self) = @_;
+
 	my @subjects = ("MAT", "ENG", "PHYS", "BIO", "CHEM", "COMP",
           "VIS", "ECON", "HIST");
 	my $short_name = $subjects[rand @subjects];
@@ -264,18 +299,24 @@ sub make_long_name {
 }
 
 sub make_subject_type {
+	my ($self) = @_;
+
 	my @types = ("Core","Elective","?");
 	my $i = rand @types;
 	return $types[$i];
 }
 
 sub make_cell_type{
+	my ($self) = @_;
+
 	my @celltypes = ("Teaching","Lunch");
 	my $i = rand @celltypes;
 	return $celltypes[$i];
 }
 
 sub make_kla {
+	my ($self) = @_;
+
 # my @kla = qw/English Mathematics Arts Technology Humanities Sports/;
 	my @kla = (
 		"The Arts",
