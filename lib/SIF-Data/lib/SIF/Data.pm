@@ -63,20 +63,14 @@ sub db_connect {
 
 	my $config = YAML::LoadFile($ENV{HOME} . "/.nsip_sif_data");
 
-	# Connect to database
-	my $dsn = $config->{mysql_driver} . ':';	
-	$dsn .= $config->{mysql_dsn};
+	if (! defined $db_name) {
+		$db_name = $config->{mysql_database};
+	}
+
+	my $dsn = $config->{mysql_driver} . ':';
+	$dsn .= 'database=' . $db_name;
 	$dsn .= ';host=' . $config->{mysql_host} if (defined $config->{mysql_host});
 	$dsn .= ';port=' . $config->{mysql_port} if (defined $config->{mysql_port});
-
-	if (defined $db_name) {
-		$dsn = $config->{mysql_driver} . ':';
-		$dsn .= $config->{mysql_dsn_template};
-		$dsn .= ';host=' . $config->{mysql_host} if (defined $config->{mysql_host});
-		$dsn .= ';port=' . $config->{mysql_port} if (defined $config->{mysql_port});
-		$dsn =~ s/TEMPLATE/$db_name/;
-	}
-	#print STDERR "DEBUG: DSN = $dsn\n";
 
 	my $dbh = DBI->connect(
 		$dsn,
@@ -84,7 +78,7 @@ sub db_connect {
 		$config->{mysql_password},
 		{RaiseError => 1, AutoCommit => 1}
 	);
-	return ($config, $dbh);
+	return ($config, $dbh, $dsn);
 }
 
 =head2 Create a new DataBASE
@@ -99,7 +93,7 @@ sub create_database {
 	my $config = YAML::LoadFile($ENV{HOME} . "/.nsip_sif_data");
 
 	my $dsn = $config->{mysql_driver} . ':';
-	$dsn .= $config->{mysql_dsn_template};
+	$dsn .= $config->{mysql_database_template};
 	$dsn .= ';host=' . $config->{mysql_host} if (defined $config->{mysql_host});
 	$dsn .= ';port=' . $config->{mysql_port} if (defined $config->{mysql_port});
 	$dsn =~ s/TEMPLATE//;

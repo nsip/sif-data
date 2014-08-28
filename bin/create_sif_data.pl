@@ -1,4 +1,14 @@
 #!/usr/bin/perl
+# Usage:
+# Specify the database on the command line: 
+#     ./create_sif_data.pl --database=siftest01  --create-schools=1
+#
+# Use the database found in the ~/.nsip_sif_data file: 
+#     ./create_sif_data.pl --create-schools=1
+#
+# See the usage() function below for more examples
+# See the sample .nsip_sif_data file on github.
+
 use strict;
 use warnings;
 use perl5i::2;
@@ -7,18 +17,15 @@ use Getopt::Long;
 
 my $sd = SIF::Data->new();
 
-# Get and process command line options
-my ($schools, $students, $staff, 
-	$rooms, $groups, $fix, $create_db, 
-	$db_name, $ttable, $school_id, $elements) = get_args();
+my ($schools, $students, $staff, $rooms, $groups, $fix, $create_db, 
+    $db_name, $ttable, $school_id, $elements, $silent) = get_args();
 
 if (defined $create_db) {
 	$db_name = $sd->create_database($create_db);
 }
 
-print "db_name = $db_name\n" if (defined $db_name);
-
-my($config, $dbh) = $sd->db_connect($db_name);
+my ($config, $dbh, $dsn) = $sd->db_connect($db_name);
+print "DSN = $dsn\n" unless ($silent);
 
 if (defined $school_id) {
 	my $val = validate_school_id($school_id);
@@ -71,9 +78,11 @@ sub get_args {
 	my $db_name   = undef;
 	my $school_id = undef;
 	my $ttable    = undef;
+	my $silent    = 0;
 
 	my $result = GetOptions (
 		"help"						  => \$help,
+		"silent"					  => \$silent,
 		"create-schools=s"            => \$schools,
 		"create-students=s"           => \$students,
 		"create-staff=s"              => \$staff,
@@ -128,7 +137,7 @@ sub get_args {
 		$school_id = $ttable;
 	}
 
-	return ($schools, $students, $staff, $rooms, $groups, $fix, $create_db, $db_name, $ttable,  $school_id, $elements);
+	return ($schools, $students, $staff, $rooms, $groups, $fix, $create_db, $db_name, $ttable,  $school_id, $elements, $silent);
 }
 
 sub usage_exit {
