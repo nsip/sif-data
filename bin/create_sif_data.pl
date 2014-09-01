@@ -318,20 +318,23 @@ sub make_schools {
 		my $data = $sd->create_SchoolInfo({
 			#schoolid => $schoolid,
 		});
-		my $local_id = $sd->create_localid();
 		my $uuid = $sd->make_new_id();
-		my $school_name = $sd->create_school_name();
 
 		my $sth = $dbh->prepare("
 			INSERT INTO SchoolInfo (
-				RefId, LocalId, SchoolName, CampusSchoolCampusId, CampusAdminStatus, CampusCampusType
+				RefId, LocalId, SchoolName, CampusSchoolCampusId, CampusAdminStatus, CampusCampusType,
+				StateProvinceId, CommonwealthId, SchoolSector, OperationalStatus, 
+				IndependentSchool, Address_ARIA, Entity_Open
 			) Values (
-				?,?,?,?,?,?
+				?,?,?,?,?,?,?,?,?,?,?,?,?
 			)
 		");
 		$sth->execute(
-			$uuid, $local_id, $school_name, 
+			$uuid, $sd->create_localid(), $sd->create_school_name(),
 			$data->{CampusSchoolCampusId}, $data->{CampusAdminStatus}, $data->{CampusCampusType},
+			$data->{StateProvinceId}, $data->{CommonwealthId}, $data->{SchoolSector}, $data->{OperationalStatus},
+			$data->{IndependentSchool},
+			$data->{Address_ARIA}, $data->{Entity_Open}
 		);
 
 		print "School RefId = $uuid\n" unless ($silent);

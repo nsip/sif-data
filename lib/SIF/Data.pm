@@ -362,6 +362,13 @@ sub create_SchoolInfo {
 	$data->{CampusSchoolCampusId} = int(rand(4)) + 1;
 	$data->{CampusAdminStatus}    = rand(10) > 8 ? 'N' : 'Y';
 	$data->{CampusCampusType}     = $campus[int rand($#campus + 1)];
+	$data->{StateProvinceId}      = int(rand(4)) + 1;
+	$data->{CommonwealthId}       = '8';
+	$data->{SchoolSector}         = 'GOV';
+	$data->{OperationalStatus}    = 'O';
+	$data->{IndependentSchool}    = 'No';
+	$data->{Address_ARIA}         = '1.0';
+	$data->{Entity_Open}          = '1/1/1990';
 
 	return $data;
 }
