@@ -350,7 +350,6 @@ sub make_students {
 
 	my $cnt = 0;
 
-	# Get School Info
 	my $sth;
 	if (defined $school) {
 		$sth = $dbh->prepare("SELECT * from SchoolInfo WHERE RefId = \"$school\"");
@@ -359,7 +358,6 @@ sub make_students {
 	}
 	$sth->execute();
 
-	# Insert students into table
 	while (my $row = $sth->fetchrow_hashref) {
 		my $schoolid = $row->{RefId};
 
@@ -368,23 +366,31 @@ sub make_students {
 		for (my $i = 0; $i < $num_students; $i++){
 			my $data = $sd->create_StudentPersonal({});
 
-		    #my $student = $sd->create_student();
 		    my $local_id = $sd->create_localid();
-		    my  $sth = $dbh->prepare("
+		    my $sth = $dbh->prepare("
 				INSERT INTO StudentPersonal (
 					RefId, LocalId, FamilyName, GivenName, MiddleName, PreferredGivenName, SchoolInfo_RefId, YearLevel,
 					StateProvinceId, Sex, BirthDate, IndigenousStatus,
-					CountryofBirth, MostRecent_Parent1Language, MostRecent_Parent2Language
+					CountryofBirth, MostRecent_YearLevel, MostRecent_Parent1Language, MostRecent_Parent2Language,
+					MostRecent_Parent1SchoolEducation, MostRecent_Parent2SchoolEducation,
+					MostRecent_Parent1NonSchoolEducation, MostRecent_Parent2NonSchoolEducation,
+					MostRecent_Parent1EmploymentType, MostRecent_Parent2EmploymentType,
+					Email
+
 				) VALUES (
-					?,?,?,?,?,?,?,?,?,?,?,?,?,?,?
+					?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?
 				)
 			");
 		    $sth->execute(
 				$data->{refid}, $local_id, $data->{FamilyName}, $data->{GivenName}, $data->{MiddleName},
 				$data->{GivenName}, $schoolid, $data->{yearlevel},
 				$data->{StateProvinceId}, $data->{Sex}, $data->{BirthDate}, $data->{IndigenousStatus},
-				$data->{CountryofBirth},
+				$data->{CountryofBirth}, $data->{MostRecent_YearLevel},
 				$data->{MostRecent_Parent1Language}, $data->{MostRecent_Parent2Language},
+				$data->{MostRecent_Parent1SchoolEducation}, $data->{MostRecent_Parent2SchoolEducation},
+				$data->{MostRecent_Parent1NonSchoolEducation}, $data->{MostRecent_Parent2NonSchoolEducation},
+				$data->{MostRecent_Parent1EmploymentType}, $data->{MostRecent_Parent2EmploymentType},
+				$data->{Email}
 			); 
 
 			++$cnt;

@@ -190,6 +190,8 @@ sub create_StudentPersonal {
 		'Neither Aboriginal or Torres Strait Origin',
 		'Not Stated/Unknown'
 	);
+	my @non_school_ed = ( 0,5,6,7,8 );
+	my @empl_type     = ( 1,2,3,4,8,9 );
 
 	my $r = Data::RandomPerson->new();
 	my @p;
@@ -216,14 +218,26 @@ sub create_StudentPersonal {
 	# $p[0]->{address} = create_address();
 
 	# year levels are between 1 and 12 right?
-	$data->{yearlevel}                  = int(rand(12)) + 1;
-	$data->{StateProvinceId}            = 16;
-	$data->{Sex}                        = $sex;
-	$data->{BirthDate}                  = create_birthdate('1994-01-01', '2009-01-01');
-	$data->{IndigenousStatus}           = $indigenous[int rand($#indigenous + 1)]; 
-	$data->{CountryofBirth}             = '1101';
-	$data->{MostRecent_Parent1Language} = '1201';
-	$data->{MostRecent_Parent2Language} = '1201';
+	$data->{yearlevel}                            = int(rand(12)) + 1;
+	$data->{StateProvinceId}                      = 16;
+	$data->{Sex}                                  = $sex;
+	$data->{BirthDate}                            = create_birthdate('1994-01-01', '2009-01-01');
+	$data->{IndigenousStatus}                     = $indigenous[int rand($#indigenous + 1)]; 
+	$data->{CountryofBirth}                       = '1101';
+	$data->{MostRecent_YearLevel}                 = $data->{yearlevel};
+	$data->{MostRecent_Parent1Language}           = '1201';
+	$data->{MostRecent_Parent2Language}           = '1201';
+	$data->{MostRecent_Parent1SchoolEducation}    = int(rand(5));
+	$data->{MostRecent_Parent2SchoolEducation}    = int(rand(5));
+	$data->{MostRecent_Parent1NonSchoolEducation} = $non_school_ed[int rand($#non_school_ed + 1)];
+	$data->{MostRecent_Parent2NonSchoolEducation} = $non_school_ed[int rand($#non_school_ed + 1)];
+	$data->{MostRecent_Parent1EmploymentType}     = $empl_type[int rand($#empl_type + 1)];
+	$data->{MostRecent_Parent2EmploymentType}     = $empl_type[int rand($#empl_type + 1)];
+	$data->{Email}                                = create_email(
+		$data->{GivenName}, 
+		$data->{MiddleName}, 
+		$data->{FamilyName}
+	);
 
 	return $data;
 }
@@ -231,6 +245,21 @@ sub create_StudentPersonal {
 sub create_birthdate {
 	my ($min, $max) = @_;
 	return rand_date( min => $min, max => $max ) . '';
+}
+
+sub create_email {
+	my ($GivenName,  $MiddleName, $FamilyName) = @_;
+
+	# Random address ?
+	# Random domain ?
+	# NO duplicates !
+
+	my @domain = qw/mail.vic.edu.au people.vic.edu.au vic.edu.au dashboard.vic.edu.au distance.vic.edu.au/;
+	return ''
+		. $FamilyName . '.' . $GivenName . '.' . substr($MiddleName, 0, 1)
+		#TODO . int(rand(10))
+		. '@'
+		. $domain[int rand($#domain + 1)]
 }
 
 =head2 Create Postcodes   
