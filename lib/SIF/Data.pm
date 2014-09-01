@@ -169,28 +169,36 @@ sub create_localid {
 
 =cut
 
-sub create_student{
-	my ($self) = @_;
+sub create_StudentPersonal{
+	my ($self, $data) = @_;
 
 	my $r = Data::RandomPerson->new();
 	my @p;
 
 	$p[0] = $r->create();
+	$data->{FamilyName} = $p[0]->{lastname};
+	$data->{GivenName}  = $p[0]->{firstname}; 
 
 	if ($p[0]->{gender} eq 'f') {
 		$p[1] = Data::RandomPerson::Names::Female->new();
-		$p[0]->{MiddleName} = $p[1]->get();
+		$data->{MiddleName} = $p[1]->get();
 	} else {
 		$p[1] = Data::RandomPerson::Names::Male->new();
-		$p[0]->{MiddleName} = $p[1]->get();
+		$data->{MiddleName} = $p[1]->get();
 	}
 
-	$p[0]->{refid} = $self->make_new_id;
+	$data->{refid} = $self->make_new_id;
 	# TODO: Properly randomly generate local addresses
 	# $p[0]->{address} = create_address();
+
 	# year levels are between 1 and 12 right?
-	$p[0]->{yearlevel} = int(rand(12)) + 1;
-	$p[0];
+	$data->{yearlevel}                  = int(rand(12)) + 1;
+	$data->{StateProvinceId}            = 16;
+	$data->{CountryofBirth}             = '1101';
+	$data->{MostRecent_Parent1Language} = '1201';
+	$data->{MostRecent_Parent2Language} = '1201';
+
+	return $data;
 }
 
 

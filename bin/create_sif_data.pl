@@ -365,19 +365,24 @@ sub make_students {
 
 		my ($num_students) = get_range($students);
 
-		for(my $i = 0; $i < $num_students; $i++){
-		    my $student = $sd->create_student();
+		for (my $i = 0; $i < $num_students; $i++){
+			my $data = $sd->create_StudentPersonal({});
+
+		    #my $student = $sd->create_student();
 		    my $local_id = $sd->create_localid();
 		    my  $sth = $dbh->prepare("
 				INSERT INTO StudentPersonal (
-					RefId, LocalId, FamilyName, GivenName, MiddleName, PreferredGivenName, SchoolInfo_RefId, YearLevel
+					RefId, LocalId, FamilyName, GivenName, MiddleName, PreferredGivenName, SchoolInfo_RefId, YearLevel,
+					StateProvinceId, CountryofBirth, MostRecent_Parent1Language, MostRecent_Parent2Language
 				) VALUES (
-					?,?,?,?,?,?,?,?
+					?,?,?,?,?,?,?,?,?,?,?,?
 				)
 			");
 		    $sth->execute(
-				$student->{refid}, $local_id, $student->{lastname}, $student->{firstname}, $student->{MiddleName},
-				$student->{firstname}, $schoolid, $student->{yearlevel}
+				$data->{refid}, $local_id, $data->{FamilyName}, $data->{GivenName}, $data->{MiddleName},
+				$data->{GivenName}, $schoolid, $data->{yearlevel},
+				$data->{StateProvinceId}, $data->{CountryofBirth},
+				$data->{MostRecent_Parent1Language}, $data->{MostRecent_Parent2Language},
 			); 
 
 			++$cnt;
