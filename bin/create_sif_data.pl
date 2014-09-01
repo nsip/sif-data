@@ -312,13 +312,27 @@ sub get_range {
 sub make_schools {
 	my ($schools) = @_;
 
+
 	my $cnt = 0;
 	for (my $i = 0; $i < $schools ; $i++){
+		my $data = $sd->create_SchoolInfo({
+			#schoolid => $schoolid,
+		});
 		my $local_id = $sd->create_localid();
 		my $uuid = $sd->make_new_id();
 		my $school_name = $sd->create_school_name();
-		my $sth = $dbh->prepare("INSERT INTO SchoolInfo (RefId, LocalId, SchoolName) Values(?,?,?)");
-		$sth->execute($uuid,$local_id,$school_name);
+
+		my $sth = $dbh->prepare("
+			INSERT INTO SchoolInfo (
+				RefId, LocalId, SchoolName, CampusSchoolCampusId, CampusAdminStatus, CampusCampusType
+			) Values (
+				?,?,?,?,?,?
+			)
+		");
+		$sth->execute(
+			$uuid, $local_id, $school_name, 
+			$data->{CampusSchoolCampusId}, $data->{CampusAdminStatus}, $data->{CampusCampusType},
+		);
 
 		print "School RefId = $uuid\n" unless ($silent);
 
@@ -479,7 +493,7 @@ sub make_groups {
 
 		while (my $room = $room_sth->fetchrow_hashref) {
 			my $roomid = $room->{RefId};
-			# Insert TeachinGroupInfo
+			# Insert TeachingGroupInfo
 			my ($refid) = make_teaching_group($schoolid, $roomid);
 			++$room_cnt;
 
@@ -540,7 +554,7 @@ sub make_groups {
 sub make_teaching_group {
 	my ($schoolid, $roomid) = @_;
 
-	my $data = $sd->create_TeachinGroup({
+	my $data = $sd->create_TeachingGroup({
 		schoolid => $schoolid,
 		roomid   => $roomid
 	});

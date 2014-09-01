@@ -15,11 +15,11 @@ SIF::Data - Create school info (Students, Staff, Schools, Timetables, etc)
 
 =head1 VERSION
 
-Version 1.02
+Version 1.03
 
 =cut
 
-our $VERSION = '1.02';
+our $VERSION = '1.03';
 
 
 =head1 SYNOPSIS
@@ -329,7 +329,7 @@ sub make_kla {
 	return $kla[int rand($#kla + 1)];
 }
 
-sub create_TeachinGroup {
+sub create_TeachingGroup {
 	my ($self, $data) = @_;
 
 	$data->{refid}      = $self->make_new_id();
@@ -338,6 +338,30 @@ sub create_TeachinGroup {
 	$data->{localid}    = $data->{roomid};
 	$data->{yearlevel}  = int(rand(12)) + 1;
 	$data->{kla}        = $self->make_kla();
+
+	return $data;
+}
+
+sub create_SchoolInfo {
+	my ($self, $data) = @_;
+
+	# 10% JunPri?, 10% Middle School 20% Secondary 50% Primary and 10% Pri/Sec?
+	my @campus = (
+		'JunPri',
+		'Middle',
+		'Prim',
+		'Prim',
+		'Prim',
+		'Prim',
+		'Prim',
+		'Sec',
+		'Sec',
+		'Pri/Sec',
+	);
+
+	$data->{CampusSchoolCampusId} = int(rand(4)) + 1;
+	$data->{CampusAdminStatus}    = rand(10) > 8 ? 'N' : 'Y';
+	$data->{CampusCampusType}     = $campus[int rand($#campus + 1)];
 
 	return $data;
 }
