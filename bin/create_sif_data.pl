@@ -324,17 +324,20 @@ sub make_schools {
 			INSERT INTO SchoolInfo (
 				RefId, LocalId, SchoolName, CampusSchoolCampusId, CampusAdminStatus, CampusCampusType,
 				StateProvinceId, CommonwealthId, SchoolSector, OperationalStatus, 
-				IndependentSchool, Address_ARIA, Entity_Open
+				IndependentSchool, SchoolType, 
+				Address_Street_StreetNumber, Address_Street_StreetName, Address_City, Address_StateProvince,
+				Address_PostalCode, Address_ARIA, Entity_Open
 			) Values (
-				?,?,?,?,?,?,?,?,?,?,?,?,?
+				?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?
 			)
 		");
 		$sth->execute(
 			$uuid, $sd->create_localid(), $sd->create_school_name(),
 			$data->{CampusSchoolCampusId}, $data->{CampusAdminStatus}, $data->{CampusCampusType},
 			$data->{StateProvinceId}, $data->{CommonwealthId}, $data->{SchoolSector}, $data->{OperationalStatus},
-			$data->{IndependentSchool},
-			$data->{Address_ARIA}, $data->{Entity_Open}
+			$data->{IndependentSchool}, $data->{SchoolType},
+			$data->{Address_Street_StreetNumber}, $data->{Address_Street_StreetName}, $data->{Address_City},
+			$data->{Address_StateProvince}, $data->{Address_PostalCode}, $data->{Address_ARIA}, $data->{Entity_Open},
 		);
 
 		print "School RefId = $uuid\n" unless ($silent);

@@ -214,17 +214,45 @@ sub create_address{
 
 	my (@postcodes) = create_postcodes();
 
+	my $address = ();
 	my $r = Data::RandomPerson->new();
 	my $p = $r->create();
-	my @roads = ("Road","Street","Court","Crescent","Drive","Avenue",
-	"Boulevard", "Lane","Way","Walk","Square");
+	my @road_types = (
+		"Avenue", 
+		"Boulevard", 
+		"Cove", "Court", "Crescent",
+		"Drive",
+		"Esplanade",
+		"Lane",
+		"Place",
+		"Road",
+		"Square", "Street",
+		"Terrace",
+		"Walk", "Way",
+	);
 	my $stnumber = int(rand(300))+1;
-	my $index = rand @roads;
-	my $road = $roads[$index];
+	my $index = rand @road_types;
+	my $road_type = $road_types[$index];
 	$index = rand @postcodes;
 	my @postbox = $postcodes[$index];
-	my $address = "$stnumber $p->{firstname} $road, $postbox[0][1], $postbox[0][2], $postbox[0][0]";
-	$address;
+	#my $address = "$stnumber $p->{firstname} $road_type, $postbox[0][1], $postbox[0][2], $postbox[0][0]";
+	print "$stnumber $p->{firstname} $road_type, $postbox[0][1], $postbox[0][2], $postbox[0][0]\n";
+
+	# Address_StateProvince
+	# Address_City
+	# Address_PostalCode
+	# Address_Street_StreetNumber
+	# Address_Street_StreetName
+
+	# 279 Nada Road, FAWCETTS PLAIN, NSW, 2474
+
+	$address->{StreetNumber}  = $stnumber;
+	$address->{StreetName}    = $p->{firstname} . $road_type;
+	$address->{City}          = $postbox[0][1];
+	$address->{StateProvince} = $postbox[0][2];
+	$address->{PostalCode}    = $postbox[0][0];
+
+	return $address;
 }
 
 =head2 Create Room elements
@@ -359,16 +387,25 @@ sub create_SchoolInfo {
 		'Pri/Sec',
 	);
 
-	$data->{CampusSchoolCampusId} = int(rand(4)) + 1;
-	$data->{CampusAdminStatus}    = rand(10) > 8 ? 'N' : 'Y';
-	$data->{CampusCampusType}     = $campus[int rand($#campus + 1)];
-	$data->{StateProvinceId}      = int(rand(4)) + 1;
-	$data->{CommonwealthId}       = '8';
-	$data->{SchoolSector}         = 'GOV';
-	$data->{OperationalStatus}    = 'O';
-	$data->{IndependentSchool}    = 'No';
-	$data->{Address_ARIA}         = '1.0';
-	$data->{Entity_Open}          = '1/1/1990';
+	my $address = $self->create_address();
+
+	$data->{CampusSchoolCampusId}        = int(rand(4)) + 1;
+	$data->{CampusAdminStatus}           = rand(10) > 8 ? 'N' : 'Y';
+	$data->{CampusCampusType}            = $campus[int rand($#campus + 1)];
+	$data->{StateProvinceId}             = int(rand(4)) + 1;
+	$data->{CommonwealthId}              = '8';
+	$data->{SchoolSector}                = 'GOV';
+	$data->{OperationalStatus}           = 'O';
+	$data->{IndependentSchool}           = 'No';
+	$data->{SchoolType}                  = $data->{CampusCampusType},
+	$data->{Address_ARIA}                = '1.0';
+	$data->{Entity_Open}                 = '1/1/1990';
+
+	$data->{Address_Street_StreetNumber} = $address->{StreetNumber};
+	$data->{Address_Street_StreetName}   = $address->{StreetName};
+	$data->{Address_City}                = $address->{City};
+	$data->{Address_StateProvince}       = $address->{StateProvince};
+	$data->{Address_PostalCode}          = $address->{PostalCode};
 
 	return $data;
 }
