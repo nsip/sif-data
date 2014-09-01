@@ -173,13 +173,24 @@ sub create_student{
 	my ($self) = @_;
 
 	my $r = Data::RandomPerson->new();
-	my $p = $r->create();
-	$p->{refid} = $self->make_new_id;
+	my @p;
+
+	$p[0] = $r->create();
+
+	if ($p[0]->{gender} eq 'f') {
+		$p[1] = Data::RandomPerson::Names::Female->new();
+		$p[0]->{MiddleName} = $p[1]->get();
+	} else {
+		$p[1] = Data::RandomPerson::Names::Male->new();
+		$p[0]->{MiddleName} = $p[1]->get();
+	}
+
+	$p[0]->{refid} = $self->make_new_id;
 	# TODO: Properly randomly generate local addresses
-	# $p->{address} = create_address();
+	# $p[0]->{address} = create_address();
 	# year levels are between 1 and 12 right?
-	$p->{yearlevel} = int(rand(12)) + 1;
-	$p;
+	$p[0]->{yearlevel} = int(rand(12)) + 1;
+	$p[0];
 }
 
 

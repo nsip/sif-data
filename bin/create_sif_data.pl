@@ -315,9 +315,7 @@ sub make_schools {
 
 	my $cnt = 0;
 	for (my $i = 0; $i < $schools ; $i++){
-		my $data = $sd->create_SchoolInfo({
-			#schoolid => $schoolid,
-		});
+		my $data = $sd->create_SchoolInfo({});
 		my $uuid = $sd->make_new_id();
 
 		my $sth = $dbh->prepare("
@@ -327,7 +325,7 @@ sub make_schools {
 				IndependentSchool, SchoolType, 
 				Address_Street_StreetNumber, Address_Street_StreetName, Address_City, Address_StateProvince,
 				Address_PostalCode, Address_ARIA, Entity_Open
-			) Values (
+			) VALUES (
 				?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?
 			)
 		");
@@ -370,12 +368,17 @@ sub make_students {
 		for(my $i = 0; $i < $num_students; $i++){
 		    my $student = $sd->create_student();
 		    my $local_id = $sd->create_localid();
-		    my  $sth0 = $dbh->prepare("INSERT INTO StudentPersonal (RefId,
-		    LocalId, FamilyName, GivenName, SchoolInfo_RefId, YearLevel)
-		    Values(?,?,?,?,?,?)");
-		    $sth0->execute($student->{refid}, $local_id,
-		    $student->{lastname},$student->{firstname},
-		    $schoolid, $student->{yearlevel});
+		    my  $sth = $dbh->prepare("
+				INSERT INTO StudentPersonal (
+					RefId, LocalId, FamilyName, GivenName, MiddleName, PreferredGivenName, SchoolInfo_RefId, YearLevel
+				) VALUES (
+					?,?,?,?,?,?,?,?
+				)
+			");
+		    $sth->execute(
+				$student->{refid}, $local_id, $student->{lastname}, $student->{firstname}, $student->{MiddleName},
+				$student->{firstname}, $schoolid, $student->{yearlevel}
+			); 
 
 			++$cnt;
 		}
