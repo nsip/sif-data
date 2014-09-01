@@ -248,19 +248,9 @@ sub create_address{
 	my $road_type = $road_types[$index];
 	$index = rand @postcodes;
 	my @postbox = $postcodes[$index];
-	#my $address = "$stnumber $p->{firstname} $road_type, $postbox[0][1], $postbox[0][2], $postbox[0][0]";
-	print "$stnumber $p->{firstname} $road_type, $postbox[0][1], $postbox[0][2], $postbox[0][0]\n";
-
-	# Address_StateProvince
-	# Address_City
-	# Address_PostalCode
-	# Address_Street_StreetNumber
-	# Address_Street_StreetName
-
-	# 279 Nada Road, FAWCETTS PLAIN, NSW, 2474
 
 	$address->{StreetNumber}  = $stnumber;
-	$address->{StreetName}    = $p->{firstname} . $road_type;
+	$address->{StreetName}    = $p->{firstname} . ' ' . $road_type;
 	$address->{City}          = $postbox[0][1];
 	$address->{StateProvince} = $postbox[0][2];
 	$address->{PostalCode}    = $postbox[0][0];
