@@ -135,7 +135,9 @@ sub make_new_id {
 	my ($self) = @_;
 
 	my $uuid = Data::UUID->new();
-	$uuid->create_hex;  # was create_str() before #78
+	my $id = $uuid->create_hex;  # was create_str() before #78
+	$id =~ s/^0x//;
+	return $id;
 }
 
 =head2 Create school name
