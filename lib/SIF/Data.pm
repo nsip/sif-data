@@ -6,6 +6,7 @@ use warnings FATAL => 'all';
 use Text::CSV;
 use Data::UUID;
 use Data::RandomPerson;
+use Data::Random qw/:all/;
 use YAML;
 use DBI;
 
@@ -169,8 +170,26 @@ sub create_localid {
 
 =cut
 
-sub create_StudentPersonal{
+sub create_StudentPersonal {
 	my ($self, $data) = @_;
+
+	my $sex;
+
+	my @indigenous = (
+		'Aboriginal but not Torres Strait Islander Origin',
+		'Torres Strait Islander but Not Aboriginal Origin',
+		'Both Torres Strait and Aboriginal Origin',
+		'Neither Aboriginal or Torres Strait Origin',
+		'Neither Aboriginal or Torres Strait Origin',
+		'Neither Aboriginal or Torres Strait Origin',
+		'Neither Aboriginal or Torres Strait Origin',
+		'Neither Aboriginal or Torres Strait Origin',
+		'Neither Aboriginal or Torres Strait Origin',
+		'Neither Aboriginal or Torres Strait Origin',
+		'Neither Aboriginal or Torres Strait Origin',
+		'Neither Aboriginal or Torres Strait Origin',
+		'Not Stated/Unknown'
+	);
 
 	my $r = Data::RandomPerson->new();
 	my @p;
@@ -180,11 +199,16 @@ sub create_StudentPersonal{
 	$data->{GivenName}  = $p[0]->{firstname}; 
 
 	if ($p[0]->{gender} eq 'f') {
+		$sex = 'Female';
 		$p[1] = Data::RandomPerson::Names::Female->new();
 		$data->{MiddleName} = $p[1]->get();
 	} else {
+		$sex = 'Male';
 		$p[1] = Data::RandomPerson::Names::Male->new();
 		$data->{MiddleName} = $p[1]->get();
+	}
+	if (int rand(10) == 1) {
+		$sex = 'Unknown';
 	}
 
 	$data->{refid} = $self->make_new_id;
@@ -194,6 +218,9 @@ sub create_StudentPersonal{
 	# year levels are between 1 and 12 right?
 	$data->{yearlevel}                  = int(rand(12)) + 1;
 	$data->{StateProvinceId}            = 16;
+	$data->{Sex}                        = $sex;
+	$data->{BirthDate}                  = create_birthdate('1994-01-01', '2009-01-01');
+	$data->{IndigenousStatus}           = $indigenous[int rand($#indigenous + 1)]; 
 	$data->{CountryofBirth}             = '1101';
 	$data->{MostRecent_Parent1Language} = '1201';
 	$data->{MostRecent_Parent2Language} = '1201';
@@ -201,6 +228,10 @@ sub create_StudentPersonal{
 	return $data;
 }
 
+sub create_birthdate {
+	my ($min, $max) = @_;
+	return rand_date( min => $min, max => $max ) . '';
+}
 
 =head2 Create Postcodes   
 

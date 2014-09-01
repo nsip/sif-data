@@ -373,15 +373,17 @@ sub make_students {
 		    my  $sth = $dbh->prepare("
 				INSERT INTO StudentPersonal (
 					RefId, LocalId, FamilyName, GivenName, MiddleName, PreferredGivenName, SchoolInfo_RefId, YearLevel,
-					StateProvinceId, CountryofBirth, MostRecent_Parent1Language, MostRecent_Parent2Language
+					StateProvinceId, Sex, BirthDate, IndigenousStatus,
+					CountryofBirth, MostRecent_Parent1Language, MostRecent_Parent2Language
 				) VALUES (
-					?,?,?,?,?,?,?,?,?,?,?,?
+					?,?,?,?,?,?,?,?,?,?,?,?,?,?,?
 				)
 			");
 		    $sth->execute(
 				$data->{refid}, $local_id, $data->{FamilyName}, $data->{GivenName}, $data->{MiddleName},
 				$data->{GivenName}, $schoolid, $data->{yearlevel},
-				$data->{StateProvinceId}, $data->{CountryofBirth},
+				$data->{StateProvinceId}, $data->{Sex}, $data->{BirthDate}, $data->{IndigenousStatus},
+				$data->{CountryofBirth},
 				$data->{MostRecent_Parent1Language}, $data->{MostRecent_Parent2Language},
 			); 
 
