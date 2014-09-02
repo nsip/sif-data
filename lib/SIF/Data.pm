@@ -285,6 +285,21 @@ sub create_StaffPersonal {
 	return $data;
 }
 
+sub create_StaffAssignment {
+	my ($self, $data) = @_;
+
+	$data->{refid} = $self->make_new_id;
+	$data->{SchoolYear} = '2014';
+	$data->{Description} = '';
+	$data->{PrimaryAssignment} = 'U';
+	$data->{JobStartDate} = '1/1/1990';
+	$data->{JobEndDate} = '';
+	$data->{JobFunction} = '';
+	$data->{StaffActivity_Code} = '';
+
+	return $data;
+}
+
 sub create_birthdate {
 	my ($min, $max) = @_;
 	return rand_date( min => $min, max => $max ) . '';

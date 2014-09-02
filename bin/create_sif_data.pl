@@ -442,6 +442,22 @@ sub make_staff {
 
 			$refid = $data->{refid};
 
+			# Add to StaffAssignment
+			my $assign = $sd->create_StaffAssignment({});
+			my  $sth1 = $dbh->prepare("INSERT INTO StaffAssignment (RefId,
+			SchoolInfo_RefId, SchoolYear, StaffPersonal_RefID, Description, 
+			PrimaryAssignment, JobStartDate, JobEndDate, JobFunction, 
+			StaffActivity_Code)
+			Values(?,?,?,?,?,?,?,?,?,?)");
+
+			$sth1->execute(
+				$assign->{refid}, $schoolid, $assign->{SchoolYear},
+				$refid, $assign->{Description}, 
+				$assign->{PrimaryAssignment}, $assign->{JobStartDate}, 
+				$assign->{JobEndDate}, $assign->{JobFunction}, 
+				$assign->{StaffActivity_Code}
+			);
+
 			++$cnt;
 		}
 	}
