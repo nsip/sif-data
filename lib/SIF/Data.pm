@@ -242,9 +242,68 @@ sub create_StudentPersonal {
 	return $data;
 }
 
+sub create_StaffPersonal {
+	my ($self, $data) = @_;
+
+	my $sex;
+
+	my $r = Data::RandomPerson->new();
+	my @p;
+
+	$p[0] = $r->create();
+	$data->{FamilyName} = $p[0]->{lastname};
+	$data->{GivenName}  = $p[0]->{firstname}; 
+
+	if ($p[0]->{gender} eq 'f') {
+		$sex = 'Female';
+		$p[1] = Data::RandomPerson::Names::Female->new();
+		$data->{MiddleName} = $p[1]->get();
+		$data->{Salutation} = create_salutation($sex);
+
+	} else {
+		$sex = 'Male';
+		$p[1] = Data::RandomPerson::Names::Male->new();
+		$data->{MiddleName} = $p[1]->get();
+		$data->{Salutation} = create_salutation($sex);
+	}
+
+	$data->{refid} = $self->make_new_id;
+	# TODO: Properly randomly generate local addresses
+	# $p[0]->{address} = create_address();
+
+	$data->{PreferredGivenName} = $data->{GivenName};
+	$data->{Sex}                = $sex;
+	$data->{StateProvinceId}    = 16;
+	$data->{EmploymentStatus}   = 'A';
+	$data->{PhoneNumber}        = '';
+	$data->{Email}              = create_email(
+		$data->{GivenName}, 
+		$data->{MiddleName}, 
+		$data->{FamilyName}
+	);
+
+	return $data;
+}
+
 sub create_birthdate {
 	my ($min, $max) = @_;
 	return rand_date( min => $min, max => $max ) . '';
+}
+
+sub create_salutation {
+	my ($sex) = @_;
+
+	my @salutation;
+
+	if ($sex eq 'Male') {
+		@salutation = qw( Mr Dr Mr );		
+	}
+
+	if ($sex eq 'Female') {
+		@salutation = qw( Mrs Dr Ms Miss );		
+	}
+
+	return ($salutation[int rand($#salutation + 1)]);
 }
 
 sub create_email {

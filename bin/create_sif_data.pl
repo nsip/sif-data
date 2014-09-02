@@ -421,15 +421,27 @@ sub make_staff {
 		my ($num_staff) = get_range($staff);
 
 		for(my $i = 0; $i < $num_staff; $i++){
-			my $staff = $sd->create_student();
+			my $data = $sd->create_StaffPersonal({});
+
 			my $local_id = $sd->create_localid();
 			my  $sth0 = $dbh->prepare("INSERT INTO StaffPersonal (RefId,
-			LocalId, FamilyName, GivenName, SchoolInfo_RefId)
-			Values(?,?,?,?,?)");
-			$sth0->execute($staff->{refid}, $local_id,
-			$staff->{lastname},$staff->{firstname},
-			$schoolid);
-			$refid = $staff->{refid};
+			LocalId, FamilyName, GivenName, MiddleName, PreferredGivenName,
+			SchoolInfo_RefId, StateProvinceId, Sex, EmploymentStatus, 
+			PhoneNumber, Email, Salutation)
+			Values(?,?,?,?,?,?,?,?,?,?,?,?,?)");
+
+			$sth0->execute(
+				$data->{refid}, $local_id, $data->{FamilyName},
+				$data->{GivenName}, $data->{MiddleName},
+				$data->{PreferredGivenName}, $schoolid,
+				$data->{StateProvinceId}, $data->{Sex},
+				$data->{EmploymentStatus}, $data->{PhoneNumber},
+				$data->{Email}, $data->{Salutation}
+
+			);
+
+			$refid = $data->{refid};
+
 			++$cnt;
 		}
 	}
