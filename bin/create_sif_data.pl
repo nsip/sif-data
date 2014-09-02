@@ -601,12 +601,13 @@ sub make_groups {
 				if (defined $staff[$staff_num]) {
 					my $sth_tg_staff = $dbh->prepare(q{
 						INSERT INTO TeachingGroup_Teacher
-						(TeachingGroup_RefId, StaffPersonal_RefId) 
-						VALUES (?, ?)
+						(TeachingGroup_RefId, StaffPersonal_RefId, 
+						TeacherAssociation, TeacherLocalId) 
+						VALUES (?, ?, ?, ?)
  					});
 
 					$sth_tg_staff->execute(
-						$refid, $staff[$staff_num]
+						$refid, $staff[$staff_num], '', ''
 					);
 				}
 			}
