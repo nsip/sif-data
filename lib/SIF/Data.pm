@@ -242,6 +242,21 @@ sub create_StudentPersonal {
 	return $data;
 }
 
+sub create_StudentSchoolEnrollment {
+	my ($self, $yearlevel) = @_;
+
+	my $data;
+	$data->{refid}          = $self->make_new_id;
+	$data->{MembershipType} = '01';
+	$data->{SchoolYear}     = '2014';
+	$data->{TimeFrame}      = 'C';
+	$data->{YearLevel}      = $yearlevel;
+	$data->{FTE}            = '1.0';
+	$data->{EntryDate}      = '2014-01-25';
+
+	return $data;
+}
+
 sub create_StaffPersonal {
 	my ($self, $data) = @_;
 
@@ -289,12 +304,12 @@ sub create_StaffAssignment {
 	my ($self, $data) = @_;
 
 	$data->{refid} = $self->make_new_id;
-	$data->{SchoolYear} = '2014';
-	$data->{Description} = '';
-	$data->{PrimaryAssignment} = 'U';
-	$data->{JobStartDate} = '1/1/1990';
-	$data->{JobEndDate} = '';
-	$data->{JobFunction} = '';
+	$data->{SchoolYear}         = '2014';
+	$data->{Description}        = '';
+	$data->{PrimaryAssignment}  = 'U';
+	$data->{JobStartDate}       = '1/1/1990';
+	$data->{JobEndDate}         = '';
+	$data->{JobFunction}        = '';
 	$data->{StaffActivity_Code} = '';
 
 	return $data;

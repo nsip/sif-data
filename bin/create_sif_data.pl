@@ -393,6 +393,21 @@ sub make_students {
 				$data->{Email}
 			); 
 
+			# Add to StudentSchoolEnrollment
+			my $enroll = $sd->create_StudentSchoolEnrollment($data->{yearlevel});
+			my  $sth1 = $dbh->prepare("INSERT INTO StudentSchoolEnrollment (
+			RefId, StudentPersonal_RefId, SchoolInfo_refId, MembershipType, 
+			SchoolYear, TimeFrame, YearLevel, FTE, EntryDate)
+
+			Values(?,?,?,?,?,?,?,?,?)");
+
+			$sth1->execute(
+				$enroll->{refid}, $data->{refid}, $schoolid, 
+				$enroll->{MembershipType}, $enroll->{SchoolYear}, 
+				$enroll->{TimeFrame}, $enroll->{YearLevel}, $enroll->{FTE},
+				$enroll->{EntryDate}
+			);
+
 			++$cnt;
 		}
 	}
