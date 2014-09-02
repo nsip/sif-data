@@ -221,7 +221,7 @@ sub create_StudentPersonal {
 	$data->{yearlevel}                            = int(rand(12)) + 1;
 	$data->{StateProvinceId}                      = 16;
 	$data->{Sex}                                  = $sex;
-	$data->{BirthDate}                            = create_birthdate('1994-01-01', '2009-01-01');
+	$data->{BirthDate}                            = create_birthdate($data->{yearlevel});
 	$data->{IndigenousStatus}                     = $indigenous[int rand($#indigenous + 1)]; 
 	$data->{CountryofBirth}                       = '1101';
 	$data->{MostRecent_YearLevel}                 = $data->{yearlevel};
@@ -316,7 +316,11 @@ sub create_StaffAssignment {
 }
 
 sub create_birthdate {
-	my ($min, $max) = @_;
+	my ($yearlevel) = @_;
+
+	my $min = int(2009 - $yearlevel) . '-01-01';
+	my $max = int(2011 - $yearlevel) . '-01-01';
+
 	return rand_date( min => $min, max => $max ) . '';
 }
 
