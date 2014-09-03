@@ -38,10 +38,15 @@ my ($config, $dbh, $dsn) = $sd->db_connect($db_name);
 print "DSN = $dsn\n" unless ($silent);
 
 if ((defined $ttable) && ($ttable eq '')) {
-	print "\n--create-time-table must be specified with an existing school Id \n";
-	my ($school_cnt, $room_cnt) = get_group_stats();
-	my $tot = $school_cnt * $room_cnt;
-	print "Without a school Id, $room_cnt rooms in $school_cnt schools would create $tot Timetables\n";
+	if (! check_schools()) {
+		print "\nNo schools exist\nSchools must exist before creating timetables\n";
+	} else {
+		print "\n--create-time-table must be specified with an existing school Id \n";
+		my ($school_cnt, $room_cnt) = get_group_stats();
+		$room_cnt = 1 if ($room_cnt == 0);
+		my $tot = $school_cnt * $room_cnt;
+		print "Without a school Id, $tot timetables in the $school_cnt schools could be created\n";
+	}
 	usage_exit();
 }
 
@@ -850,29 +855,29 @@ sub make_timetable_subject {
 sub validate_school_id {
 	my ($school) = @_;
 
-    my $sth = $dbh->prepare("SELECT count(*) AS cnt from SchoolInfo WHERE RefId = \"$school\"");
-    $sth->execute();
+	my $sth = $dbh->prepare("SELECT count(*) AS cnt from SchoolInfo WHERE RefId = \"$school\"");
+	$sth->execute();
 
-    my $row = $sth->fetchrow_hashref;
+	my $row = $sth->fetchrow_hashref;
 	return ($row->{cnt});
 }
 
 sub check_schools {
 
-    my $val = 0;
-    my $sth = $dbh->prepare("SELECT count(*) AS cnt from SchoolInfo");
-    $sth->execute();
+	my $val = 0;
+	my $sth = $dbh->prepare("SELECT count(*) AS cnt from SchoolInfo");
+	$sth->execute();
 
-    my $row = $sth->fetchrow_hashref;
+	my $row = $sth->fetchrow_hashref;
 	return ($row->{cnt});
 }
 
 sub check_rooms {
 
-    my $sth = $dbh->prepare("SELECT count(*) AS cnt from RoomInfo");
-    $sth->execute();
+	my $sth = $dbh->prepare("SELECT count(*) AS cnt from RoomInfo");
+	$sth->execute();
 
-    my $row = $sth->fetchrow_hashref;
+	my $row = $sth->fetchrow_hashref;
 	return ($row->{cnt});
 }
 
