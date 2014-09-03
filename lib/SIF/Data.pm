@@ -245,6 +245,7 @@ sub create_StudentPersonal {
 sub create_StudentSchoolEnrollment {
 	my ($self, $yearlevel) = @_;
 
+	# TODO: Replace fixed years with calculated year
 	my $data;
 	$data->{refid}          = $self->make_new_id;
 	$data->{MembershipType} = '01';
@@ -303,6 +304,7 @@ sub create_StaffPersonal {
 sub create_StaffAssignment {
 	my ($self, $data) = @_;
 
+	# TODO: Replace fixed years with calculated year
 	$data->{refid} = $self->make_new_id;
 	$data->{SchoolYear}         = '2014';
 	$data->{Description}        = '';
@@ -318,6 +320,7 @@ sub create_StaffAssignment {
 sub create_birthdate {
 	my ($yearlevel) = @_;
 
+	# TODO: Replace fixed years with calculated year
 	my $min = int(2009 - $yearlevel) . '-01-01';
 	my $max = int(2011 - $yearlevel) . '-01-01';
 
