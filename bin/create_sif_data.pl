@@ -849,6 +849,14 @@ sub make_timetable_subject {
 		VALUES (?,?,?,?,?,?,?,?)");
 	$sth->execute($refId, $subjectid, $acyear, "Faculty of $longname",
 		$shortname, $longname, $subjecttype, $_[0]);
+
+	# Also TimeTableSubject_OtherCodeList
+	my ($other_code, $code_set) = $sd->create_OtherCode();
+	my $sth1 = $dbh->prepare("INSERT INTO TimeTableSubject_OtherCodeList (
+		TimeTableSubject_RefId, OtherCode, OtherCode_CodeSet)
+		VALUES (?, ?, ?)");
+	$sth1->execute($refId, $other_code, $code_set);
+
 	return $refId;
 }
 

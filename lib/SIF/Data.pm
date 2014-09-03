@@ -577,6 +577,34 @@ sub create_SchoolInfo {
 	return $data;
 }
 
+sub create_OtherCode {
+	my ($self) = @_;
+
+	my @othercodes;
+	my $csv = Text::CSV->new ( { binary => 1 } ) 
+	  or die "Cannot use CSV: ".Text::CSV->error_diag ();
+
+	my $data_dir  = './data';
+	my $data_file = 'TimeTableSubject_OtherCodeList.csv';
+
+	$data_dir = "$self->{config}->{data_dir}"  if (defined $self->{config}->{data_dir});
+
+	open my $fh, "<:encoding(utf8)", "$data_dir/$data_file" or die "$data_dir/$data_file.csv: $!";
+	while ( my $row = $csv->getline( $fh ) ) {
+        	push @othercodes, $row;
+	}
+	$csv->eof or $csv->error_diag();
+	close $fh;
+
+	my $index = rand @othercodes;
+	my @code = $othercodes[$index];
+	my $code0 = $code[0] [0];
+	my $code1 = $code[0] [1];
+
+	return ($code0, $code1);
+}
+
+
 =head1 AUTHOR
 
 john, C<< <john at unisolve.com.au> >>
