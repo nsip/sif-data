@@ -37,6 +37,14 @@ if (defined $create_db) {
 my ($config, $dbh, $dsn) = $sd->db_connect($db_name);
 print "DSN = $dsn\n" unless ($silent);
 
+if ((defined $ttable) && ($ttable eq '')) {
+	print "\n--create-time-table must be specified with an existing school Id \n";
+	my ($school_cnt, $room_cnt) = get_group_stats();
+	my $tot = $school_cnt * $room_cnt;
+	print "Without a school Id, $room_cnt rooms in $school_cnt schools would create $tot Timetables\n";
+	usage_exit();
+}
+
 if (defined $school_id) {
 	my $val = validate_school_id($school_id);
 	if (! $val) {
@@ -91,18 +99,18 @@ sub get_args {
 	my $silent    = 0;
 
 	my $result = GetOptions (
-		"help"						  => \$help,
-		"silent"					  => \$silent,
-		"create-schools=s"            => \$schools,
-		"create-students=s"           => \$students,
-		"create-staff=s"              => \$staff,
-		"create-rooms=s"              => \$rooms,
-		"create-teaching-groups=s"    => \$groups,
-		"fix"                         => \$fix,
-		"create-database=s"           => \$create_db,
-		"database=s"                  => \$db_name,
-		"create-time-table=s"		  => \$ttable,
-		"school-id=s"                 => \$school_id,
+		"help"                     => \$help,
+		"silent"                   => \$silent,
+		"create-schools=s"         => \$schools,
+		"create-students=s"        => \$students,
+		"create-staff=s"           => \$staff,
+		"create-rooms=s"           => \$rooms,
+		"create-teaching-groups=s" => \$groups,
+		"fix"                      => \$fix,
+		"create-database=s"        => \$create_db,
+		"database=s"               => \$db_name,
+		"create-time-table:s"      => \$ttable,
+		"school-id=s"              => \$school_id,
 	);
 
 	if ($help) {
@@ -134,7 +142,7 @@ sub get_args {
 		usage_exit();
 	}
 
-	if ($ttable) {
+	if (defined $ttable) {
 		my $err = 0;
 		++$err if ($elements);
 		++$err if ($schools);
@@ -857,5 +865,22 @@ sub check_schools {
 
     my $row = $sth->fetchrow_hashref;
 	return ($row->{cnt});
+}
+
+sub check_rooms {
+
+    my $sth = $dbh->prepare("SELECT count(*) AS cnt from RoomInfo");
+    $sth->execute();
+
+    my $row = $sth->fetchrow_hashref;
+	return ($row->{cnt});
+}
+
+sub get_group_stats {
+
+	my $school_cnt = check_schools();
+	my $room_cnt   = check_rooms();
+	
+	return ($school_cnt, $room_cnt);
 }
 
