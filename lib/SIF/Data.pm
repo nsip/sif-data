@@ -100,23 +100,30 @@ sub create_database {
 	 	{RaiseError => 1}
 	);
 	$dbh->do("CREATE DATABASE $db_name");
-	$dbh->disconnect;
-
-	# XXX Could replace these system calls by reading file, split on ";" ?
-	# DBD::mysql has a parameter mysql_multi_statements: and do()
-	# as per point 3 of Ticket 77
-	my $sys = '';
-	$sys .= " -u$config->{mysql_user}"     if (defined $config->{mysql_user});
-	$sys .= " -p$config->{mysql_password}" if (defined $config->{mysql_password});
-	$sys .= " -h$config->{mysql_host}"     if (defined $config->{mysql_host});
-	$sys .= " -P$config->{mysql_port}"     if (defined $config->{mysql_port});
-	$sys .= " -P$config->{mysql_port}"     if (defined $config->{mysql_port});
+	$dbh->do("USE $db_name");
 
 	my $schema_dir = './schema/AU1.3';
 	$schema_dir = "$config->{schema_dir}"  if (defined $config->{schema_dir});
 
-	system("/usr/bin/mysql $sys $db_name < $schema_dir/example.sql") == 0
-		or die "system call to $schema_dir/example.sql failed\n";
+	# TODO - be good to get line numbers if one of these fail
+	my $raw;
+	open (my $SQL, "$schema_dir/example.sql") or die "Can't open file $schema_dir/example.sql $!";
+	while (<$SQL>) {
+		$raw .= $_;
+	}
+	close $SQL;
+	
+	foreach my $row (split(/;/, $raw)) {
+		$row =~ s/^\s+//gs;	 $row =~ s/\s+$//gs;
+		next if (!$row);
+		eval {
+			$dbh->do($row);
+		};
+		if ($@) {
+			die "$@ with $row";
+		}
+	}
+	$dbh->disconnect;
 
 	$self->{config} = $config;
 
