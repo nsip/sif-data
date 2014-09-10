@@ -313,12 +313,40 @@ sub fix_data {
 }
 
 sub code_set {
-	my ($cs) = @_;
-	if ($cs) {
+	my ($cs_request) = @_;
+	if ($cs_request) {
 		# TODO Check table already exists ? (assume)
-		open 
+		my $cs_data = $sd->load_codeset();
+
+		my $old_count = 0;
+		my $old_data = {};
+		my $sth = $dbh->prepare(q{
+			SELECT * FROM CodeSet
+		});
+		$sth->execute();
+		while (my $ref = $sth->fetchrow_hashref) {
+			$old_count++;
+			$old_data->{$ref->{CodeSet}}{$ref->{CodeKey}} = $ref->{CodeValue};
+		}
+
+		$sth = $dbh->prepare(q{
+			INSERT INTO CodeSet (CodeSet, CodeKey, CodeValue) VALUES (?, ?, ?)
+		});
+		my $created = 0;
+		my $rows = 0;
+		foreach my $CodeSet (keys %$cs_data) {
+			foreach my $key (keys %{$cs_data->{$CodeSet}}) {
+				$rows++;
+				if (! exists($old_data->{$CodeSet}) || !exists($old_data->{$CodeSet}{$key}) ) {
+					$created++;
+					$sth->execute( $CodeSet, $key, $cs_data->{$CodeSet}{$key} );
+				}
+			}
+		}
+		$dbh->commit();
+		print "Created $created of $rows in CodeSet\n";
 	}
-	return ($result);
+	# return ($result);
 }
 
 sub get_range {
