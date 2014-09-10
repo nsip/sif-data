@@ -100,23 +100,30 @@ sub create_database {
 	 	{RaiseError => 1}
 	);
 	$dbh->do("CREATE DATABASE $db_name");
-	$dbh->disconnect;
-
-	# XXX Could replace these system calls by reading file, split on ";" ?
-	# DBD::mysql has a parameter mysql_multi_statements: and do()
-	# as per point 3 of Ticket 77
-	my $sys = '';
-	$sys .= " -u$config->{mysql_user}"     if (defined $config->{mysql_user});
-	$sys .= " -p$config->{mysql_password}" if (defined $config->{mysql_password});
-	$sys .= " -h$config->{mysql_host}"     if (defined $config->{mysql_host});
-	$sys .= " -P$config->{mysql_port}"     if (defined $config->{mysql_port});
-	$sys .= " -P$config->{mysql_port}"     if (defined $config->{mysql_port});
+	$dbh->do("USE $db_name");
 
 	my $schema_dir = './schema/AU1.3';
 	$schema_dir = "$config->{schema_dir}"  if (defined $config->{schema_dir});
 
-	system("/usr/bin/mysql $sys $db_name < $schema_dir/example.sql") == 0
-		or die "system call to $schema_dir/example.sql failed\n";
+	# TODO - be good to get line numbers if one of these fail
+	my $raw;
+	open (my $SQL, "$schema_dir/example.sql") or die "Can't open file $schema_dir/example.sql $!";
+	while (<$SQL>) {
+		$raw .= $_;
+	}
+	close $SQL;
+	
+	foreach my $row (split(/;/, $raw)) {
+		$row =~ s/^\s+//gs;	 $row =~ s/\s+$//gs;
+		next if (!$row);
+		eval {
+			$dbh->do($row);
+		};
+		if ($@) {
+			die "$@ with $row";
+		}
+	}
+	$dbh->disconnect;
 
 	$self->{config} = $config;
 
@@ -221,7 +228,7 @@ sub create_StudentPersonal {
 	$data->{yearlevel}                            = int(rand(12)) + 1;
 	$data->{StateProvinceId}                      = 16;
 	$data->{Sex}                                  = $sex;
-	$data->{BirthDate}                            = create_birthdate('1994-01-01', '2009-01-01');
+	$data->{BirthDate}                            = create_birthdate($data->{yearlevel});
 	$data->{IndigenousStatus}                     = $indigenous[int rand($#indigenous + 1)]; 
 	$data->{CountryofBirth}                       = '1101';
 	$data->{MostRecent_YearLevel}                 = $data->{yearlevel};
@@ -242,9 +249,105 @@ sub create_StudentPersonal {
 	return $data;
 }
 
+sub create_StudentSchoolEnrollment {
+	my ($self, $yearlevel) = @_;
+
+	# TODO: Replace fixed years with calculated year
+	my $data;
+	$data->{refid}          = $self->make_new_id;
+	$data->{MembershipType} = '01';
+	$data->{SchoolYear}     = '2014';
+	$data->{TimeFrame}      = 'C';
+	$data->{YearLevel}      = $yearlevel;
+	$data->{FTE}            = '1.0';
+	$data->{EntryDate}      = '2014-01-25';
+
+	return $data;
+}
+
+sub create_StaffPersonal {
+	my ($self, $data) = @_;
+
+	my $sex;
+
+	my $r = Data::RandomPerson->new();
+	my @p;
+
+	$p[0] = $r->create();
+	$data->{FamilyName} = $p[0]->{lastname};
+	$data->{GivenName}  = $p[0]->{firstname}; 
+
+	if ($p[0]->{gender} eq 'f') {
+		$sex = 'Female';
+		$p[1] = Data::RandomPerson::Names::Female->new();
+		$data->{MiddleName} = $p[1]->get();
+		$data->{Salutation} = create_salutation($sex);
+
+	} else {
+		$sex = 'Male';
+		$p[1] = Data::RandomPerson::Names::Male->new();
+		$data->{MiddleName} = $p[1]->get();
+		$data->{Salutation} = create_salutation($sex);
+	}
+
+	$data->{refid} = $self->make_new_id;
+	# TODO: Properly randomly generate local addresses
+	# $p[0]->{address} = create_address();
+
+	$data->{PreferredGivenName} = $data->{GivenName};
+	$data->{Sex}                = $sex;
+	$data->{StateProvinceId}    = 16;
+	$data->{EmploymentStatus}   = 'A';
+	$data->{PhoneNumber}        = '';
+	$data->{Email}              = create_email(
+		$data->{GivenName}, 
+		$data->{MiddleName}, 
+		$data->{FamilyName}
+	);
+
+	return $data;
+}
+
+sub create_StaffAssignment {
+	my ($self, $data) = @_;
+
+	# TODO: Replace fixed years with calculated year
+	$data->{refid} = $self->make_new_id;
+	$data->{SchoolYear}         = '2014';
+	$data->{Description}        = '';
+	$data->{PrimaryAssignment}  = 'U';
+	$data->{JobStartDate}       = '1/1/1990';
+	$data->{JobEndDate}         = '';
+	$data->{JobFunction}        = '';
+	$data->{StaffActivity_Code} = '';
+
+	return $data;
+}
+
 sub create_birthdate {
-	my ($min, $max) = @_;
+	my ($yearlevel) = @_;
+
+	# TODO: Replace fixed years with calculated year
+	my $min = int(2009 - $yearlevel) . '-01-01';
+	my $max = int(2011 - $yearlevel) . '-01-01';
+
 	return rand_date( min => $min, max => $max ) . '';
+}
+
+sub create_salutation {
+	my ($sex) = @_;
+
+	my @salutation;
+
+	if ($sex eq 'Male') {
+		@salutation = qw( Mr Dr Mr );		
+	}
+
+	if ($sex eq 'Female') {
+		@salutation = qw( Mrs Dr Ms Miss );		
+	}
+
+	return ($salutation[int rand($#salutation + 1)]);
 }
 
 sub create_email {
@@ -509,6 +612,34 @@ sub create_SchoolInfo {
 
 	return $data;
 }
+
+sub create_OtherCode {
+	my ($self) = @_;
+
+	my @othercodes;
+	my $csv = Text::CSV->new ( { binary => 1 } ) 
+	  or die "Cannot use CSV: ".Text::CSV->error_diag ();
+
+	my $data_dir  = './data';
+	my $data_file = 'TimeTableSubject_OtherCodeList.csv';
+
+	$data_dir = "$self->{config}->{data_dir}"  if (defined $self->{config}->{data_dir});
+
+	open my $fh, "<:encoding(utf8)", "$data_dir/$data_file" or die "$data_dir/$data_file.csv: $!";
+	while ( my $row = $csv->getline( $fh ) ) {
+        	push @othercodes, $row;
+	}
+	$csv->eof or $csv->error_diag();
+	close $fh;
+
+	my $index = rand @othercodes;
+	my @code = $othercodes[$index];
+	my $code0 = $code[0] [0];
+	my $code1 = $code[0] [1];
+
+	return ($code0, $code1);
+}
+
 
 =head1 AUTHOR
 
