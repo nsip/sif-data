@@ -229,7 +229,7 @@ sub create_StudentPersonal {
 	$data->{StateProvinceId}                      = 16;
 	$data->{Sex}                                  = $sex;
 	$data->{BirthDate}                            = create_birthdate($data->{yearlevel});
-	$data->{IndigenousStatus}                     = $indigenous[int rand($#indigenous + 1)]; 
+	$data->{IndigenousStatus}                     = $self->map_codeset_value('Indigenous Status', $indigenous[int rand($#indigenous + 1)]); 
 	$data->{CountryofBirth}                       = '1101';
 	$data->{MostRecent_YearLevel}                 = $data->{yearlevel};
 	$data->{MostRecent_Parent1Language}           = '1201';
@@ -295,7 +295,7 @@ sub create_StaffPersonal {
 	# $p[0]->{address} = create_address();
 
 	$data->{PreferredGivenName} = $data->{GivenName};
-	$data->{Sex}                = $sex;
+	$data->{Sex}                = $self->map_codeset_value('Sex Code', $sex);
 	$data->{StateProvinceId}    = 16;
 	$data->{EmploymentStatus}   = 'A';
 	$data->{PhoneNumber}        = '';
@@ -396,25 +396,49 @@ sub create_postcodes {
 sub load_codeset {
 	my ($self) = @_;
 
-	my %ret = ();
-	my $csv = Text::CSV->new ( { binary => 1 } )  # should set binary attribute.
-	  or die "Cannot use CSV: ".Text::CSV->error_diag ();
+	if (! $self->{CodeSetKey}) {
+		$self->{CodeSetKey} = {};
+		$self->{CodeSetValue} = {};
+		my $csv = Text::CSV->new ( { binary => 1 } )  # should set binary attribute.
+		  or die "Cannot use CSV: ".Text::CSV->error_diag ();
 
-	my $data_dir = './data';
-	$data_dir = "$self->{config}->{data_dir}"  if (defined $self->{config}->{data_dir});
+		my $data_dir = './data';
+		$data_dir = "$self->{config}->{data_dir}"  if (defined $self->{config}->{data_dir});
 
-	open my $fh, "<:encoding(utf8)", "$data_dir/codeset.csv" or die "$data_dir/codeset.csv: $!";
-	# NOTE Skip first row - assume fields?
-	$csv->getline( $fh );
-	my $last_codeset;
-	while ( my $row = $csv->getline( $fh ) ) {
-		$last_codeset = $row->[1] || $last_codeset;
-		$ret{$last_codeset}{$row->[2]} = $row->[3];
+		open my $fh, "<:encoding(utf8)", "$data_dir/codeset.csv" or die "$data_dir/codeset.csv: $!";
+		# NOTE Skip first row - assume fields?
+		$csv->getline( $fh );
+		my $last_codeset;
+		while ( my $row = $csv->getline( $fh ) ) {
+			$last_codeset = $row->[1] || $last_codeset;
+			$self->{CodeSetKey}{$last_codeset}{$row->[2]} = $row->[3];
+			$self->{CodeSetValue}{$last_codeset}{$row->[3]} = $row->[2];
+		}
+		$csv->eof or $csv->error_diag();
+		close $fh;
+
 	}
-	$csv->eof or $csv->error_diag();
-	close $fh;
+	return $self->{CodeSetKey};
+}
 
-	return \%ret;
+sub map_codeset_value {
+	my ($self, $set, $value) = @_;
+	$self->load_codeset;
+	my $ret = $self->{CodeSetValue}{$set}{$value} // '';
+	if ($ret eq '') {
+		warn "Unable to map codeset value = $set, $value";
+	}
+	return $ret;
+}
+
+sub map_codeset_key {
+	my ($self, $set, $key) = @_;
+	$self->load_codeset;
+	my $ret = $self->{CodeSetKey}{$set}{$key} // '';
+	if ($ret eq '') {
+		warn "Unable to map codeset key = $set, $key";
+	}
+	return $ret;
 }
 
 =head2 Create Address     
