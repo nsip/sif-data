@@ -5,6 +5,16 @@
 SHOW ERRORS;
 
 -- ----------------------------------------------------------------------
+-- NON SIF Objects required
+-- ----------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS CodeSet (
+	CodeSet varchar(100),
+	Key varchar(250),
+	Value varchar(1000)
+	-- TODO unique CodeSet,Key and CodeSet,Value?
+) ENGINE=InnoDB DEFAULT CHARSET = utf8;
+
+-- ----------------------------------------------------------------------
 -- SIF AU Objects
 -- ----------------------------------------------------------------------
 

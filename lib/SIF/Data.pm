@@ -286,6 +286,35 @@ sub create_postcodes {
 	return @postcodes;
 }
 
+=head2 Load Codeset
+
+=cut
+
+sub load_codeset {
+	my ($self) = @_;
+
+	my %ret = {};
+	my $csv = Text::CSV->new ( { binary => 1 } )  # should set binary attribute.
+	  or die "Cannot use CSV: ".Text::CSV->error_diag ();
+
+	my $data_dir = './data';
+	$data_dir = "$self->{config}->{data_dir}"  if (defined $self->{config}->{data_dir});
+
+	open my $fh, "<:encoding(utf8)", "$data_dir/codeset.csv" or die "$data_dir/codeset.csv: $!";
+	# XXX Skip first row - assume fields?
+	my $last_codeset;
+	while ( my $row = $csv->getline( $fh ) ) {
+		$last_codeset = $row->[1] // $last_codeset;
+		$ret->{$last_codeset}{$row->[2]} = $row->[3];
+	}
+	$csv->eof or $csv->error_diag();
+	close $fh;
+
+use Data::Dumper;
+print Dumper(\$ret);
+	return \%ret;
+}
+
 =head2 Create Address     
 
 =cut

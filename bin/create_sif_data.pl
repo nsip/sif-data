@@ -27,7 +27,7 @@ use Getopt::Long;
 
 my $sd = SIF::Data->new();
 
-my ($schools, $students, $staff, $rooms, $groups, $fix, $create_db, 
+my ($schools, $students, $staff, $rooms, $groups, $fix, $codeset, $create_db, 
     $db_name, $ttable, $school_id, $elements, $silent) = get_args();
 
 if (defined $create_db) {
@@ -69,6 +69,8 @@ if ($ttable) {
 	create_groups($groups, $school_id);
 
 	fix_data($fix);
+
+	code_set($codeset);
 }
 
 exit 0;
@@ -84,6 +86,7 @@ sub get_args {
 	my $rooms     = undef;
 	my $groups    = undef;
 	my $fix       = undef;
+	my $codeset   = undef;
 	my $create_db = undef;
 	my $db_name   = undef;
 	my $school_id = undef;
@@ -99,6 +102,7 @@ sub get_args {
 		"create-rooms=s"              => \$rooms,
 		"create-teaching-groups=s"    => \$groups,
 		"fix"                         => \$fix,
+		"codeset"                     => \$codeset,
 		"create-database=s"           => \$create_db,
 		"database=s"                  => \$db_name,
 		"create-time-table=s"		  => \$ttable,
@@ -147,7 +151,7 @@ sub get_args {
 		$school_id = $ttable;
 	}
 
-	return ($schools, $students, $staff, $rooms, $groups, $fix, $create_db, $db_name, $ttable,  $school_id, $elements, $silent);
+	return ($schools, $students, $staff, $rooms, $groups, $fix, $codeset, $create_db, $db_name, $ttable,  $school_id, $elements, $silent);
 }
 
 sub usage_exit {
@@ -180,6 +184,8 @@ Sample usage is:
             Requires school to have been created
   
   ./create_sif_data.pl --fix           		# Update missing data  
+
+  ./create_sif_data.pl --codeset			# Add the codeset
 
   By default the program assumes:
   1) It is being run from the top-level repository directory (and that 'data' and 'schema' are subdirectories
@@ -290,6 +296,15 @@ sub fix_data {
 		print " KLA = $kla $result\n";
 	}
 
+	return ($result);
+}
+
+sub code_set {
+	my ($cs) = @_;
+	if ($cs) {
+		# TODO Check table already exists ? (assume)
+		open 
+	}
 	return ($result);
 }
 
