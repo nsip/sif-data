@@ -143,8 +143,13 @@ sub make_new_id {
 	my ($self) = @_;
 
 	my $uuid = Data::UUID->new();
-	my $id = $uuid->create_hex;  # was create_str() before #78
-	$id =~ s/^0x//;
+	my $id = $uuid->create_str;
+
+	# Old SIF AU 1.3 (v2 infrastructure)
+	# was create_str() before #78
+	# my $id = $uuid->create_hex;
+	# $id =~ s/^0x//;
+
 	return $id;
 }
 
