@@ -217,7 +217,7 @@ sub create_StudentPersonal {
 		$data->{MiddleName} = $p[1]->get();
 	}
 	if (int rand(10) == 1) {
-		$sex = 'Unknown';
+		$sex = 'Not Stated/Inadequately Described';
 	}
 
 	$data->{refid} = $self->make_new_id;
@@ -227,7 +227,7 @@ sub create_StudentPersonal {
 	# year levels are between 1 and 12 right?
 	$data->{yearlevel}                            = int(rand(12)) + 1;
 	$data->{StateProvinceId}                      = 16;
-	$data->{Sex}                                  = $sex;
+	$data->{Sex}                = $self->map_codeset_value('Sex Code', $sex);
 	$data->{BirthDate}                            = create_birthdate($data->{yearlevel});
 	$data->{IndigenousStatus}                     = $self->map_codeset_value('Indigenous Status', $indigenous[int rand($#indigenous + 1)]); 
 	$data->{CountryofBirth}                       = '1101';

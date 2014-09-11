@@ -37,6 +37,10 @@ if (defined $create_db) {
 my ($config, $dbh, $dsn) = $sd->db_connect($db_name);
 print "DSN = $dsn\n" unless ($silent);
 
+if ((defined $ttable) && ($ttable eq 'first')) {
+	$school_id = first_school();
+}
+
 if ((defined $ttable) && ($ttable eq '')) {
 	if (! check_schools()) {
 		print "\nNo schools exist\nSchools must exist before creating timetables\n";
@@ -780,7 +784,7 @@ sub make_ttable {
 			make_timetable_day($i,$refid);
 			for (my $j = 0; $j < $periodspercycle; $j++){
 				make_timetable_period($refid,$i,$j);
-				my $subid = make_timetable_subject();
+				my $subid = make_timetable_subject($schoolid);
 				my $done = make_timetable_cell($refid, $subid, $schoolid, $i, $j);
 				$cells += $done;
 			}
@@ -847,6 +851,7 @@ sub make_timetable_cell {
 
 	my $celltype = $sd->make_cell_type();
 
+	# NOTE: Might need a SchoolInfo_RefId - TBC Ben/Scott
 	my $sth = $dbh->prepare("INSERT INTO TimeTableCell (RefId,
 		TimeTable_RefId, TimeTableSubject_RefId, TeachingGroup_RefId,
 		RoomInfo_RefId,CellType, PeriodId, DayId, StaffPersonal_RefId)
@@ -879,6 +884,8 @@ sub make_timetable_period {
 }
 
 sub make_timetable_subject {
+	my ($school_id) = @_;
+
 	my $refId = $sd->make_new_id();
 	my $acyear = $sd->make_new_year();
 	my $code = int(rand(10)) . int(rand(10)) . int(rand(10));
@@ -888,10 +895,12 @@ sub make_timetable_subject {
 	my $subjecttype = $sd->make_subject_type();
 	my $sth = $dbh->prepare("INSERT INTO TimeTableSubject (RefId,
 		SubjectLocalId,AcademicYear,Faculty,SubjectShortName,
-		SubjectLongName,SubjectType,SchoolInfo_RefId)
-		VALUES (?,?,?,?,?,?,?,?)");
-	$sth->execute($refId, $subjectid, $acyear, "Faculty of $longname",
-		$shortname, $longname, $subjecttype, $_[0]);
+		SubjectLongName,SubjectType,SchoolInfo_RefId,SchoolYear)
+		VALUES (?,?,?,?,?,?,?,?,?)");
+	$sth->execute(
+		$refId, $subjectid, $acyear, "Faculty of $longname",
+		$shortname, $longname, $subjecttype, $school_id, '2014'
+	);
 
 	# Also TimeTableSubject_OtherCodeList
 	my ($other_code, $code_set) = $sd->create_OtherCode();
@@ -911,6 +920,13 @@ sub validate_school_id {
 
 	my $row = $sth->fetchrow_hashref;
 	return ($row->{cnt});
+}
+
+sub first_school {
+	my $sth = $dbh->prepare("SELECT RefId FROM SchoolInfo ORDER BY RefId LIMIT 1");
+	$sth->execute();
+	my $row = $sth->fetchrow_hashref;
+	return $row->{RefId} // '';
 }
 
 sub check_schools {
