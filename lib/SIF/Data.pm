@@ -231,7 +231,7 @@ sub create_StudentPersonal {
 
 	# year levels are between 1 and 12 right?
 	$data->{yearlevel}                            = int(rand(12)) + 1;
-	$data->{StateProvinceId}                      = 16;
+	$data->{StateProvinceId}             		  = int(rand(99999999)) + 1;		# TODO Unique to each Student
 	$data->{Sex}                = $self->map_codeset_value('Sex Code', $sex);
 	$data->{BirthDate}                            = create_birthdate($data->{yearlevel});
 	$data->{IndigenousStatus}                     = $self->map_codeset_value('Indigenous Status', $indigenous[int rand($#indigenous + 1)]); 
@@ -301,7 +301,7 @@ sub create_StaffPersonal {
 
 	$data->{PreferredGivenName} = $data->{GivenName};
 	$data->{Sex}                = $self->map_codeset_value('Sex Code', $sex);
-	$data->{StateProvinceId}    = 16;
+	$data->{StateProvinceId}    = int(rand(99999999)) + 1;		# TODO Unique to each Staff
 	$data->{EmploymentStatus}   = 'A';
 	$data->{PhoneNumber}        = '';
 	$data->{Email}              = create_email(
@@ -623,7 +623,7 @@ sub create_SchoolInfo {
 	$data->{CampusSchoolCampusId}        = int(rand(4)) + 1;
 	$data->{CampusAdminStatus}           = rand(10) > 8 ? 'N' : 'Y';
 	$data->{CampusCampusType}            = $campus[int rand($#campus + 1)];
-	$data->{StateProvinceId}             = int(rand(4)) + 1;
+	$data->{StateProvinceId}             = int(rand(4)) + 1;		# TODO Unique to each school
 	$data->{CommonwealthId}              = '8';
 	$data->{SchoolSector}                = 'Gov';
 	$data->{OperationalStatus}           = 'O';

@@ -893,13 +893,19 @@ sub make_timetable_subject {
 	my $longname = $sd->make_long_name($shortname);
 	my $subjectid = "$shortname $code";
 	my $subjecttype = $sd->make_subject_type();
-	my $sth = $dbh->prepare("INSERT INTO TimeTableSubject (RefId,
-		SubjectLocalId,AcademicYear,Faculty,SubjectShortName,
-		SubjectLongName,SubjectType,SchoolInfo_RefId,SchoolYear)
-		VALUES (?,?,?,?,?,?,?,?,?)");
+	my $size = int(rand(15) + 5);
+	my $sth = $dbh->prepare(q{
+		INSERT INTO TimeTableSubject 
+			(RefId, SubjectLocalId,AcademicYear,Faculty,SubjectShortName,
+			SubjectLongName,SubjectType,SchoolInfo_RefId,SchoolYear,
+			ProposedMinClassSize, ProposedMaxClassSize, Semester)
+		VALUES 
+			(?,?,?,?,?,?,?,?,?,?,?)
+	});
 	$sth->execute(
 		$refId, $subjectid, $acyear, "Faculty of $longname",
-		$shortname, $longname, $subjecttype, $school_id, '2014'
+		$shortname, $longname, $subjecttype, $school_id, '2014',
+		$size, $size, int( rand(2) + 1)
 	);
 
 	# Also TimeTableSubject_OtherCodeList
