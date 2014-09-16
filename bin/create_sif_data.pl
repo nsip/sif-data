@@ -1,4 +1,24 @@
 #!/usr/bin/perl
+# Name: create_sif_data.pl
+#		By default the program assumes: 
+#		1) It is being run from the top-level repository directory (and that 'data' and 'schema' are subdirectories 
+#		   of the current directory)
+# 		2) That the user has a ~/.nsip_sif_data config file
+#
+#       To run the program from elsewhere, specify the location of the 'data' and 'schema' directories in the 
+#		~/.nsip_sif_data config file
+#
+# Usage:
+#		Specify the database on the command line: 
+#			./create_sif_data.pl --database=siftest01  --create-schools=1
+#
+#		Use the database found in the ~/.nsip_sif_data file: 
+#			./create_sif_data.pl --create-schools=1
+#
+# Help:
+#		See the usage() function below for more command line options and examples or run ./create_sif_data.pl --help
+#		See the sample .nsip_sif_data file on github.
+
 use strict;
 use warnings;
 use perl5i::2;
@@ -7,23 +27,44 @@ use Getopt::Long;
 
 my $sd = SIF::Data->new();
 
-# Get and process command line options
-my ($schools, $students, $staff, 
-	$rooms, $groups, $fix, $create_db, 
-	$db_name, $ttable, $school_id) = get_args();
+my ($schools, $students, $staff, $rooms, $groups, $fix, $codeset, $create_db, 
+    $db_name, $ttable, $school_id, $elements, $silent) = get_args();
 
 if (defined $create_db) {
-	$db_name = create_database($create_db);
+	$db_name = $sd->create_database($create_db);
 }
 
-print "db_name = $db_name\n" if (defined $db_name);;
+my ($config, $dbh, $dsn) = $sd->db_connect($db_name);
+print "DSN = $dsn\n" unless ($silent);
 
-my($config, $dbh) = $sd->db_connect($db_name);
+if ((defined $ttable) && ($ttable eq 'first')) {
+	$school_id = first_school();
+}
+
+if ((defined $ttable) && ($ttable eq '')) {
+	if (! check_schools()) {
+		print "\nNo schools exist\nSchools must exist before creating timetables\n";
+	} else {
+		print "\n--create-time-table must be specified with an existing school Id \n";
+		my ($school_cnt, $room_cnt) = get_group_stats();
+		$room_cnt = 1 if ($room_cnt == 0);
+		my $tot = $school_cnt * $room_cnt;
+		print "Without a school Id, $tot timetables in the $school_cnt schools could be created\n";
+	}
+	usage_exit();
+}
 
 if (defined $school_id) {
 	my $val = validate_school_id($school_id);
 	if (! $val) {
 		print "$school_id is not a valid school reference\n";
+		usage_exit();
+	}
+}
+
+if ($elements && (! $schools)) {
+	if (! check_schools()) {
+		print "\nNo schools exist\nSchools must exist or be created when creating other elements\n";
 		usage_exit();
 	}
 }
@@ -45,6 +86,8 @@ if ($ttable) {
 	create_groups($groups, $school_id);
 
 	fix_data($fix);
+
+	code_set($codeset);
 }
 
 exit 0;
@@ -60,23 +103,27 @@ sub get_args {
 	my $rooms     = undef;
 	my $groups    = undef;
 	my $fix       = undef;
+	my $codeset   = undef;
 	my $create_db = undef;
 	my $db_name   = undef;
 	my $school_id = undef;
 	my $ttable    = undef;
+	my $silent    = 0;
 
 	my $result = GetOptions (
-		"help"						  => \$help,
-		"create-schools=s"            => \$schools,
-		"create-students=s"           => \$students,
-		"create-staff=s"              => \$staff,
-		"create-rooms=s"              => \$rooms,
-		"create-teaching-groups=s"    => \$groups,
-		"fix"                         => \$fix,
-		"create-database=s"           => \$create_db,
-		"database=s"                  => \$db_name,
-		"create-time-table=s"		  => \$ttable,
-		"school-id=s"                 => \$school_id,
+		"help"                     => \$help,
+		"silent"                   => \$silent,
+		"create-schools=s"         => \$schools,
+		"create-students=s"        => \$students,
+		"create-staff=s"           => \$staff,
+		"create-rooms=s"           => \$rooms,
+		"create-teaching-groups=s" => \$groups,
+		"fix"                      => \$fix,
+		"codeset"                  => \$codeset,
+		"create-database=s"        => \$create_db,
+		"database=s"               => \$db_name,
+		"create-time-table:s"      => \$ttable,
+		"school-id=s"              => \$school_id,
 	);
 
 	if ($help) {
@@ -88,7 +135,6 @@ sub get_args {
 	++$elements if ($staff);
 	++$elements if ($rooms);
 	++$elements if ($groups);
-#	++$elements if ($ttable);
 
 	if ($create_db && $db_name) {
 		print "\nCannot specify both --create-database and --database in one command\n";
@@ -109,20 +155,20 @@ sub get_args {
 		usage_exit();
 	}
 
-	if ($ttable) {
+	if (defined $ttable) {
 		my $err = 0;
 		++$err if ($elements);
 		++$err if ($schools);
 		++$err if ($create_db);
 		if ($err){
-			print "\ncreate-time-table must be called on an existing school as a stand-alone cammand\n         (--database is allowed)\n";
+			print "\ncreate-time-table must be called on an existing school as a stand-alone command\n         (--database is allowed)\n";
 			usage_exit();
 		}
 
 		$school_id = $ttable;
 	}
 
-	return ($schools, $students, $staff, $rooms, $groups, $fix, $create_db, $db_name, $ttable,  $school_id);
+	return ($schools, $students, $staff, $rooms, $groups, $fix, $codeset, $create_db, $db_name, $ttable,  $school_id, $elements, $silent);
 }
 
 sub usage_exit {
@@ -156,6 +202,16 @@ Sample usage is:
   
   ./create_sif_data.pl --fix           		# Update missing data  
 
+  ./create_sif_data.pl --codeset			# Add the codeset
+
+  By default the program assumes:
+  1) It is being run from the top-level repository directory (and that 'data' and 'schema' are subdirectories
+     of the current directory)
+  2) That the user has a ~/.nsip_sif_data config file
+
+  To run the program from elsewhere, specify the location of the 'data' and 'schema' directories in the
+  ~/.nsip_sif_data config file
+
 EOT
 
 	exit 0;
@@ -180,7 +236,7 @@ sub create_schools {
 		# Process school creation for $num_schools
 		my ($done) = make_schools($num_schools);
 
-		print "\n $done schools created \n";
+		print "\n$done schools created \n" unless ($silent);
 	}
 
 	return ($schools);
@@ -193,7 +249,7 @@ sub create_students {
 
 		my ($done) = make_students($students, $school);
 
-		print "\n $done students created \n";
+		print "\n$done students created \n" unless ($silent);
 	}
 	return ($students);
 }
@@ -205,7 +261,7 @@ sub create_staff {
 
 		my ($done, $xxx) = make_staff($staff, $school);
 
-		print "\n $done staff created \n";
+		print "\n$done staff created \n" unless ($silent);
 	}
 	return ($staff);
 }
@@ -217,7 +273,7 @@ sub create_rooms {
 
 		my ($done, $xxx) = make_rooms($rooms, $school);
 
-		print "\n $done rooms created \n";
+		print "\n$done rooms created \n" unless ($silent);
 	}
 	return ($rooms);
 }
@@ -229,7 +285,7 @@ sub create_groups {
 
 		my ($schools, $rooms) = make_groups($students, $school);
 
-		print "\n $schools schools processed - $rooms groups created \n";
+		print "\n$schools schools processed - $rooms groups created \n" unless ($silent);
 	}
 	return ($students);
 }
@@ -241,7 +297,7 @@ sub create_ttable {
 
 		my ($done, $cells) = make_ttable($school);
 
-		print "\n $done time table created - $cells cells \n";
+		print "\n$done time table created - $cells cells \n" unless ($silent);
 	}
 	return ($ttable);
 }
@@ -260,21 +316,41 @@ sub fix_data {
 	return ($result);
 }
 
-sub create_database {
-	my ($db_name) = @_;
+sub code_set {
+	my ($cs_request) = @_;
+	if ($cs_request) {
+		# TODO Check table already exists ? (assume)
+		my $cs_data = $sd->load_codeset();
 
-	die "Bad db name" if ($db_name =~ m/[\/|\.|;|\s]+/);
+		my $old_count = 0;
+		my $old_data = {};
+		my $sth = $dbh->prepare(q{
+			SELECT * FROM CodeSet
+		});
+		$sth->execute();
+		while (my $ref = $sth->fetchrow_hashref) {
+			$old_count++;
+			$old_data->{$ref->{CodeSet}}{$ref->{CodeKey}} = $ref->{CodeValue};
+		}
 
-	my $dbh = DBI->connect("dbi:mysql:", undef, undef);
-	$dbh->do("CREATE DATABASE $db_name");
-
-	system("/usr/bin/mysql $db_name < ../schema/common/create.sql") == 0
-		or die "system call to create.sql failed\n";
-
-	system("/usr/bin/mysql $db_name < ../schema/AU1.3/example.sql") == 0
-		or die "system call to example.sql failed\n";
-	
-	return ($db_name);
+		$sth = $dbh->prepare(q{
+			INSERT INTO CodeSet (CodeSet, CodeKey, CodeValue) VALUES (?, ?, ?)
+		});
+		my $created = 0;
+		my $rows = 0;
+		foreach my $CodeSet (keys %$cs_data) {
+			foreach my $key (keys %{$cs_data->{$CodeSet}}) {
+				$rows++;
+				if (! exists($old_data->{$CodeSet}) || !exists($old_data->{$CodeSet}{$key}) ) {
+					$created++;
+					$sth->execute( $CodeSet, $key, $cs_data->{$CodeSet}{$key} );
+				}
+			}
+		}
+		$dbh->commit();
+		print "Created $created of $rows in CodeSet\n";
+	}
+	# return ($result);
 }
 
 sub get_range {
@@ -296,15 +372,33 @@ sub get_range {
 sub make_schools {
 	my ($schools) = @_;
 
+
 	my $cnt = 0;
 	for (my $i = 0; $i < $schools ; $i++){
-		my $local_id = $sd->create_localid();
+		my $data = $sd->create_SchoolInfo({});
 		my $uuid = $sd->make_new_id();
-		my $school_name = $sd->create_school_name();
-		my $sth = $dbh->prepare("INSERT INTO SchoolInfo (RefId, LocalId, SchoolName) Values(?,?,?)");
-		$sth->execute($uuid,$local_id,$school_name);
 
-		print "\nSchool RefId = $uuid";
+		my $sth = $dbh->prepare("
+			INSERT INTO SchoolInfo (
+				RefId, LocalId, SchoolName, CampusSchoolCampusId, CampusAdminStatus, CampusCampusType,
+				StateProvinceId, CommonwealthId, SchoolSector, OperationalStatus, 
+				IndependentSchool, SchoolType, 
+				Address_Street_StreetNumber, Address_Street_StreetName, Address_City, Address_StateProvince,
+				Address_PostalCode, Address_ARIA, Entity_Open
+			) VALUES (
+				?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?
+			)
+		");
+		$sth->execute(
+			$uuid, $sd->create_localid(), $sd->create_school_name(),
+			$data->{CampusSchoolCampusId}, $data->{CampusAdminStatus}, $data->{CampusCampusType},
+			$data->{StateProvinceId}, $data->{CommonwealthId}, $data->{SchoolSector}, $data->{OperationalStatus},
+			$data->{IndependentSchool}, $data->{SchoolType},
+			$data->{Address_Street_StreetNumber}, $data->{Address_Street_StreetName}, $data->{Address_City},
+			$data->{Address_StateProvince}, $data->{Address_PostalCode}, $data->{Address_ARIA}, $data->{Entity_Open},
+		);
+
+		print "School RefId = $uuid\n" unless ($silent);
 
 		++$cnt;
 	}
@@ -316,7 +410,6 @@ sub make_students {
 
 	my $cnt = 0;
 
-	# Get School Info
 	my $sth;
 	if (defined $school) {
 		$sth = $dbh->prepare("SELECT * from SchoolInfo WHERE RefId = \"$school\"");
@@ -325,21 +418,55 @@ sub make_students {
 	}
 	$sth->execute();
 
-	# Insert students into table
 	while (my $row = $sth->fetchrow_hashref) {
 		my $schoolid = $row->{RefId};
 
 		my ($num_students) = get_range($students);
 
-		for(my $i = 0; $i < $num_students; $i++){
-		    my $student = $sd->create_student();
+		for (my $i = 0; $i < $num_students; $i++){
+			my $data = $sd->create_StudentPersonal({});
+
 		    my $local_id = $sd->create_localid();
-		    my  $sth0 = $dbh->prepare("INSERT INTO StudentPersonal (RefId,
-		    LocalId, FamilyName, GivenName, SchoolInfo_RefId, YearLevel)
-		    Values(?,?,?,?,?,?)");
-		    $sth0->execute($student->{refid}, $local_id,
-		    $student->{lastname},$student->{firstname},
-		    $schoolid, $student->{yearlevel});
+		    my $sth = $dbh->prepare("
+				INSERT INTO StudentPersonal (
+					RefId, LocalId, FamilyName, GivenName, MiddleName, PreferredGivenName, SchoolInfo_RefId, YearLevel,
+					StateProvinceId, Sex, BirthDate, IndigenousStatus,
+					CountryofBirth, MostRecent_YearLevel, MostRecent_Parent1Language, MostRecent_Parent2Language,
+					MostRecent_Parent1SchoolEducation, MostRecent_Parent2SchoolEducation,
+					MostRecent_Parent1NonSchoolEducation, MostRecent_Parent2NonSchoolEducation,
+					MostRecent_Parent1EmploymentType, MostRecent_Parent2EmploymentType,
+					Email
+
+				) VALUES (
+					?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?
+				)
+			");
+		    $sth->execute(
+				$data->{refid}, $local_id, $data->{FamilyName}, $data->{GivenName}, $data->{MiddleName},
+				$data->{GivenName}, $schoolid, $data->{yearlevel},
+				$data->{StateProvinceId}, $data->{Sex}, $data->{BirthDate}, $data->{IndigenousStatus},
+				$data->{CountryofBirth}, $data->{MostRecent_YearLevel},
+				$data->{MostRecent_Parent1Language}, $data->{MostRecent_Parent2Language},
+				$data->{MostRecent_Parent1SchoolEducation}, $data->{MostRecent_Parent2SchoolEducation},
+				$data->{MostRecent_Parent1NonSchoolEducation}, $data->{MostRecent_Parent2NonSchoolEducation},
+				$data->{MostRecent_Parent1EmploymentType}, $data->{MostRecent_Parent2EmploymentType},
+				$data->{Email}
+			); 
+
+			# Add to StudentSchoolEnrollment
+			my $enroll = $sd->create_StudentSchoolEnrollment($data->{yearlevel});
+			my  $sth1 = $dbh->prepare("INSERT INTO StudentSchoolEnrollment (
+			RefId, StudentPersonal_RefId, SchoolInfo_refId, MembershipType, 
+			SchoolYear, TimeFrame, YearLevel, FTE, EntryDate)
+
+			Values(?,?,?,?,?,?,?,?,?)");
+
+			$sth1->execute(
+				$enroll->{refid}, $data->{refid}, $schoolid, 
+				$enroll->{MembershipType}, $enroll->{SchoolYear}, 
+				$enroll->{TimeFrame}, $enroll->{YearLevel}, $enroll->{FTE},
+				$enroll->{EntryDate}
+			);
 
 			++$cnt;
 		}
@@ -369,15 +496,43 @@ sub make_staff {
 		my ($num_staff) = get_range($staff);
 
 		for(my $i = 0; $i < $num_staff; $i++){
-			my $staff = $sd->create_student();
+			my $data = $sd->create_StaffPersonal({});
+
 			my $local_id = $sd->create_localid();
 			my  $sth0 = $dbh->prepare("INSERT INTO StaffPersonal (RefId,
-			LocalId, FamilyName, GivenName, SchoolInfo_RefId)
-			Values(?,?,?,?,?)");
-			$sth0->execute($staff->{refid}, $local_id,
-			$staff->{lastname},$staff->{firstname},
-			$schoolid);
-			$refid = $staff->{refid};
+			LocalId, FamilyName, GivenName, MiddleName, PreferredGivenName,
+			SchoolInfo_RefId, StateProvinceId, Sex, EmploymentStatus, 
+			PhoneNumber, Email, Salutation)
+			Values(?,?,?,?,?,?,?,?,?,?,?,?,?)");
+
+			$sth0->execute(
+				$data->{refid}, $local_id, $data->{FamilyName},
+				$data->{GivenName}, $data->{MiddleName},
+				$data->{PreferredGivenName}, $schoolid,
+				$data->{StateProvinceId}, $data->{Sex},
+				$data->{EmploymentStatus}, $data->{PhoneNumber},
+				$data->{Email}, $data->{Salutation}
+
+			);
+
+			$refid = $data->{refid};
+
+			# Add to StaffAssignment
+			my $assign = $sd->create_StaffAssignment({});
+			my  $sth1 = $dbh->prepare("INSERT INTO StaffAssignment (RefId,
+			SchoolInfo_RefId, SchoolYear, StaffPersonal_RefID, Description, 
+			PrimaryAssignment, JobStartDate, JobEndDate, JobFunction, 
+			StaffActivity_Code)
+			Values(?,?,?,?,?,?,?,?,?,?)");
+
+			$sth1->execute(
+				$assign->{refid}, $schoolid, $assign->{SchoolYear},
+				$refid, $assign->{Description}, 
+				$assign->{PrimaryAssignment}, $assign->{JobStartDate}, 
+				$assign->{JobEndDate}, $assign->{JobFunction}, 
+				$assign->{StaffActivity_Code}
+			);
+
 			++$cnt;
 		}
 	}
@@ -455,7 +610,7 @@ sub make_groups {
 		
 		if (! $rooms) {
 			my ($rooms, $xxx) = make_rooms("5-10", $schoolid);
-			print "\n$rooms rooms created for school_id $schoolid\n";
+			print "\n$rooms rooms created for school_id $schoolid\n" unless ($silent);
 		}
 
 #		$room_sth = $dbh->prepare($select);
@@ -463,7 +618,7 @@ sub make_groups {
 
 		while (my $room = $room_sth->fetchrow_hashref) {
 			my $roomid = $room->{RefId};
-			# Insert TeachinGroupInfo
+			# Insert TeachingGroupInfo
 			my ($refid) = make_teaching_group($schoolid, $roomid);
 			++$room_cnt;
 
@@ -506,12 +661,13 @@ sub make_groups {
 				if (defined $staff[$staff_num]) {
 					my $sth_tg_staff = $dbh->prepare(q{
 						INSERT INTO TeachingGroup_Teacher
-						(TeachingGroup_RefId, StaffPersonal_RefId) 
-						VALUES (?, ?)
+						(TeachingGroup_RefId, StaffPersonal_RefId, 
+						TeacherAssociation, TeacherLocalId) 
+						VALUES (?, ?, ?, ?)
  					});
 
 					$sth_tg_staff->execute(
-						$refid, $staff[$staff_num]
+						$refid, $staff[$staff_num], '', ''
 					);
 				}
 			}
@@ -524,18 +680,25 @@ sub make_groups {
 sub make_teaching_group {
 	my ($schoolid, $roomid) = @_;
 
-	# Insert TeachinGroupInfo
-	my $refid = $sd->make_new_id();
-	my $short_name = $sd->make_short_name();
-	my $long_name = $sd->make_long_name($short_name);
-	my $localid = $roomid;
-	my $yearlevel = int(rand(12)) + 1;
-	my $sth = $dbh->prepare("INSERT INTO TeachingGroup (RefId,
-		ShortName, LongName, LocalId, SchoolYear, SchoolInfo_RefId)
-		Values(?,?,?,?,?,?)");
-	$sth->execute($refid, $short_name, $long_name, $localid, $yearlevel,
-		$schoolid);
-	return $refid;
+	my $data = $sd->create_TeachingGroup({
+		schoolid => $schoolid,
+		roomid   => $roomid
+	});
+
+	my $sth = $dbh->prepare("
+		INSERT INTO TeachingGroup (
+			RefId, ShortName, LongName, LocalId, SchoolYear, SchoolInfo_RefId, KLA
+		)
+		values (
+			?,?,?,?,?,?,?
+		)
+	");
+	$sth->execute(
+		$data->{refid}, $data->{short_name}, $data->{long_name}, $data->{localid}, $data->{yearlevel}, 
+		$data->{schoolid}, $data->{kla}
+	);
+
+	return $data->{refid};
 }
 
 sub get_students {
@@ -555,11 +718,8 @@ sub get_students {
 	if (! $students) {
 		my $min = $upper * 2;
 		my $max = $upper * 10;
-# for testing
-# $min = 4;
-# $max = 8;
 		my ($done) = make_students("$min..$max", $school);
-		print "\n$done students created for school $school\n";
+		print "\n$done students created for school $school\n" unless ($silent);
 	}
 
 	$sth->execute();
@@ -584,11 +744,8 @@ sub get_staff {
 	}	
 
 	if (! $staff) {
-# for testing
-# $min = 4;
-# $max = 8;
 		my ($done, $xxx) = make_staff("$min..$max", $school);
-		print "\n$done staff created for school $school\n";
+		print "\n$done staff created for school $school\n" unless ($silent);
 	}
 
 	$sth->execute();
@@ -627,7 +784,7 @@ sub make_ttable {
 			make_timetable_day($i,$refid);
 			for (my $j = 0; $j < $periodspercycle; $j++){
 				make_timetable_period($refid,$i,$j);
-				my $subid = make_timetable_subject();
+				my $subid = make_timetable_subject($schoolid);
 				my $done = make_timetable_cell($refid, $subid, $schoolid, $i, $j);
 				$cells += $done;
 			}
@@ -694,6 +851,7 @@ sub make_timetable_cell {
 
 	my $celltype = $sd->make_cell_type();
 
+	# NOTE: Might need a SchoolInfo_RefId - TBC Ben/Scott
 	my $sth = $dbh->prepare("INSERT INTO TimeTableCell (RefId,
 		TimeTable_RefId, TimeTableSubject_RefId, TeachingGroup_RefId,
 		RoomInfo_RefId,CellType, PeriodId, DayId, StaffPersonal_RefId)
@@ -726,6 +884,8 @@ sub make_timetable_period {
 }
 
 sub make_timetable_subject {
+	my ($school_id) = @_;
+
 	my $refId = $sd->make_new_id();
 	my $acyear = $sd->make_new_year();
 	my $code = int(rand(10)) . int(rand(10)) . int(rand(10));
@@ -735,97 +895,64 @@ sub make_timetable_subject {
 	my $subjecttype = $sd->make_subject_type();
 	my $sth = $dbh->prepare("INSERT INTO TimeTableSubject (RefId,
 		SubjectLocalId,AcademicYear,Faculty,SubjectShortName,
-		SubjectLongName,SubjectType,SchoolInfo_RefId)
-		VALUES (?,?,?,?,?,?,?,?)");
-	$sth->execute($refId, $subjectid, $acyear, "Faculty of $longname",
-		$shortname, $longname, $subjecttype, $_[0]);
+		SubjectLongName,SubjectType,SchoolInfo_RefId,SchoolYear)
+		VALUES (?,?,?,?,?,?,?,?,?)");
+	$sth->execute(
+		$refId, $subjectid, $acyear, "Faculty of $longname",
+		$shortname, $longname, $subjecttype, $school_id, '2014'
+	);
+
+	# Also TimeTableSubject_OtherCodeList
+	my ($other_code, $code_set) = $sd->create_OtherCode();
+	my $sth1 = $dbh->prepare("INSERT INTO TimeTableSubject_OtherCodeList (
+		TimeTableSubject_RefId, OtherCode, OtherCode_CodeSet)
+		VALUES (?, ?, ?)");
+	$sth1->execute($refId, $other_code, $code_set);
+
 	return $refId;
 }
-
-
-
-
-
-
 
 sub validate_school_id {
 	my ($school) = @_;
 
-    my $sth = $dbh->prepare("SELECT RefId from SchoolInfo WHERE RefId = \"$school\"");
-    $sth->execute();
-    my $val = 0;
-    while(my $row = $sth->fetchrow_hashref){
-      $val++;
-    }
+	my $sth = $dbh->prepare("SELECT count(*) AS cnt from SchoolInfo WHERE RefId = \"$school\"");
+	$sth->execute();
 
-	return ($val);
+	my $row = $sth->fetchrow_hashref;
+	return ($row->{cnt});
 }
 
+sub first_school {
+	my $sth = $dbh->prepare("SELECT RefId FROM SchoolInfo ORDER BY RefId LIMIT 1");
+	$sth->execute();
+	my $row = $sth->fetchrow_hashref;
+	return $row->{RefId} // '';
+}
 
+sub check_schools {
 
+	my $val = 0;
+	my $sth = $dbh->prepare("SELECT count(*) AS cnt from SchoolInfo");
+	$sth->execute();
 
+	my $row = $sth->fetchrow_hashref;
+	return ($row->{cnt});
+}
 
-=notes
-#perl make_schools.pl 10
-##make_roominfo.pl
-#perl make_staff.pl 25
-#perl make_students.pl 100
-#perl make_teaching_group.pl 10
-#perl make_timetable.pl 10
-#
-#perl fix_data.pl
+sub check_rooms {
 
-=head1 COMMENTS
+	my $sth = $dbh->prepare("SELECT count(*) AS cnt from RoomInfo");
+	$sth->execute();
 
-COMMAND LINE INPUT
+	my $row = $sth->fetchrow_hashref;
+	return ($row->{cnt});
+}
 
+sub get_group_stats {
 
-	 Generate NSW Time Table Example Database
-	 Configuration
-	 	Read the YML file as per exsiting make_schools.pl - to get DBI connection details
-	 Create new Database OR point to a database (command line parameter)
-	 	CREATE DATABASE X
-	 	schema/common/*
-	 	schema/AU1.3/*
-	 Generate and Insert Schools
-	 	Command line x..y schools -
-			??? What if they already exist
-			-create-schools=3 - create 3 MORE schools
-			-create-schools=3..7 - random 3 to 7 schools
-	 Generate Students
-		 Command line x..y students per school
-			-create-studnnts=200..400
-		 Read SELECT on existing schools
-		 For each school
-			Check students numbers match request range
-			Else create students
-	 Generate Staff
-		create-staff=5..20
-		AS per Students
-	 Generate Rooms
-		create-rooms=3..5
-		Generate some random rooms as per make_roominfo and fix_data
-	 Generate Teaching Groups
-		create-teaching-group=7..20
-		Select Schools
-		Select Rooms - if there are no rooms, error
-		Randomly select a teacher
-		Randomly select some students - theoretically command line option to say how many students in a teaching group - e.g. 10-30
-	Generate Time Table
-		Read teaching groups
-		Assign each one to a TimeTable as per make_timetable
+	my $school_cnt = check_schools();
+	my $room_cnt   = check_rooms();
+	
+	return ($school_cnt, $room_cnt);
+}
 
-	Update NSW Time Table Example Database
-		In theory can just run the code above
-
-	Fix Broken Data
-		Old database, where these scripts have been updated or some data in
-		the Database (maybe imported manually from somewhere else) has
-		missing ifnormaiton
-	command line option --fix
-		like fix_data.pl
-		Iterate over all the known types of tables, and patch missing
-		information
-		. e.g. Title (Mr/Mrs) is missing from Staff member.
-		. e.g. Birtday is missing
-=end
