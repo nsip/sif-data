@@ -53,7 +53,7 @@ CREATE TABLE IF NOT EXISTS StudentPersonal (
 	MiddleName varchar(2000),
 	PreferredGivenName varchar(2000),
 	SchoolInfo_RefId varchar(36), -- TODO: Might use StudentSchoolEnrollment
-	YearLevel varchar(2000),		-- DI
+	YearLevel varchar(100),		-- DI
 	StateProvinceId varchar(200),
 	Sex varchar(200),		-- DI
 	BirthDate varchar(200),		-- DI
@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS StudentPersonal (
 					-- 4  Neither Aboriginal or Torres Strait Origin 
 					-- 9  Not Stated/Unknown
 	CountryofBirth varchar(200),
-	MostRecent_YearLevel varchar(200),
+	MostRecent_YearLevel varchar(100),
 	MostRecent_Parent1Language varchar(200),
 	MostRecent_Parent2Language varchar(200),
 	MostRecent_Parent1SchoolEducation varchar(200),
