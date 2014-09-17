@@ -321,10 +321,10 @@ sub create_StaffAssignment {
 	$data->{SchoolYear}         = '2014';
 	$data->{Description}        = '';
 	$data->{PrimaryAssignment}  = 'U';
-	$data->{JobStartDate}       = '1/1/1990';
+	$data->{JobStartDate}       = '1990-01-01';
 	$data->{JobEndDate}         = '';
-	$data->{JobFunction}        = '';
-	$data->{StaffActivity_Code} = '';
+	$data->{JobFunction}        = 'teacher';
+	$data->{StaffActivity_Code} = $self->random_codeset_key('Staff Activity');
 
 	return $data;
 }
@@ -444,6 +444,14 @@ sub map_codeset_key {
 		warn "Unable to map codeset key = $set, $key";
 	}
 	return $ret;
+}
+
+# Get a random entry from a set - use map to turn it into a value
+sub random_codeset_key {
+	my ($self, $set) = @_;
+	$self->load_codeset;
+	my @vals = keys %{$self->{CodeSetKey}{$set}};
+	return $vals[rand @vals];
 }
 
 =head2 Create Address     
@@ -630,7 +638,7 @@ sub create_SchoolInfo {
 	$data->{IndependentSchool}           = 'No';
 	$data->{SchoolType}                  = $data->{CampusCampusType},
 	$data->{Address_ARIA}                = '1.0';
-	$data->{Entity_Open}                 = '1/1/1990';
+	$data->{Entity_Open}                 = '1990-01-01';
 
 	$data->{Address_Street_StreetNumber} = $address->{StreetNumber};
 	$data->{Address_Street_StreetName}   = $address->{StreetName};
