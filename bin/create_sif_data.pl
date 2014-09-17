@@ -900,7 +900,7 @@ sub make_timetable_subject {
 			SubjectLongName,SubjectType,SchoolInfo_RefId,SchoolYear,
 			ProposedMinClassSize, ProposedMaxClassSize, Semester)
 		VALUES 
-			(?,?,?,?,?,?,?,?,?,?,?)
+			(?,?,?,?,?,?,?,?,?,?,?, ?)
 	});
 	$sth->execute(
 		$refId, $subjectid, $acyear, "Faculty of $longname",
