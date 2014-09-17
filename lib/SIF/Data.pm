@@ -635,7 +635,7 @@ sub create_SchoolInfo {
 	$data->{CommonwealthId}              = '8';
 	$data->{SchoolSector}                = 'Gov';
 	$data->{OperationalStatus}           = 'O';
-	$data->{IndependentSchool}           = 'No';
+	$data->{IndependentSchool}           = 'N';	# As per codeset
 	$data->{SchoolType}                  = $data->{CampusCampusType},
 	$data->{Address_ARIA}                = '1.0';
 	$data->{Entity_Open}                 = '1990-01-01';
