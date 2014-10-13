@@ -231,7 +231,7 @@ sub create_StudentPersonal {
 
 	# year levels are between 1 and 12 right?
 	$data->{yearlevel}                            = int(rand(12)) + 1;
-	$data->{StateProvinceId}                      = 16;
+	$data->{StateProvinceId}             		  = int(rand(99999999)) + 1;		# TODO Unique to each Student
 	$data->{Sex}                = $self->map_codeset_value('Sex Code', $sex);
 	$data->{BirthDate}                            = create_birthdate($data->{yearlevel});
 	$data->{IndigenousStatus}                     = $self->map_codeset_value('Indigenous Status', $indigenous[int rand($#indigenous + 1)]); 
@@ -301,7 +301,7 @@ sub create_StaffPersonal {
 
 	$data->{PreferredGivenName} = $data->{GivenName};
 	$data->{Sex}                = $self->map_codeset_value('Sex Code', $sex);
-	$data->{StateProvinceId}    = 16;
+	$data->{StateProvinceId}    = int(rand(99999999)) + 1;		# TODO Unique to each Staff
 	$data->{EmploymentStatus}   = 'A';
 	$data->{PhoneNumber}        = '';
 	$data->{Email}              = create_email(
@@ -321,10 +321,10 @@ sub create_StaffAssignment {
 	$data->{SchoolYear}         = '2014';
 	$data->{Description}        = '';
 	$data->{PrimaryAssignment}  = 'U';
-	$data->{JobStartDate}       = '1/1/1990';
+	$data->{JobStartDate}       = '1990-01-01';
 	$data->{JobEndDate}         = '';
-	$data->{JobFunction}        = '';
-	$data->{StaffActivity_Code} = '';
+	$data->{JobFunction}        = 'teacher';
+	$data->{StaffActivity_Code} = $self->random_codeset_key('Staff Activity');
 
 	return $data;
 }
@@ -444,6 +444,14 @@ sub map_codeset_key {
 		warn "Unable to map codeset key = $set, $key";
 	}
 	return $ret;
+}
+
+# Get a random entry from a set - use map to turn it into a value
+sub random_codeset_key {
+	my ($self, $set) = @_;
+	$self->load_codeset;
+	my @vals = keys %{$self->{CodeSetKey}{$set}};
+	return $vals[rand @vals];
 }
 
 =head2 Create Address     
@@ -623,14 +631,14 @@ sub create_SchoolInfo {
 	$data->{CampusSchoolCampusId}        = int(rand(4)) + 1;
 	$data->{CampusAdminStatus}           = rand(10) > 8 ? 'N' : 'Y';
 	$data->{CampusCampusType}            = $campus[int rand($#campus + 1)];
-	$data->{StateProvinceId}             = int(rand(4)) + 1;
+	$data->{StateProvinceId}             = int(rand(4)) + 1;		# TODO Unique to each school
 	$data->{CommonwealthId}              = '8';
 	$data->{SchoolSector}                = 'Gov';
 	$data->{OperationalStatus}           = 'O';
-	$data->{IndependentSchool}           = 'No';
+	$data->{IndependentSchool}           = 'N';	# As per codeset
 	$data->{SchoolType}                  = $data->{CampusCampusType},
 	$data->{Address_ARIA}                = '1.0';
-	$data->{Entity_Open}                 = '1/1/1990';
+	$data->{Entity_Open}                 = '1990-01-01';
 
 	$data->{Address_Street_StreetNumber} = $address->{StreetNumber};
 	$data->{Address_Street_StreetName}   = $address->{StreetName};

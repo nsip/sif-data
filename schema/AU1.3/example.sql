@@ -189,6 +189,7 @@ CREATE TABLE IF NOT EXISTS TimeTableSubject (
 	SubjectType varchar(200),
 	SchoolInfo_RefId varchar(36),
 	ProposedMinClassSize varchar(100),
+	ProposedMaxClassSize varchar(100),
 	Semester varchar(100),
 	SchoolYear varchar(100),
 	FOREIGN KEY (SchoolInfo_RefId) REFERENCES SchoolInfo(RefId)
