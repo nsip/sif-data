@@ -417,7 +417,7 @@ CREATE TABLE IF NOT EXISTS StudentDailyAttendance (
 	FOREIGN KEY (SchoolInfo_RefId) REFERENCES SchoolInfo(RefId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS StudentDailyAttendance (
+CREATE TABLE IF NOT EXISTS StudentAttendanceSummary (
 	StudentPersonal_RefId varchar(36),
 	SchoolInfo_RefId varchar(36),
 	SchoolYear varchar(200),
