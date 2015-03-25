@@ -27,6 +27,7 @@ CREATE TABLE IF NOT EXISTS SchoolInfo (
 	CampusSchoolCampusId varchar(200),
 	CampusAdminStatus varchar(100),
 	CampusCampusType varchar(100),
+	CampusParentSchoolId varchar(100),
 	SchoolSector varchar(200),
 	OperationalStatus varchar(200),
 	IndependentSchool varchar(200),
@@ -85,6 +86,10 @@ CREATE TABLE IF NOT EXISTS StudentPersonal (
 	MostRecent_Parent2EmploymentType varchar(200),
 	PhoneNumber varchar(200),
 	Email varchar(200),		-- DI
+	OtherId VARCHAR(200),
+	OtherIdType Varchar(200),
+	Religion VARCHAR(200),
+	PreferredFamilyName Varchar(2000),
 	FOREIGN KEY (SchoolInfo_RefId) REFERENCES SchoolInfo(RefId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -116,6 +121,7 @@ CREATE TABLE IF NOT EXISTS StudentSchoolEnrollment (
 	YearLevel varchar(10), 
 	FTE varchar(5),
 	EntryDate varchar(25),
+	ExitDate Varchar(25),
 	FOREIGN KEY (SchoolInfo_RefId) REFERENCES SchoolInfo(RefId),
 	FOREIGN KEY (StudentPersonal_RefId) REFERENCES StudentPersonal(RefId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -133,9 +139,18 @@ CREATE TABLE IF NOT EXISTS StaffPersonal (
 	EmploymentStatus varchar(200),
 	PhoneNumber varchar(200),
 	Email varchar(200),
+	BirthDate varchar(200),
+	PreferredFamilyName varchar(200),
 	-- Check use of Salutation
 	Salutation varchar(25),
 	FOREIGN KEY (SchoolInfo_RefId) REFERENCES SchoolInfo(RefId)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS StaffPersonal_OtherId (
+	StaffPersonal_RefId varchar(36),
+	OtherId VARCHAR(200),
+	OtherIdType VARCHAR(200),
+	FOREIGN KEY (StaffPersonal_RefId) REFERENCES StaffPersonal(RefId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- TODO: Lists
@@ -176,6 +191,7 @@ CREATE TABLE IF NOT EXISTS RoomInfo (
 	Capacity varchar(100),
 	RoomSize varchar(100),	-- NOTE: Size is a reserved word, using RoomSize
 	RoomType varchar(100),
+	LocalId varchar(200),
 	FOREIGN KEY (SchoolInfo_RefId) REFERENCES SchoolInfo(RefId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -192,6 +208,7 @@ CREATE TABLE IF NOT EXISTS TimeTableSubject (
 	ProposedMaxClassSize varchar(100),
 	Semester varchar(100),
 	SchoolYear varchar(100),
+	ProposedMaxClassSize VARCHAR(100),
 	FOREIGN KEY (SchoolInfo_RefId) REFERENCES SchoolInfo(RefId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
