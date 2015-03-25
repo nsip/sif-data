@@ -27,6 +27,7 @@ CREATE TABLE IF NOT EXISTS SchoolInfo (
 	CampusSchoolCampusId varchar(200),
 	CampusAdminStatus varchar(100),
 	CampusCampusType varchar(100),
+	CampusParentSchoolId varchar(100),
 	SchoolSector varchar(200),
 	OperationalStatus varchar(200),
 	IndependentSchool varchar(200),
@@ -85,6 +86,10 @@ CREATE TABLE IF NOT EXISTS StudentPersonal (
 	MostRecent_Parent2EmploymentType varchar(200),
 	PhoneNumber varchar(200),
 	Email varchar(200),		-- DI
+	OtherId VARCHAR(200),
+	OtherIdType Varchar(200),
+	Religion VARCHAR(200),
+	PreferredFamilyName Varchar(2000),
 	FOREIGN KEY (SchoolInfo_RefId) REFERENCES SchoolInfo(RefId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -116,6 +121,7 @@ CREATE TABLE IF NOT EXISTS StudentSchoolEnrollment (
 	YearLevel varchar(10), 
 	FTE varchar(5),
 	EntryDate varchar(25),
+	ExitDate Varchar(25),
 	FOREIGN KEY (SchoolInfo_RefId) REFERENCES SchoolInfo(RefId),
 	FOREIGN KEY (StudentPersonal_RefId) REFERENCES StudentPersonal(RefId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -133,9 +139,18 @@ CREATE TABLE IF NOT EXISTS StaffPersonal (
 	EmploymentStatus varchar(200),
 	PhoneNumber varchar(200),
 	Email varchar(200),
+	BirthDate varchar(200),
+	PreferredFamilyName varchar(200),
 	-- Check use of Salutation
 	Salutation varchar(25),
 	FOREIGN KEY (SchoolInfo_RefId) REFERENCES SchoolInfo(RefId)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS StaffPersonal_OtherId (
+	StaffPersonal_RefId varchar(36),
+	OtherId VARCHAR(200),
+	OtherIdType VARCHAR(200),
+	FOREIGN KEY (StaffPersonal_RefId) REFERENCES StaffPersonal(RefId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- TODO: Lists
@@ -176,6 +191,7 @@ CREATE TABLE IF NOT EXISTS RoomInfo (
 	Capacity varchar(100),
 	RoomSize varchar(100),	-- NOTE: Size is a reserved word, using RoomSize
 	RoomType varchar(100),
+	LocalId varchar(200),
 	FOREIGN KEY (SchoolInfo_RefId) REFERENCES SchoolInfo(RefId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -192,6 +208,7 @@ CREATE TABLE IF NOT EXISTS TimeTableSubject (
 	ProposedMaxClassSize varchar(100),
 	Semester varchar(100),
 	SchoolYear varchar(100),
+	ProposedMaxClassSize VARCHAR(100),
 	FOREIGN KEY (SchoolInfo_RefId) REFERENCES SchoolInfo(RefId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -365,3 +382,75 @@ CREATE TABLE IF NOT EXISTS ScheduledActivity_TeachingGroup (
 	FOREIGN KEY (TeachingGroup_RefId) REFERENCES TeachingGroup(RefId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- NN added 20141014 for Daily Attendance:
+
+CREATE TABLE IF NOT EXISTS CalendarSummary (
+	RefId varchar(36) UNIQUE,
+	SchoolInfo_RefId varchar(36),
+	SchoolYear varchar(200),
+	CalendarSummary_LocalId varchar(200),
+	DaysInSession varchar(200),
+	StartDate varchar(200),
+	EndDate varchar(200),
+	FOREIGN KEY (SchoolInfo_RefId) REFERENCES SchoolInfo(RefId)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS CalendarDate (
+	CalendarDate varchar(200),
+	CalendarSummary_RefId varchar(36),
+	RefId varchar(36) UNIQUE,
+	SchoolInfo_RefId varchar(36),
+	SchoolYear varchar(200),
+	CalendarDateType_Code varchar(200),
+	CalendarDateNumber varchar(200),
+	StudentAttendance_CountsTowardsAttendance varchar(200),
+	StudentAttendance_AttendanceValue varchar(200),
+	FOREIGN KEY (CalendarSummary_RefId) REFERENCES CalendarSummary(RefId),
+	FOREIGN KEY (SchoolInfo_RefId) REFERENCES SchoolInfo(RefId)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE IF NOT EXISTS CalendarDateType_OtherCodeList (
+	CalendarDate_RefId varchar(36),
+	OtherCode varchar(100),
+	OtherCode_CodeSet varchar(100),
+	FOREIGN KEY (CalendarDate_RefId) REFERENCES CalendarDate(RefId)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS StudentDailyAttendance (
+	RefId varchar(36) UNIQUE,
+	StudentPersonal_RefId varchar(36),
+	SchoolInfo_RefId varchar(36),
+	CalendarDate varchar(200),
+	SchoolYear varchar(200),
+	DayValue varchar(200),
+	AttendanceCode varchar(200),
+	AttendanceStatus varchar(200),
+	TimeIn varchar(200),
+	TimeOut varchar(200),
+	AbsenceValue varchar(200),
+	AttendanceNote varchar(200),
+	FOREIGN KEY (StudentPersonal_RefId) REFERENCES StudentPersonal(RefId),
+	FOREIGN KEY (SchoolInfo_RefId) REFERENCES SchoolInfo(RefId)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS StudentAttendanceSummary (
+	StudentPersonal_RefId varchar(36),
+	SchoolInfo_RefId varchar(36),
+	SchoolYear varchar(200),
+	StartDate varchar(200),
+	EndDate varchar(200),
+	RefId varchar(36) UNIQUE,
+	StartDay varchar(200),
+	EndDay varchar(200),
+	FTE varchar(200),
+	DaysAttended varchar(200),
+	ExcusedAbsences varchar(200),
+	UnexcusedAbsences varchar(200),
+	DaysTardy varchar(200),
+	DaysInMembership varchar(200),
+	FOREIGN KEY (StudentPersonal_RefId) REFERENCES StudentPersonal(RefId),
+	FOREIGN KEY (SchoolInfo_RefId) REFERENCES SchoolInfo(RefId)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- end NN 20141014
