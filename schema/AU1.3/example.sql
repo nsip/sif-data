@@ -208,7 +208,6 @@ CREATE TABLE IF NOT EXISTS TimeTableSubject (
 	ProposedMaxClassSize varchar(100),
 	Semester varchar(100),
 	SchoolYear varchar(100),
-	ProposedMaxClassSize VARCHAR(100),
 	FOREIGN KEY (SchoolInfo_RefId) REFERENCES SchoolInfo(RefId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
