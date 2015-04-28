@@ -95,7 +95,7 @@ CREATE TABLE IF NOT EXISTS StudentPersonal (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-CREATE TABLE StudentPersonal_OtherId (
+CREATE TABLE IF NOT EXISTS StudentPersonal_OtherId (
 	StudentPersonal_RefId varchar(36) DEFAULT NULL,
 	OtherId varchar(200) DEFAULT NULL,
 	OtherIdType varchar(200) DEFAULT NULL,
@@ -405,7 +405,7 @@ CREATE TABLE IF NOT EXISTS CalendarSummary (
 	FirstInstructionDate varchar(200) DEFAULT NULL,
 	LastInstructionDate varchar(200) DEFAULT NULL,
 	InstructionalMinutes varchar(200) DEFAULT NULL,
-	MinutesPerDay varchar(200) DEFAULT NULL;
+	MinutesPerDay varchar(200) DEFAULT NULL,
 	FOREIGN KEY (SchoolInfo_RefId) REFERENCES SchoolInfo(RefId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -478,6 +478,30 @@ CREATE TABLE IF NOT EXISTS StudentAttendanceSummary (
 	FOREIGN KEY (SchoolInfo_RefId) REFERENCES SchoolInfo(RefId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE IF NOT EXISTS SessionInfo (
+	RefId varchar(36) DEFAULT NULL,
+	SchoolInfo_RefId varchar(36) DEFAULT NULL,
+	TimeTableCell_RefId varchar(36) DEFAULT NULL,
+	SchoolYear varchar(200) DEFAULT NULL,
+	LocalId varchar(200) DEFAULT NULL,
+	TimeTableSubjectLocalId varchar(200) DEFAULT NULL,
+	TeachingGroupLocalId varchar(200) DEFAULT NULL,
+	SchoolLocalId varchar(200) DEFAULT NULL,
+	StaffPersonalLocalId varchar(200) DEFAULT NULL,
+	RoomNumber varchar(200) DEFAULT NULL,
+	DayId varchar(200) DEFAULT NULL,
+	PeriodId varchar(200) DEFAULT NULL,
+	SessionDate varchar(200) DEFAULT NULL,
+	StartTime varchar(200) DEFAULT NULL,
+	FinishTime varchar(200) DEFAULT NULL,
+	RollMarked varchar(200) DEFAULT NULL,
+	UNIQUE KEY RefId (RefId),
+	KEY SessionInfo_ibfk_1_idx (SchoolInfo_RefId),
+	KEY SessionInfo_ibfk_2_idx (TimeTableCell_RefId),
+	CONSTRAINT SessionInfo_ibfk_1 FOREIGN KEY (SchoolInfo_RefId) REFERENCES SchoolInfo (RefId) ON DELETE NO ACTION ON UPDATE NO ACTION,
+	CONSTRAINT SessionInfo_ibfk_2 FOREIGN KEY (TimeTableCell_RefId) REFERENCES TimeTableCell (RefId) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 CREATE TABLE IF NOT EXISTS StudentPeriodAttendance (
 	RefId varchar(36) DEFAULT '',
 	StudentPersonal_RefId varchar(36) DEFAULT NULL,
@@ -502,29 +526,5 @@ CREATE TABLE IF NOT EXISTS StudentPeriodAttendance (
 	CONSTRAINT StudentPeriodAttendance_ibfk_2 FOREIGN KEY (StudentPersonal_RefId) REFERENCES StudentPersonal (RefId),
 	CONSTRAINT StudentPeriodAttendance_ibfk_3 FOREIGN KEY (SessionInfo_RefId) REFERENCES SessionInfo (RefId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE IF NOT EXISTS SessionInfo (
-	RefId varchar(36) DEFAULT NULL,
-	SchoolInfo_RefId varchar(36) DEFAULT NULL,
-	TimeTableCell_RefId varchar(36) DEFAULT NULL,
-	SchoolYear varchar(200) DEFAULT NULL,
-	LocalId varchar(200) DEFAULT NULL,
-	TimeTableSubjectLocalId varchar(200) DEFAULT NULL,
-	TeachingGroupLocalId varchar(200) DEFAULT NULL,
-	SchoolLocalId varchar(200) DEFAULT NULL,
-	StaffPersonalLocalId varchar(200) DEFAULT NULL,
-	RoomNumber varchar(200) DEFAULT NULL,
-	DayId varchar(200) DEFAULT NULL,
-	PeriodId varchar(200) DEFAULT NULL,
-	SessionDate varchar(200) DEFAULT NULL,
-	StartTime varchar(200) DEFAULT NULL,
-	FinishTime varchar(200) DEFAULT NULL,
-	RollMarked varchar(200) DEFAULT NULL,
-	UNIQUE KEY RefId (RefId),
-	KEY SessionInfo_ibfk_1_idx (SchoolInfo_RefId),
-	KEY SessionInfo_ibfk_2_idx (TimeTableCell_RefId),
-	CONSTRAINT SessionInfo_ibfk_1 FOREIGN KEY (SchoolInfo_RefId) REFERENCES SchoolInfo (RefId) ON DELETE NO ACTION ON UPDATE NO ACTION,
-	CONSTRAINT SessionInfo_ibfk_2 FOREIGN KEY (TimeTableCell_RefId) REFERENCES TimeTableCell (RefId) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=ut
 
 -- end NN 20141014
