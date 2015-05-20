@@ -527,4 +527,33 @@ CREATE TABLE IF NOT EXISTS StudentPeriodAttendance (
 	CONSTRAINT StudentPeriodAttendance_ibfk_3 FOREIGN KEY (SessionInfo_RefId) REFERENCES SessionInfo (RefId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE IF NOT EXISTS StudentAttendanceTimeList (
+	RefId varchar(36) DEFAULT '',
+	StudentPersonal_RefId varchar(36) DEFAULT NULL,
+	SchoolInfo_RefId varchar(36) DEFAULT NULL,
+	SchoolYear varchar(10), 
+	AttendanceTimeListDate varchar(100),	-- Note field change, Date not valid SQL
+	FOREIGN KEY (StudentPersonal_RefId) REFERENCES StudentPersonal(RefId),
+	FOREIGN KEY (SchoolInfo_RefId) REFERENCES SchoolInfo(RefId)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS StudentAttendanceTimeList_AttendanceTime (
+	StudentAttendanceTimeList_RefId varchar(36) DEFAULT '',
+	Code varchar(100),
+	AttendanceStatus varchar(100),
+	StartTime varchar(100),
+	EndTime varchar(100),
+	AbsenceValue varchar(100),
+	AttendanceNote varchar(100),
+	FOREIGN KEY (StudentAttendanceTimeList_RefId) REFERENCES StudentAttendanceTimeList(RefId)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS StudentAttendanceTimeList_AttendanceTime_OtherCode (
+	StudentAttendanceTimeList_RefId varchar(36) DEFAULT '',
+	Code varchar(100),
+	OtherCode varchar(100),
+	OtherCode_CodeSet varchar(100),
+	FOREIGN KEY (StudentAttendanceTimeList_RefId) REFERENCES StudentAttendanceTimeList(RefId)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 -- end NN 20141014
