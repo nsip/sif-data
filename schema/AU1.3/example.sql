@@ -528,7 +528,7 @@ CREATE TABLE IF NOT EXISTS StudentPeriodAttendance (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS StudentAttendanceTimeList (
-	RefId varchar(36) DEFAULT '',
+	RefId varchar(36) UNIQUE,
 	StudentPersonal_RefId varchar(36) DEFAULT NULL,
 	SchoolInfo_RefId varchar(36) DEFAULT NULL,
 	SchoolYear varchar(10), 
