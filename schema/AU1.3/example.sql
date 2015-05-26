@@ -538,6 +538,7 @@ CREATE TABLE IF NOT EXISTS StudentAttendanceTimeList (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS StudentAttendanceTimeList_AttendanceTime (
+	id MEDIUMINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	StudentAttendanceTimeList_RefId varchar(36) DEFAULT '',
 	Code varchar(100),
 	AttendanceStatus varchar(100),
@@ -549,11 +550,10 @@ CREATE TABLE IF NOT EXISTS StudentAttendanceTimeList_AttendanceTime (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS StudentAttendanceTimeList_AttendanceTime_OtherCode (
-	StudentAttendanceTimeList_RefId varchar(36) DEFAULT '',
-	Code varchar(100),
+	StudentAttendanceTimeList_AttendanceTime_id MEDIUMINT NOT NULL,
 	OtherCode varchar(100),
 	OtherCode_CodeSet varchar(100),
-	FOREIGN KEY (StudentAttendanceTimeList_RefId) REFERENCES StudentAttendanceTimeList(RefId)
+	FOREIGN KEY (StudentAttendanceTimeList_AttendanceTime_id) REFERENCES StudentAttendanceTimeList_AttendanceTime(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- end NN 20141014
