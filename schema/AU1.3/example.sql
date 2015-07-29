@@ -121,6 +121,15 @@ CREATE TABLE IF NOT EXISTS StudentPersonal_OtherId (
 -- PersonInfo/EmailList/Email 
 -- PersonInfo/EmailList/Email/Type 
 
+CREATE TABLE IF NOT EXISTS Language (
+	RecordNumber MEDIUMINT NOT NULL AUTO_INCREMENT PRIMARY KEY, --  auto increment — please make this the primary key: there may be multiple addresses per person, so there is no intrinsic notion of a primary key in this table
+	Person_RefId VARCHAR(36), -- joins to StudentPersonal/RefId? or StudentContactPersonal/RefId?
+	LanguageCode VARCHAR(200),
+	LanguageType VARCHAR(200),
+	LanguageDialect VARCHAR(200)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
 CREATE TABLE IF NOT EXISTS StudentSchoolEnrollment (
 	RefId varchar(36) UNIQUE,
 	StudentPersonal_RefId varchar(36),
@@ -132,6 +141,8 @@ CREATE TABLE IF NOT EXISTS StudentSchoolEnrollment (
 	FTE varchar(5),
 	EntryDate varchar(25),
 	ExitDate Varchar(25),
+	RecordClosureReason? VARCHAR(200),
+	PromotionStatus? VARCHAR(200),
 	FOREIGN KEY (SchoolInfo_RefId) REFERENCES SchoolInfo(RefId),
 	FOREIGN KEY (StudentPersonal_RefId) REFERENCES StudentPersonal(RefId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -175,6 +186,29 @@ CREATE TABLE IF NOT EXISTS StaffPersonal_OtherId (
 -- PersonInfo/EmailList/Email 
 -- PersonInfo/EmailList/Email/Type 
 
+CREATE TABLE IF NOT EXISTS PersonInfo (
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- PersonInfo/Address (XXX should this be AddressList ?)
+
+CREATE TABLE IF NOT EXISTS Address (
+	RecordNumber MEDIUMINT NOT NULL AUTO_INCREMENT PRIMARY KEY, --  auto increment — please make this the primary key: there may be multiple addresses per person, so there is no intrinsic notion of a primary key in this table
+	Person_RefId VARCHAR(36), -- joins to StudentPersonal/RefId? or StudentContactPersonal/RefId?
+	AddressType VARCHAR(200),
+	AddressRole VARCHAR(200),
+	StreetNumber VARCHAR(200),
+	StreetName VARCHAR(200),
+	Line1 VARCHAR(200),
+	Line2 VARCHAR(200),
+	City VARCHAR(200),
+	StateProvince VARCHAR(200),
+	PostalCode VARCHAR(200),
+	Longitude VARCHAR(200),
+	Latitude VARCHAR(200)
+	-- XXX join to StudentPersonal or StaffPersonal or StudentContactPersonal...
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 CREATE TABLE IF NOT EXISTS StaffAssignment (
 	RefId varchar(36) UNIQUE,
 	SchoolInfo_RefId varchar(36),
@@ -190,9 +224,44 @@ CREATE TABLE IF NOT EXISTS StaffAssignment (
 	FOREIGN KEY (StaffPersonal_RefId) REFERENCES StaffPersonal(RefId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- TODO StudentContactPersonal
+CREATE TABLE IF NOT EXISTS StudentContactPersonal (
+	RefId VARCHAR(36) UNIQUE,
+	LocalId VARCHAR(200),
+	Title VARCHAR(200),
+	FamilyName VARCHAR(200),
+	GivenName VARCHAR(200),
+	PreferredGivenName VARCHAR(200),
+	PreferredFamilyName VARCHAR(200),
+	MiddleName VARCHAR(200),
+	Sex VARCHAR(200),
+	PhoneNumberType VARCHAR(200),
+	PhoneNumber VARCHAR(200),
+	Email VARCHAR(200),
+	EmailType VARCHAR(200),
+	SchoolEducationLevel VARCHAR(200),
+	NonSchoolEducation VARCHAR(200),
+	EmploymentType VARCHAR(200)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- TODO StudentContactRelationship
+CREATE TABLE IF NOT EXISTS StudentContactRelationship (
+	RefId VARCHAR(36) UNIQUE,
+	StudentPersonal_RefId VARCHAR(36), -- joins to StudentPersonal/RefId
+	StudentContactPersonal_RefId VARCHAR(36), -- joins to StudentContactPersonal/RefId
+	Relationship VARCHAR(200),
+	ParentLegalGuardian VARCHAR(200),
+	PickupRights VARCHAR(200),
+	LivesWith VARCHAR(200),
+	AccessToRecords VARCHAR(200),
+	EmergencyContact VARCHAR(200),
+	HasCustody VARCHAR(200),
+	DisciplinaryContact VARCHAR(200),
+	PrimaryCareProvider VARCHAR(200),
+	FeesBilling VARCHAR(200),
+	FamilyMail VARCHAR(200),
+	InterventionOrder VARCHAR(200),
+	FOREIGN KEY (StudentPersonal_RefId) REFERENCES StudentPersonal(RefId),
+	FOREIGN KEY (StudentContactPersonal_RefId) REFERENCES StudentContactPersonal(RefId)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS RoomInfo (
 	RefId varchar(36) UNIQUE,
