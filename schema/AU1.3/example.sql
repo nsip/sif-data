@@ -85,6 +85,29 @@ CREATE TABLE IF NOT EXISTS StudentPersonal (
 	MostRecent_Parent2NonSchoolEducation varchar(200),
 	MostRecent_Parent1EmploymentType varchar(200),
 	MostRecent_Parent2EmploymentType varchar(200),
+
+	-- From #127 - Additions for NAPLAN
+	LBOTE varchar(200),
+	MostRecent_SchoolLocalId varchar(200),		-- Lookup
+	MostRecent_SchoolACARAId varchar(200),
+	MostRecent_SchoolCampusId varchar(200),
+	MostRecent_HomeroomLocalId varchar(200),
+	MostRecent_Parent1Sex varchar(200),
+	MostRecent_Parent2Sex varchar(200),
+	MostRecent_Parent1Relationship varchar(200),
+	MostRecent_Parent2Relationship varchar(200),
+	MostRecent_FTE varchar(200),
+	MostRecent_Homegroup varchar(200),
+	MostRecent_ClassCode varchar(200),
+	MostRecent_MembershipType varchar(200),
+	MostRecent_OtherEnrollmentSchoolStateProvinceId varchar(200),
+	MostRecent_FFPOS varchar(200),
+	MostRecent_ReportingSchool varchar(200),
+	EducationSupport varchar(200),
+	HomeSchooledStudent varchar(200),
+	ParentPermissionForMatching varchar(200),
+	ESL varchar(200),
+
 	PhoneNumber varchar(200),
 	Email varchar(200),		-- DI
 	OtherId VARCHAR(200),
@@ -141,8 +164,10 @@ CREATE TABLE IF NOT EXISTS StudentSchoolEnrollment (
 	FTE varchar(5),
 	EntryDate varchar(25),
 	ExitDate Varchar(25),
-	RecordClosureReason? VARCHAR(200),
-	PromotionStatus? VARCHAR(200),
+	RecordClosureReason VARCHAR(200),
+	PromotionStatus VARCHAR(200),
+	ClassCode varchar(200),
+	ReportingSchool varchar(200),
 	FOREIGN KEY (SchoolInfo_RefId) REFERENCES SchoolInfo(RefId),
 	FOREIGN KEY (StudentPersonal_RefId) REFERENCES StudentPersonal(RefId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
