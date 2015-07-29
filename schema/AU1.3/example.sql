@@ -211,9 +211,9 @@ CREATE TABLE IF NOT EXISTS StaffPersonal_OtherId (
 -- PersonInfo/EmailList/Email 
 -- PersonInfo/EmailList/Email/Type 
 
-CREATE TABLE IF NOT EXISTS PersonInfo (
-
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+-- CREATE TABLE IF NOT EXISTS PersonInfo (
+--
+-- ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- PersonInfo/Address (XXX should this be AddressList ?)
 
