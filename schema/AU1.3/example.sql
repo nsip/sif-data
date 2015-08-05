@@ -682,7 +682,7 @@ CREATE TABLE IF NOT EXISTS PurchaseOrder (
 	UpdateDate  VARCHAR(200),
 	FullyDelivered  VARCHAR(200),
 	FOREIGN KEY (EmployeePersonal_RefId) REFERENCES StaffPersonal(RefId),
-	FOREIGN KEY (LocationInfo_RefId) REFERENCES LocationInfo(RefId),
+	FOREIGN KEY (LocationInfo_RefId) REFERENCES LocationInfo(RefId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS Invoice (
@@ -710,7 +710,7 @@ CREATE TABLE IF NOT EXISTS Invoice (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS FinancialClass (
-	RefId PRIMARY VARCHAR(36),
+	RefId VARCHAR(36) PRIMARY KEY,
 	Name VARCHAR(200),
 	Description VARCHAR(200),
 	ClassType  VARCHAR(200)
@@ -741,12 +741,33 @@ CREATE TABLE IF NOT EXISTS Invoice_FinancialAccount (
 
 CREATE TABLE IF NOT EXISTS Debtor (
 	-- Note: address information should go into the new Address table created in #128
-	RefId PRIMARY VARCHAR(36) KEY,
+	RefId  VARCHAR(36) PRIMARY KEY,
 	BilledEntity  VARCHAR(36), -- — joins to either VendorInfo/RefId or StudentContactPersonal/RefId?,
 	BilledEntity_SIFRefObject VARCHAR(200),	-- XXX Bad DB structure for SQL (see above too)
 	BillingName  VARCHAR(200),
 	BillingNote  VARCHAR(200),
-	Discount VARCHAR(200),
+	Discount VARCHAR(200)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS VendorInfo (
+	-- Note: address information in LocationInfo/ContactInfo should go into the new Address table created in #128
+	RefId  VARCHAR(36) PRIMARY KEY,
+	Name VARCHAR(200),
+	ContactInfo_FamilyName VARCHAR(200),
+	ContactInfo_GivenName VARCHAR(200),
+	ContactInfo_MiddleName VARCHAR(200),
+	ContactInfo_PositionTitle VARCHAR(200),
+	ContactInfo_Role VARCHAR(200),
+	ContactInfo_Email VARCHAR(200),
+	ContactInfo_PhoneNumber VARCHAR(200),
+	CustomerId  VARCHAR(200),
+	ABN VARCHAR(200),
+	RegisteredForGST VARCHAR(200),
+	PaymentTerms  VARCHAR(200),
+	BPay VARCHAR(200),
+	BSB VARCHAR(200),
+	AccountNumber  VARCHAR(200),
+	AccountName  VARCHAR(200)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS PaymentReceipt (
@@ -770,7 +791,7 @@ CREATE TABLE IF NOT EXISTS PaymentReceipt (
 	AccountingPeriod  VARCHAR(200),
 	FOREIGN KEY (Invoice_RefId) REFERENCES Invoice(RefId),
 	FOREIGN KEY (VendorInfo_RefId) REFERENCES VendorInfo(RefId),
-	FOREIGN KEY (Debtor_RefId) REFERENCES Debtor(RefId),
+	FOREIGN KEY (Debtor_RefId) REFERENCES Debtor(RefId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS PaymentReceipt_FinancialAccount (
@@ -778,50 +799,29 @@ CREATE TABLE IF NOT EXISTS PaymentReceipt_FinancialAccount (
 	PaymentReceipt_RefId  VARCHAR(36), -- — joins to PaymentReceipt/RefId?,
 	FinancialAccount_RefId  VARCHAR(36), -- — joins to FinancialAccount/RefId?,
 	FOREIGN KEY (PaymentReceipt_RefId) REFERENCES PaymentReceipt(RefId),
-	FOREIGN KEY (FinancialAccount_RefId) REFERENCES FinancialAccount(RefId),
+	FOREIGN KEY (FinancialAccount_RefId) REFERENCES FinancialAccount(RefId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS PurchaseOrder_PurchasingItems ()
+CREATE TABLE IF NOT EXISTS PurchaseOrder_PurchasingItems (
 	-- This is a 1:n join of PurchaseOrder to the PurchaseOrder/PurchasingItems/PurchasingItem entry
 	PurchaseOrder_RefId  VARCHAR(36), -- — joins to PurchaseOrder/RefId?,
-	RECORD_NUMBER Id AUTO_INCREMENT PRIMARY KEY
+	Id MEDIUMINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	ItemNumber  VARCHAR(200),
 	ItemDescription  VARCHAR(200),
 	Quantity VARCHAR(200),
 	UnitCost  VARCHAR(200),
 	QuantityDelivered  VARCHAR(200),
-	FOREIGN KEY (PurchaseOrder_RefId) REFERENCES PurchaseOrder(RefId),
+	FOREIGN KEY (PurchaseOrder_RefId) REFERENCES PurchaseOrder(RefId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS PurchaseOrder_PurchasingItem_ExpenseAccount (
 	-- This is a 1:n join of PurchaseOrder_PurchasingItems to the PurchaseOrder/PurchasingItems/PurchasingItem/ExpenseAccounts/ExpenseAccount entry
-	RECORD_NUMBER PurchasingItemId, -- — joins to PurchaseOrder_PurchasingItems/Id
+	PurchasingItemId MEDIUMINT NOT NULL AUTO_INCREMENT PRIMARY KEY, -- — joins to PurchaseOrder_PurchasingItems/Id
 	AccountCode  VARCHAR(200),
 	Amount VARCHAR(200),
 	FinancialAccount_RefId  VARCHAR(36), -- — joins to FinancialAccount/RefId?,
 	AccountingPeriod  VARCHAR(200),
-	FOREIGN KEY (FinancialAccount_RefId) REFERENCES FinancialAccount(RefId),
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE IF NOT EXISTS VendorInfo (
-	-- Note: address information in LocationInfo/ContactInfo should go into the new Address table created in #128
-	RefId  VARCHAR(36) PRIMARY KEY,
-	Name VARCHAR(200),
-	ContactInfo_FamilyName VARCHAR(200),
-	ContactInfo_GivenName VARCHAR(200),
-	ContactInfo_MiddleName VARCHAR(200),
-	ContactInfo_PositionTitle VARCHAR(200),
-	ContactInfo_Role VARCHAR(200),
-	ContactInfo_Email VARCHAR(200),
-	ContactInfo_PhoneNumber VARCHAR(200),
-	CustomerId  VARCHAR(200),
-	ABN VARCHAR(200),
-	RegisteredForGST VARCHAR(200),
-	PaymentTerms  VARCHAR(200),
-	BPay VARCHAR(200),
-	BSB VARCHAR(200),
-	AccountNumber  VARCHAR(200),
-	AccountName  VARCHAR(200),
+	FOREIGN KEY (FinancialAccount_RefId) REFERENCES FinancialAccount(RefId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS Journal (
@@ -840,7 +840,7 @@ CREATE TABLE IF NOT EXISTS Journal (
 	ApprovedBy  VARCHAR(200),
 	FinancialClass_RefId  VARCHAR(36), -- — joins to FinancialClass/RefId?,
 	FOREIGN KEY (Debit_FinancialAccount_RefId) REFERENCES FinancialAccount(RefId),
-	FOREIGN KEY (Credit_FinancialAccount_RefId) REFERENCES FinancialAccount(RefId),
+	FOREIGN KEY (Credit_FinancialAccount_RefId) REFERENCES FinancialAccount(RefId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
