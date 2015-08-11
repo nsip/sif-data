@@ -15,5 +15,5 @@ Database Rules
 Basic Usage
 
  Create a new database containing students etc
- * bin/create_sif_data.p --create-database=MyNewDemo
+ * bin/create_sif_data.pl --create-database=MyNewDemo
  * bin/create_sif_data.pl --database=MyNewDemo --create-schools=1 --create-students=50..150
