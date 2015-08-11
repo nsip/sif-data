@@ -608,28 +608,65 @@ sub make_groups {
 			++$rooms;
 		}
 		
-		if ($rooms < 9 ) {
-			my $num = 9 - $rooms;
+		if ($rooms < 12 ) {
+			my $num = 12 - $rooms;
 			my ($new_rooms, $xxx) = make_rooms($num, $schoolid);
 			print "\n$new_rooms rooms created for school_id $schoolid\n" unless ($silent);
-			$rooms = 9;
+			$rooms = 12;
 		}
 
 #		$room_sth = $dbh->prepare($select);
 		$room_sth->execute();
 
+		# get 3 random, unique subjects for years 10 - 12
+		my @subjects;
+		for my $y (10..12) {
+			my $new = 0;
+			until ($new) {
+				my $shortname = $sd->make_short_name();
+				$new = 1;
+				for my $t (10..12) {
+					if (defined $subjects[$t]) {
+						$new = 0 if ($subjects[$t] eq $shortname);
+					}
+				}
+            	$subjects[$y] = $shortname if ($new);
+			}
+		}
+		
 		my $year = 0;
 		while (my $room = $room_sth->fetchrow_hashref) {
 			my $roomid = $room->{RefId};
 
 			my $refid;
 			++$year;
+
+			next if ($year > 12);
+
+			if ($year > 9) {
+
+				my $shortname = $subjects[$year];
+				my $longname = $sd->make_long_name($shortname);
+				for my $i (10..12) {
+					my $name = $year . chr(55 + $i) . " $longname";
+
+print "year $year - name is $name\n";
+
+
+	
+
+
+
+				}
+
+				next;
+			}
+next;                                #  Temporary block
 			for my $i (1..6) {
 				my $name = $year . chr(64 + $i);
 
 				# Insert TeachingGroupInfo
 				($refid) = make_teaching_group($schoolid, $roomid, $name, $year);
-			
 				++$room_cnt;
 
 				# select students - or create them
@@ -658,7 +695,7 @@ sub make_groups {
 					}
 				}
 
-				# select staff - or create them
+				# select staff - or create them - ensure teachers > rooms
 				$lower = $rooms + 2;
 				$upper = $rooms * 2;
 
