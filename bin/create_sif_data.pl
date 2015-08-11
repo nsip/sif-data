@@ -608,67 +608,78 @@ sub make_groups {
 			++$rooms;
 		}
 		
-		if (! $rooms) {
-			my ($rooms, $xxx) = make_rooms("5-10", $schoolid);
-			print "\n$rooms rooms created for school_id $schoolid\n" unless ($silent);
+		if ($rooms < 9 ) {
+			my $num = 9 - $rooms;
+			my ($new_rooms, $xxx) = make_rooms($num, $schoolid);
+			print "\n$new_rooms rooms created for school_id $schoolid\n" unless ($silent);
+			$rooms = 9;
 		}
 
 #		$room_sth = $dbh->prepare($select);
 		$room_sth->execute();
 
+		my $year = 0;
 		while (my $room = $room_sth->fetchrow_hashref) {
 			my $roomid = $room->{RefId};
-			# Insert TeachingGroupInfo
-			my ($refid) = make_teaching_group($schoolid, $roomid);
-			++$room_cnt;
 
-			# select students - or create them
-			$groups =~ s/-/\.\./;
-			my ($lower, $upper) = split(/\.\./, $groups);
-			if (! defined $upper) {
-		    	$upper = $lower;
-		    	$lower = 1;
-			}
-			my (@students) = get_students($schoolid, $lower, $upper);
+			my $refid;
+			++$year;
+			for my $i (1..6) {
+				my $name = $year . chr(64 + $i);
 
-			@students = sort { int(rand 3)-1 <=> int(rand 3)-1 } @students;
+				# Insert TeachingGroupInfo
+				($refid) = make_teaching_group($schoolid, $roomid, $name, $year);
+			
+				++$room_cnt;
 
-			my $num_students = int(rand($upper - $lower)) + $lower;
-        	for (my $student_num = 0; $student_num < $num_students; $student_num++) {
-				if (defined $students[$student_num]) {
-					my $sth_tg_student = $dbh->prepare(q{
-						INSERT INTO TeachingGroup_Student 
-						(TeachingGroup_RefId, StudentPersonal_RefId) 
-						VALUES (?, ?)
- 					});
-
-					$sth_tg_student->execute(
-						$refid, $students[$student_num]
-					);
+				# select students - or create them
+				$groups =~ s/-/\.\./;
+				my ($lower, $upper) = split(/\.\./, $groups);
+				if (! defined $upper) {
+	    			$upper = $lower;
+	    			$lower = 1;
 				}
-			}
+				my (@students) = get_students($schoolid, $lower, $upper);
 
-			# select staff - or create them
-			$lower = $rooms + 2;
-			$upper = $rooms * 2;
+				@students = sort { int(rand 3)-1 <=> int(rand 3)-1 } @students;
 
-			my (@staff) = get_staff($schoolid, $lower, $upper);
+				my $num_students = int(rand($upper - $lower)) + $lower;
+       			for (my $student_num = 0; $student_num < $num_students; $student_num++) {
+					if (defined $students[$student_num]) {
+						my $sth_tg_student = $dbh->prepare(q{
+							INSERT INTO TeachingGroup_Student 
+							(TeachingGroup_RefId, StudentPersonal_RefId) 
+							VALUES (?, ?)
+ 						});
 
-			@staff = sort { int(rand 3)-1 <=> int(rand 3)-1 } @staff;
+						$sth_tg_student->execute(
+							$refid, $students[$student_num]
+						);
+					}
+				}
 
-			my $num_staff = int(rand($upper - $lower)) + $lower;
-			for (my $staff_num = 0; $staff_num < $num_staff; $staff_num++) {
-				if (defined $staff[$staff_num]) {
-					my $sth_tg_staff = $dbh->prepare(q{
-						INSERT INTO TeachingGroup_Teacher
-						(TeachingGroup_RefId, StaffPersonal_RefId, 
-						TeacherAssociation, TeacherLocalId) 
-						VALUES (?, ?, ?, ?)
- 					});
+				# select staff - or create them
+				$lower = $rooms + 2;
+				$upper = $rooms * 2;
 
-					$sth_tg_staff->execute(
-						$refid, $staff[$staff_num], '', ''
-					);
+				my (@staff) = get_staff($schoolid, $lower, $upper);
+
+				@staff = sort { int(rand 3)-1 <=> int(rand 3)-1 } @staff;
+
+				my $num_staff = int(rand($upper - $lower)) + $lower;
+				for (my $staff_num = 0; $staff_num < $num_staff; $staff_num++) {
+					if (defined $staff[$staff_num]) {
+						my $sth_tg_staff = $dbh->prepare(q{
+							INSERT INTO TeachingGroup_Teacher
+							(TeachingGroup_RefId, StaffPersonal_RefId, 
+							TeacherAssociation, TeacherLocalId) 
+							VALUES (?, ?, ?, ?)
+ 						});
+
+						$sth_tg_staff->execute(
+							$refid, $staff[$staff_num], '', ''
+						);
+					}
 				}
 			}
 		}
@@ -678,7 +689,7 @@ sub make_groups {
 }
 
 sub make_teaching_group {
-	my ($schoolid, $roomid) = @_;
+	my ($schoolid, $roomid, $name, $year) = @_;
 
 	my $data = $sd->create_TeachingGroup({
 		schoolid => $schoolid,
@@ -694,7 +705,7 @@ sub make_teaching_group {
 		)
 	");
 	$sth->execute(
-		$data->{refid}, $data->{short_name}, $data->{long_name}, $data->{localid}, $data->{yearlevel}, 
+		$data->{refid}, $name, $name, $data->{localid}, $year, 
 		$data->{schoolid}, $data->{kla}
 	);
 
@@ -743,8 +754,9 @@ sub get_staff {
 		++$staff;
 	}	
 
-	if (! $staff) {
-		my ($done, $xxx) = make_staff("$min..$max", $school);
+	if ($staff < $max) {
+		my $num = $max - $staff;
+		my ($done, $xxx) = make_staff("$num", $school);
 		print "\n$done staff created for school $school\n" unless ($silent);
 	}
 

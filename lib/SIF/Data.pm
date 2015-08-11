@@ -601,8 +601,7 @@ sub create_TeachingGroup {
 
 	$data->{refid}      = $self->make_new_id();
 	$data->{short_name} = $self->make_short_name();
-##	$data->{long_name}  = $self->make_long_name($data->{short_name});
-	$data->{long_name}  = $data->{short_name};
+	$data->{long_name}  = $self->make_long_name($data->{short_name});
 	$data->{localid}    = $data->{roomid};
 	$data->{yearlevel}  = int(rand(12)) + 1;
 	$data->{kla}        = $self->make_kla();
