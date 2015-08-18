@@ -24,6 +24,7 @@ use warnings;
 use perl5i::2;
 use SIF::Data;
 use Getopt::Long;
+use Data::Dumper;
 
 my $sd = SIF::Data->new();
 
@@ -406,7 +407,7 @@ sub make_schools {
 }
 
 sub make_students {
-	my ($students, $school) = @_;
+	my ($students, $school, $year) = @_;
 
 	my $cnt = 0;
 
@@ -425,6 +426,8 @@ sub make_students {
 
 		for (my $i = 0; $i < $num_students; $i++){
 			my $data = $sd->create_StudentPersonal({});
+
+			$data->{YearLevel} = $year if (defined $year);
 
 		    my $local_id = $sd->create_localid();
 		    my $sth = $dbh->prepare("
@@ -619,8 +622,10 @@ sub make_groups {
 		$room_sth->execute();
 
 		# get $n random, unique subjects for years 10 - 12
-		my @subjects;
+		
 		my $n = 4;
+		my @subjects;
+
 		for my $y (1..$n) {
 			my $new = 0;
 			until ($new) {
@@ -631,10 +636,10 @@ sub make_groups {
 						$new = 0 if ($subjects[$t] eq $shortname);
 					}
 				}
-            	$subjects[$y] = $shortname if ($new);
+				$subjects[$y] = $shortname if ($new);
 			}
 		}
-		
+
 		my $year = 0;
 		while (my $room = $room_sth->fetchrow_hashref) {
 			my $roomid = $room->{RefId};
@@ -644,12 +649,51 @@ sub make_groups {
 
 			next if ($year > 12);
 
-			if ($year > 9) {
+			my ($students_ref, $num_students) = get_students($schoolid, $groups, $year);
 
-				for my $s (1..$#subjects) {
+			# assign students to TeachingGroups
+			my @assigned;
+			for my $s (0..$num_students - 1) {
+				my $st = $students_ref->[$s];
+				my $tgroup = int(rand(6)) + 1;
+				push @{$assigned[$tgroup]}, $st
+			}
+print "year = $year   number students = $num_students \n";
+
+			if ($year > 9) {
+				# Assign students for this year to 4 groups
+				my @studentg;
+				for my $s (0..$num_students - 1) {
+					my $st = $students_ref->[$s];
+					my $tgroup = int(rand(4)) + 1;
+					push @{$studentg[$tgroup]}, $st
+				}
+#print Dumper(@studentg);
+
+				my $num_subs = $#subjects;
+
+				for my $s (1..$num_subs) {
 
 					my $shortname = $subjects[$s];
 					my $longname = $sd->make_long_name($shortname);
+
+					# Randomise indexes
+					my @populate;
+					for my $y (1..4) {
+						my $new = 0;
+						until ($new) {
+							my $p = int(rand(6)) + 1;
+							$new = 1;
+							for my $t (1..4) {
+								if (defined $populate[$t]) {
+									$new = 0 if ($populate[$t] eq $p);
+								}
+							}
+							$populate[$y] = $p if ($new);
+						}
+					}
+# print Dumper(@populate);
+
 					for my $i (1..6) {
 						my $name = $year . chr(64 + $i) . " $longname";
 
@@ -658,7 +702,11 @@ sub make_groups {
 						++$room_cnt;
 
 						# select students and staff - or create them
-						add_students($refid, $schoolid, $groups);
+						if ((defined $populate[$s]) && ($i == $populate[$s])) {
+print "subject $s  $name .. $populate[$s] ..    ";
+							add_students($refid, $studentg[$s]);
+# <STDIN>;
+						}
 
 						add_staff($refid, $schoolid, $rooms);	
 					}
@@ -666,7 +714,6 @@ sub make_groups {
 
 				next;
 			}
-next;  # temporary
 
 			for my $i (1..6) {
 				my $name = $year . chr(64 + $i);
@@ -675,10 +722,10 @@ next;  # temporary
 				($refid) = make_teaching_group($schoolid, $roomid, $name, $year);
 				++$room_cnt;
 
-					# select students and staff - or create them
-					add_students($refid, $schoolid, $groups);
+				# select students and staff - or create them
+##				add_students($refid, $assigned[$i]);
 
-					add_staff($refid, $schoolid, $rooms);	
+				add_staff($refid, $schoolid, $rooms);	
 			}
 		}
 		++$cnt;
@@ -716,34 +763,26 @@ sub make_teaching_group {
 }
 
 sub add_students {
-	my ($refid, $schoolid, $groups) = @_;
+	my ($refid, $students) = @_;
+#print Dumper($students);
 
-	$groups =~ s/-/\.\./;
-	my ($lower, $upper) = split(/\.\./, $groups);
-	if (! defined $upper) {
-		$upper = $lower;
-		$lower = 1;
-	}
-	my (@students) = get_students($schoolid, $lower, $upper);
+my $count = 0;
+	foreach my $student (@$students) {
 
-	@students = sort { int(rand 3)-1 <=> int(rand 3)-1 } @students;
+		my $sth_tg_student = $dbh->prepare(q{
+			INSERT INTO TeachingGroup_Student 
+			(TeachingGroup_RefId, StudentPersonal_RefId) 
+			VALUES (?, ?)
+ 		});
 
-	my $num_students = int(rand($upper - $lower)) + $lower;
-   	for (my $student_num = 0; $student_num < $num_students; $student_num++) {
-		if (defined $students[$student_num]) {
-			my $sth_tg_student = $dbh->prepare(q{
-				INSERT INTO TeachingGroup_Student 
-				(TeachingGroup_RefId, StudentPersonal_RefId) 
-				VALUES (?, ?)
- 			});
-
-			$sth_tg_student->execute(
-				$refid, $students[$student_num]
-			);
-		}
+		$sth_tg_student->execute(
+			$refid, $student
+		);
+++$count;
 	}
 
-	return();
+print "Added $count\n";
+	return($students);
 }
 
 sub add_staff { 
@@ -776,10 +815,17 @@ sub add_staff {
 }
 
 sub get_students {
-	my ($school, $lower, $upper)= @_;
+	my ($school, $groups, $year)= @_;
+
+	$groups =~ s/-/\.\./;
+	my ($lower, $upper) = split(/\.\./, $groups);
+	if (! defined $upper) {
+		$upper = $lower;
+		$lower = 1;
+	}
 
 	my @student_list;
-	my $select = "SELECT RefId from StudentPersonal WHERE SchoolInfo_RefId = \"$school\"";
+	my $select = "SELECT RefId from StudentPersonal WHERE SchoolInfo_RefId = \"$school\" and YearLevel = \"$year\"";
 	my $sth;
 	$sth = $dbh->prepare($select);
 	$sth->execute();
@@ -791,16 +837,18 @@ sub get_students {
 
 	if (! $students) {
 		my $min = $upper * 2;
-		my $max = $upper * 10;
-		my ($done) = make_students("$min..$max", $school);
+		my $max = $upper * 5;
+		my ($done) = make_students("$min..$max", $school, $year);
 		print "\n$done students created for school $school\n" unless ($silent);
 	}
 
 	$sth->execute();
+	$students = 0;
 	while (my $student_row = $sth->fetchrow_hashref) {
 		push @student_list, $student_row->{RefId};	
+		++$students;
 	}
-	return @student_list;
+	return (\@student_list, $students);
 }
 
 sub get_staff {
