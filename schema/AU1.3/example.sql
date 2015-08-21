@@ -843,5 +843,34 @@ CREATE TABLE IF NOT EXISTS Journal (
 	FOREIGN KEY (Credit_FinancialAccount_RefId) REFERENCES FinancialAccount(RefId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- Gradding and Scores
+
+CREATE TABLE IF NOT EXISTS GradingAssignment (
+	RefId VARCHAR(36) PRIMARY KEY,
+	TeachingGroup_RefId VARCHAR(36), -- joins to TeachingGroup/RefId?
+	GradingCategory VARCHAR(200),
+	Description VARCHAR(200),
+	PointsPossible VARCHAR(200),
+	CreateDate VARCHAR(200),
+	DueDate VARCHAR(200),
+	Weight VARCHAR(200),
+	MaxAttemptsAllowed VARCHAR(200),
+	DetailedDescriptionURL VARCHAR(200),
+	FOREIGN KEY (TeachingGroup_RefId) REFERENCES TeachingGroup(RefId)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS GradingAssignmentScore (
+	RefId VARCHAR(36) PRIMARY KEY,
+	StudentPersonal_RefId VARCHAR(36), -- joins to StudentPersonal/RefId?
+	TeachingGroup_RefId VARCHAR(36), -- joins to TeachingGroup/RefId?
+	GradingAssignment_RefId VARCHAR(36), -- joins to GradingAssignment/RefId?
+	ScorePoints VARCHAR(200),
+	ScorePercent200),
+	ScoreLetter200),
+	ScoreDescription200),
+	FOREIGN KEY (StudentPersonal_RefId) REFERENCES StudentPersonal(RefId),
+	FOREIGN KEY (TeachingGroup_RefId) REFERENCES TeachingGroup(RefId),
+	FOREIGN KEY (GradingAssignment_RefId) REFERENCES GradingAssignment(RefId),
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- end NN 20141014
