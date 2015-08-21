@@ -118,7 +118,7 @@ sub get_args {
 		"create-students=s"        => \$students,
 		"create-staff=s"           => \$staff,
 		"create-rooms=s"           => \$rooms,
-		"create-teaching-groups=s" => \$groups,
+		"create-teaching-groups"   => \$groups,
 		"fix"                      => \$fix,
 		"codeset"                  => \$codeset,
 		"create-database=s"        => \$create_db,
@@ -194,11 +194,11 @@ Sample usage is:
 
   ./create_sif_data.pl --create-rooms=3..5	# Create random 3-5 rooms
 
-  ./create_sif_data.pl --create-teaching-groups=7..20
-						# Create  with random 7-20 students 
+  ./create_sif_data.pl --create-teaching-groups
+					# Create groups for all years and students
   -----------------------------------------------------------------------
   ./create_sif_data.pl --create-time-table=school_id
-          # Creates a new Teaching Group and Timetable in selected school
+          # Creates new Teaching Groups and Timetable in selected school
             Requires school to have been created
   
   ./create_sif_data.pl --fix           		# Update missing data  
@@ -501,12 +501,14 @@ sub make_staff {
 		for(my $i = 0; $i < $num_staff; $i++){
 			my $data = $sd->create_StaffPersonal({});
 
+			my $BirthDate = int(rand(45)) + 1950;
+
 			my $local_id = $sd->create_localid();
 			my  $sth0 = $dbh->prepare("INSERT INTO StaffPersonal (RefId,
 			LocalId, FamilyName, GivenName, MiddleName, PreferredGivenName,
 			SchoolInfo_RefId, StateProvinceId, Sex, EmploymentStatus, 
-			PhoneNumber, Email, Salutation)
-			Values(?,?,?,?,?,?,?,?,?,?,?,?,?)");
+			PhoneNumber, Email, BirthDate, PreferredFamilyName, Salutation)
+			Values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
 			$sth0->execute(
 				$data->{refid}, $local_id, $data->{FamilyName},
@@ -514,7 +516,8 @@ sub make_staff {
 				$data->{PreferredGivenName}, $schoolid,
 				$data->{StateProvinceId}, $data->{Sex},
 				$data->{EmploymentStatus}, $data->{PhoneNumber},
-				$data->{Email}, $data->{Salutation}
+				$data->{Email}, $BirthDate, $data->{FamilyName},
+				$data->{Salutation}
 
 			);
 
@@ -535,6 +538,25 @@ sub make_staff {
 				$assign->{JobEndDate}, $assign->{JobFunction}, 
 				$assign->{StaffActivity_Code}
 			);
+
+			# Add to StaffPersonal_OtherId
+			my $type1 = 'DET_USER_ID';
+			my $type2 = 'pep';
+			$type2 = 'cep' if ($cnt == int($cnt / 10));
+			my $other = 'random_string';
+			my $sth2 = $dbh->prepare("INSERT INTO StaffPersonal_OtherId 
+			(StaffPersonal_RefId, OtherId, OtherIdType)
+			Values(?,?,?)");
+
+			$sth2->execute(
+				$refid, $other, $type1
+			);
+
+			$sth2->execute(
+				$refid, $other, $type2
+			);
+
+
 
 			++$cnt;
 		}
@@ -624,12 +646,13 @@ sub make_groups {
 		# get $n random, unique subjects for years 10 - 12
 		
 		my $n = 4;
-		my @subjects;
+		my ($subject_ref, $num_subjects) = get_subjects($schoolid, $n);
 
+		my @subjects;
 		for my $y (1..$n) {
 			my $new = 0;
 			until ($new) {
-				my $shortname = $sd->make_short_name();
+				my $shortname = $subject_ref->[int(rand($num_subjects))];
 				$new = 1;
 				for my $t (1..$n) {
 					if (defined $subjects[$t]) {
@@ -640,6 +663,7 @@ sub make_groups {
 			}
 		}
 
+		my $student_base = '10..28';      # Number to create if none found
 		my $year = 0;
 		while (my $room = $room_sth->fetchrow_hashref) {
 			my $roomid = $room->{RefId};
@@ -649,16 +673,15 @@ sub make_groups {
 
 			next if ($year > 12);
 
-			my ($students_ref, $num_students) = get_students($schoolid, $groups, $year);
+			my ($students_ref, $num_students) = get_students($schoolid, $student_base, $year);
 
-			# assign students to TeachingGroups
+			# assign students to TeachingGroups for years 1-9
 			my @assigned;
 			for my $s (0..$num_students - 1) {
 				my $st = $students_ref->[$s];
 				my $tgroup = int(rand(6)) + 1;
 				push @{$assigned[$tgroup]}, $st
 			}
-print "year = $year   number students = $num_students \n";
 
 			if ($year > 9) {
 				# Assign students for this year to 4 groups
@@ -668,7 +691,6 @@ print "year = $year   number students = $num_students \n";
 					my $tgroup = int(rand(4)) + 1;
 					push @{$studentg[$tgroup]}, $st
 				}
-#print Dumper(@studentg);
 
 				my $num_subs = $#subjects;
 
@@ -692,7 +714,6 @@ print "year = $year   number students = $num_students \n";
 							$populate[$y] = $p if ($new);
 						}
 					}
-# print Dumper(@populate);
 
 					for my $i (1..6) {
 						my $name = $year . chr(64 + $i) . " $longname";
@@ -703,9 +724,7 @@ print "year = $year   number students = $num_students \n";
 
 						# select students and staff - or create them
 						if ((defined $populate[$s]) && ($i == $populate[$s])) {
-print "subject $s  $name .. $populate[$s] ..    ";
 							add_students($refid, $studentg[$s]);
-# <STDIN>;
 						}
 
 						add_staff($refid, $schoolid, $rooms);	
@@ -723,7 +742,7 @@ print "subject $s  $name .. $populate[$s] ..    ";
 				++$room_cnt;
 
 				# select students and staff - or create them
-##				add_students($refid, $assigned[$i]);
+				add_students($refid, $assigned[$i]);
 
 				add_staff($refid, $schoolid, $rooms);	
 			}
@@ -764,9 +783,7 @@ sub make_teaching_group {
 
 sub add_students {
 	my ($refid, $students) = @_;
-#print Dumper($students);
 
-my $count = 0;
 	foreach my $student (@$students) {
 
 		my $sth_tg_student = $dbh->prepare(q{
@@ -778,10 +795,8 @@ my $count = 0;
 		$sth_tg_student->execute(
 			$refid, $student
 		);
-++$count;
 	}
 
-print "Added $count\n";
 	return($students);
 }
 
@@ -796,29 +811,61 @@ sub add_staff {
 	@staff = sort { int(rand 3)-1 <=> int(rand 3)-1 } @staff;
 
 	my $num_staff = int(rand($upper - $lower)) + $lower;
-	for (my $staff_num = 0; $staff_num < $num_staff; $staff_num++) {
-		if (defined $staff[$staff_num]) {
-			my $sth_tg_staff = $dbh->prepare(q{
-				INSERT INTO TeachingGroup_Teacher
-				(TeachingGroup_RefId, StaffPersonal_RefId, 
-				TeacherAssociation, TeacherLocalId) 
-				VALUES (?, ?, ?, ?)
- 			});
 
-			$sth_tg_staff->execute(
-				$refid, $staff[$staff_num], '', ''
-			);
-		}
-	}
+	# Assign 1 teacher per teaching group
+	my $staff_member = int(rand($num_staff)) + 1;
+
+	my $sth_tg_staff = $dbh->prepare(q{
+		INSERT INTO TeachingGroup_Teacher
+		(TeachingGroup_RefId, StaffPersonal_RefId, 
+		TeacherAssociation, TeacherLocalId) 
+		VALUES (?, ?, ?, ?)
+ 	});
+
+	$sth_tg_staff->execute(
+		$refid, $staff[$staff_member], '', ''
+	);
 
 	return();
 }
 
-sub get_students {
-	my ($school, $groups, $year)= @_;
+sub get_subjects {
+	my ($schoolid, $n) = @_;
 
-	$groups =~ s/-/\.\./;
-	my ($lower, $upper) = split(/\.\./, $groups);
+	my @subject_list;
+	my $select = "SELECT SubjectShortName from TimeTableSubject WHERE SchoolInfo_RefId = \"$schoolid\"";
+	my $sth;
+	$sth = $dbh->prepare($select);
+	$sth->execute();
+
+	my $subjects = 0;
+	while (my $subject_row = $sth->fetchrow_hashref) {
+		++$subjects;
+	}	
+
+	my $num = $n * 3;
+	if ($subjects < $num) {
+		for my $i (1..$num) {
+			my ($done) = make_timetable_subject($schoolid);
+		}
+		print "\n$num subjects created for school $schoolid\n" unless ($silent);
+	}
+
+	$sth->execute();
+	$subjects = 0;
+	while (my $subject_row = $sth->fetchrow_hashref) {
+		push @subject_list, $subject_row->{SubjectShortName};	
+		++$subjects;
+	}
+
+	return (\@subject_list, $subjects);
+}
+
+sub get_students {
+	my ($school, $number, $year)= @_;
+
+	$number =~ s/-/\.\./;
+	my ($lower, $upper) = split(/\.\./, $number);
 	if (! defined $upper) {
 		$upper = $lower;
 		$lower = 1;
@@ -1013,6 +1060,7 @@ sub make_timetable_subject {
 	my $acyear = $sd->make_new_year();
 	my $code = int(rand(10)) . int(rand(10)) . int(rand(10));
 	my $shortname = $sd->make_short_name();
+
 	my $longname = $sd->make_long_name($shortname);
 	my $subjectid = "$shortname $code";
 	my $subjecttype = $sd->make_subject_type();
