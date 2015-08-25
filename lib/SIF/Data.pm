@@ -677,6 +677,23 @@ sub create_OtherCode {
 }
 
 
+=head2 Create Calendar elements
+
+=cut
+
+sub create_calendar {
+	my ($self, $data) = @_;
+
+	$data->{refid}          = $self->make_new_id();
+	$data->{schoolyear}     = '2014';
+	$data->{daysinsession}  = '67+67+68+75';
+	$data->{startdate}      = '2014-01-28';
+	$data->{enddate}        = '2014-12-19';
+
+	return $data;
+}
+
+
 =head1 AUTHOR
 
 john, C<< <john at unisolve.com.au> >>

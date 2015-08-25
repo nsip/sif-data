@@ -401,9 +401,35 @@ sub make_schools {
 
 		print "School RefId = $uuid\n" unless ($silent);
 
+		make_calendar($uuid);
+
 		++$cnt;
 	}
 	return ($cnt);
+}
+
+sub make_calendar {
+	my ($school) = @_;
+
+		my $data = $sd->create_calendar({});
+
+		my $sth = $dbh->prepare("
+			INSERT INTO CalendarSummary (
+				RefId, SchoolInfo_RefId, SchoolYear, CalendarSummary_LocalId,
+				DaysInSession, StartDate, EndDate
+			) VALUES (
+				?,?,?,?,?,?,?
+			)
+		");
+		$sth->execute(
+				$data->{refid}, $school, $data->{schoolyear},
+				$sd->create_localid(), $data->{daysinsession},
+				$data->{startdate}, $data->{enddate},
+		);
+
+		print "Calendar created for  $school\n" unless ($silent);
+
+	return();
 }
 
 sub make_students {
