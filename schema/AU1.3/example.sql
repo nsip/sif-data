@@ -865,12 +865,12 @@ CREATE TABLE IF NOT EXISTS GradingAssignmentScore (
 	TeachingGroup_RefId VARCHAR(36), -- joins to TeachingGroup/RefId?
 	GradingAssignment_RefId VARCHAR(36), -- joins to GradingAssignment/RefId?
 	ScorePoints VARCHAR(200),
-	ScorePercent200),
-	ScoreLetter200),
-	ScoreDescription200),
+	ScorePercent VARCHAR(200),
+	ScoreLetter VARCHAR(200),
+	ScoreDescription VARCHAR(200),
 	FOREIGN KEY (StudentPersonal_RefId) REFERENCES StudentPersonal(RefId),
 	FOREIGN KEY (TeachingGroup_RefId) REFERENCES TeachingGroup(RefId),
-	FOREIGN KEY (GradingAssignment_RefId) REFERENCES GradingAssignment(RefId),
+	FOREIGN KEY (GradingAssignment_RefId) REFERENCES GradingAssignment(RefId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- end NN 20141014
