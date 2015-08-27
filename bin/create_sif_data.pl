@@ -981,7 +981,11 @@ sub make_grading {
 		$sth->execute();
 	}
 
+	my $num_tg_seen = 0;
+
 	while (my $row = $sth->fetchrow_hashref) {
+
+		$num_tg_seen++;
 
 		# Create 5 grading assignments per teaching group 
 
@@ -1064,6 +1068,9 @@ sub make_grading {
 			}
 
 		}
+	}
+	if ($num_tg_seen == 0) {
+		die qq(\nNo teaching groups were found.\nYou may need to run this program with the "--create-teaching-groups" options first);
 	}
 }
 
