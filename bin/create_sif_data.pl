@@ -302,6 +302,8 @@ sub create_grading {
 	my ($school) = @_;
 
 	print "create_grading()\n";
+	make_grading($school);
+
 }
 
 
@@ -965,6 +967,69 @@ sub get_staff {
 	return @staff_list;
 }
 
+#
+# Populate the GradingAssignment and GradingAssignmentScore tables
+#
+
+sub make_grading {
+	my ($school) = @_;
+
+	my $sth;
+	if (defined $school) {
+		$sth = $dbh->prepare("SELECT * from TeachingGroup WHERE SchoolInfo_RefId = ?");
+		$sth->execute($school);
+	} else {
+		$sth = $dbh->prepare("SELECT * FROM TeachingGroup");
+		$sth->execute();
+	}
+
+	while (my $row = $sth->fetchrow_hashref) {
+=pod
+		GradingCategory: random choice of: quiz essay project
+		Description: random text. You have a text randomiser?
+		PointsPossible: 10
+		CreateDate: 2015-03-01
+		DueDate: 2015-04-01
+		Weight: random number between 2 and 5
+		MaxAttemptsAllowed: 5
+		DetailedDescriptionURL: http://www.example.com
+=cut
+
+		my $sth = $dbh->prepare(q{
+			INSERT INTO GradingAssignment
+				(
+					RefId,
+					TeachingGroup_RefId,
+					GradingCategory,
+					Description,
+					PointsPossible,
+					CreateDate,
+					DueDate,
+					Weight,
+					MaxAttemptsAllowed,
+					DetailedDescriptionURL
+				)
+			VALUES 
+				(
+					?,
+					?,
+					?,
+					?,
+					?,
+					?,
+					?,
+					?,
+					?,
+					?
+				)
+ 		});
+
+		$sth->execute(
+			$sd->create_grading_assignment($row->{RefId})
+		);
+	}
+}
+
 sub make_ttable {
 	my ($school) = @_;
 
@@ -1172,4 +1237,3 @@ sub get_group_stats {
 	
 	return ($school_cnt, $room_cnt);
 }
-
