@@ -86,7 +86,7 @@ if ($ttable) {
 
 	create_groups($groups, $school_id);
 
-	create_grading($school_id);
+	create_grading($grading, $school_id);
 
 	fix_data($fix);
 
@@ -299,9 +299,11 @@ sub create_groups {
 }
 
 sub create_grading {
-	my ($school) = @_;
+	my ($grading, $school) = @_;
 
-	make_grading($school);
+	if (defined $grading) {
+		make_grading($grading, $school);
+	}
 }
 
 
@@ -970,7 +972,7 @@ sub get_staff {
 #
 
 sub make_grading {
-	my ($school) = @_;
+	my ($grading, $school) = @_;
 
 	my $sth;
 	if (defined $school) {
@@ -1069,7 +1071,8 @@ sub make_grading {
 
 		}
 	}
-	if ($num_tg_seen == 0) {
+
+	if ( (defined $grading) && ($num_tg_seen == 0) ) {
 		die qq(\nNo teaching groups were found.\nYou may need to run this program with the "--create-teaching-groups" options first);
 	}
 }
@@ -1086,8 +1089,6 @@ sub num_teaching_groups {
 
 sub students_in_teaching_group {
 	my ($tgId) = @_;
-
-	say "tgId: $tgId\n";
 
 	my $sth = $dbh->prepare("
 		SELECT
