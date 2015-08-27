@@ -1036,11 +1036,9 @@ sub make_grading {
 			my $students_in_tg = students_in_teaching_group($row->{RefId});
 			next if (scalar @{ $students_in_tg } == 0);
 
-			my $numGAS = ( 5 * $num_tg );
-
 			foreach my $stId ( @{ $students_in_tg } ) {
 
-				for ( 1 .. $numGAS ) {
+				for ( 1 .. $num_tg ) {
 					my $sth2 = $dbh->prepare(q{
 						INSERT INTO GradingAssignmentScore
 							(
@@ -1068,9 +1066,8 @@ sub make_grading {
 					$sth2->execute( $sd->create_grading_assignment_score($stId->[0], $row->{RefId}, $gaId));
 				}
 			}
-
-		}
-	}
+		} # 1 .. 5 grading assignments
+	} # TeachingGroup rows
 
 	if ( (defined $grading) && ($num_tg_seen == 0) ) {
 		die qq(\nNo teaching groups were found.\nYou may need to run this program with the "--create-teaching-groups" options first);
