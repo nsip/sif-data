@@ -995,38 +995,42 @@ sub make_grading {
 		DetailedDescriptionURL: http://www.example.com
 =cut
 
-		my $sth = $dbh->prepare(q{
-			INSERT INTO GradingAssignment
-				(
-					RefId,
-					TeachingGroup_RefId,
-					GradingCategory,
-					Description,
-					PointsPossible,
-					CreateDate,
-					DueDate,
-					Weight,
-					MaxAttemptsAllowed,
-					DetailedDescriptionURL
-				)
-			VALUES 
-				(
-					?,
-					?,
-					?,
-					?,
-					?,
-					?,
-					?,
-					?,
-					?,
-					?
-				)
- 		});
+		# Create 5 grading assignments per teaching group 
 
-		$sth->execute(
-			$sd->create_grading_assignment($row->{RefId})
-		);
+		for ( 1 .. 5 ) {
+			my $sth = $dbh->prepare(q{
+				INSERT INTO GradingAssignment
+					(
+						RefId,
+						TeachingGroup_RefId,
+						GradingCategory,
+						Description,
+						PointsPossible,
+						CreateDate,
+						DueDate,
+						Weight,
+						MaxAttemptsAllowed,
+						DetailedDescriptionURL
+					)
+				VALUES 
+					(
+						?,
+						?,
+						?,
+						?,
+						?,
+						?,
+						?,
+						?,
+						?,
+						?
+					)
+ 			});
+	
+			$sth->execute(
+				$sd->create_grading_assignment($row->{RefId})
+			);
+		}
 	}
 }
 
