@@ -177,33 +177,32 @@ sub usage_exit {
 
 Sample usage is:
 
-  ./create_sif_data.pl --create-database=name	# Create new database  
+  ./create_sif_data.pl --create-database=name   # Create new database  
 
-  ./create_sif_data.pl --database=name_of_db	# Use the named database
+  ./create_sif_data.pl --database=name_of_db    # Use the named database
 
-  ./create_sif_data.pl --create-schools=16	# Create 16 schools
-  ./create_sif_data.pl --create-schools=6..14	# Create random 6-14 schools
+  ./create_sif_data.pl --create-schools=16      # Create 16 schools
+  ./create_sif_data.pl --create-schools=6..14   # Create random 6-14 schools
   -----------------------------------------------------------------------
-	Following commands affect all schools in the database unless a school
-	RefId is specified as follows
-	   --school-id=4002EF5E-22A8-11E4-B112-958031DE1888    
+    Following commands affect all schools in the database unless a school
+    RefId is specified as follows
+       --school-id=4002EF5E-22A8-11E4-B112-958031DE1888    
 
-  ./create_sif_data.pl --create-students=8..21	# Create random 8-21 students
+  ./create_sif_data.pl --create-students=8..21  # Create random 8-21 students
 
-  ./create_sif_data.pl --create-staff=5..20	# Create random 5-20 staff
+  ./create_sif_data.pl --create-staff=5..20     # Create random 5-20 staff
 
-  ./create_sif_data.pl --create-rooms=3..5	# Create random 3-5 rooms
+  ./create_sif_data.pl --create-rooms=3..5      # Create random 3-5 rooms
 
-  ./create_sif_data.pl --create-teaching-groups
-					# Create groups for all years and students
+  ./create_sif_data.pl --create-teaching-groups # Create groups for all years and students
   -----------------------------------------------------------------------
   ./create_sif_data.pl --create-time-table=school_id
           # Creates new Teaching Groups and Timetable in selected school
-            Requires school to have been created
+          # Requires school to have been created
   
-  ./create_sif_data.pl --fix           		# Update missing data  
+  ./create_sif_data.pl --fix                   # Update missing data  
 
-  ./create_sif_data.pl --codeset			# Add the codeset
+  ./create_sif_data.pl --codeset               # Add the codeset
 
   By default the program assumes:
   1) It is being run from the top-level repository directory (and that 'data' and 'schema' are subdirectories
