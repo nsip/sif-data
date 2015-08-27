@@ -988,6 +988,7 @@ sub make_grading {
 	while (my $row = $sth->fetchrow_hashref) {
 
 		$num_tg_seen++;
+		my $students_in_tg = students_in_teaching_group($row->{RefId});
 
 		# Create 5 grading assignments per teaching group 
 
@@ -1025,7 +1026,6 @@ sub make_grading {
 			$sth->execute( @values );
 
 			my $gaId   = $values[0];
-			my $num_tg = num_teaching_groups($row->{SchoolInfo_RefId});
 
 			#
 			# GradingAssignmentScore: 
@@ -1033,38 +1033,35 @@ sub make_grading {
 			# (i.e. num_students_in_tg * 5_assignments_in_tg * num_tg)
 			#
 
-			my $students_in_tg = students_in_teaching_group($row->{RefId});
 			next if (scalar @{ $students_in_tg } == 0);
 
 			foreach my $stId ( @{ $students_in_tg } ) {
 
-				for ( 1 .. $num_tg ) {
-					my $sth2 = $dbh->prepare(q{
-						INSERT INTO GradingAssignmentScore
-							(
-								RefId,
-								StudentPersonal_RefId,
-								TeachingGroup_RefId,
-								GradingAssignment_RefId,
-								ScorePoints,
-								ScorePercent,
-								ScoreLetter,
-								ScoreDescription
-							)
-						VALUES 
-							(
-								?,
-								?,
-								?,
-								?,
-								?,
-								?,
-								?,
-								?
-							)
- 					});
-					$sth2->execute( $sd->create_grading_assignment_score($stId->[0], $row->{RefId}, $gaId));
-				}
+				my $sth2 = $dbh->prepare(q{
+					INSERT INTO GradingAssignmentScore
+						(
+							RefId,
+							StudentPersonal_RefId,
+							TeachingGroup_RefId,
+							GradingAssignment_RefId,
+							ScorePoints,
+							ScorePercent,
+							ScoreLetter,
+							ScoreDescription
+						)
+					VALUES 
+						(
+							?,
+							?,
+							?,
+							?,
+							?,
+							?,
+							?,
+							?
+						)
+ 				});
+				$sth2->execute( $sd->create_grading_assignment_score($stId->[0], $row->{RefId}, $gaId));
 			}
 		} # 1 .. 5 grading assignments
 	} # TeachingGroup rows
