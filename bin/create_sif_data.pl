@@ -984,16 +984,6 @@ sub make_grading {
 	}
 
 	while (my $row = $sth->fetchrow_hashref) {
-=pod
-		GradingCategory: random choice of: quiz essay project
-		Description: random text. You have a text randomiser?
-		PointsPossible: 10
-		CreateDate: 2015-03-01
-		DueDate: 2015-04-01
-		Weight: random number between 2 and 5
-		MaxAttemptsAllowed: 5
-		DetailedDescriptionURL: http://www.example.com
-=cut
 
 		# Create 5 grading assignments per teaching group 
 
@@ -1027,11 +1017,83 @@ sub make_grading {
 					)
  			});
 	
-			$sth->execute(
-				$sd->create_grading_assignment($row->{RefId})
-			);
+			my @values = $sd->create_grading_assignment($row->{RefId});
+			$sth->execute( @values );
+
+			my $gaId   = $values[0];
+			my $num_tg = num_teaching_groups($row->{SchoolInfo_RefId});
+
+			#
+			# GradingAssignmentScore: 
+			# Create one score per student in a teaching group and grading assignment 
+			# (i.e. num_students_in_tg * 5_assignments_in_tg * num_tg)
+			#
+
+			my $students_in_tg = students_in_teaching_group($row->{RefId});
+			next if (scalar @{ $students_in_tg } == 0);
+
+			my $numGAS = ( 5 * $num_tg );
+
+			foreach my $stId ( @{ $students_in_tg } ) {
+
+				for ( 1 .. $numGAS ) {
+					my $sth2 = $dbh->prepare(q{
+						INSERT INTO GradingAssignmentScore
+							(
+								RefId,
+								StudentPersonal_RefId,
+								TeachingGroup_RefId,
+								GradingAssignment_RefId,
+								ScorePoints,
+								ScorePercent,
+								ScoreLetter,
+								ScoreDescription
+							)
+						VALUES 
+							(
+								?,
+								?,
+								?,
+								?,
+								?,
+								?,
+								?,
+								?
+							)
+ 					});
+					$sth2->execute( $sd->create_grading_assignment_score($stId->[0], $row->{RefId}, $gaId));
+				}
+			}
+
 		}
 	}
+}
+
+sub num_teaching_groups {
+	my ($schoolId) = @_;
+
+	my $sth = $dbh->prepare("SELECT count(*) AS cnt from TeachingGroup WHERE SchoolInfo_RefId = ?");
+	$sth->execute($schoolId);
+	my $row = $sth->fetchrow_hashref;
+
+	return $row->{cnt};
+}
+
+sub students_in_teaching_group {
+	my ($tgId) = @_;
+
+	say "tgId: $tgId\n";
+
+	my $sth = $dbh->prepare("
+		SELECT
+			StudentPersonal_RefId
+		FROM 
+			TeachingGroup_Student 
+		WHERE 
+			TeachingGroup_RefId = ?"
+	);
+	$sth->execute($tgId);
+	return $sth->fetchall_arrayref;
 }
 
 sub make_ttable {

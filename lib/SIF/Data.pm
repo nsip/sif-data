@@ -723,6 +723,15 @@ sub create_calendar {
 		);
 	}
 
+
+  GradingCategory: random choice of: quiz essay project
+  Description: random text. You have a text randomiser?
+  PointsPossible: 10
+  CreateDate: 2015-03-01
+  DueDate: 2015-04-01
+  Weight: random number between 2 and 5
+  MaxAttemptsAllowed: 5
+  DetailedDescriptionURL: http://www.example.com
 =cut
 
 sub create_grading_assignment {
@@ -744,6 +753,43 @@ sub create_grading_assignment {
 	);
 }
 
+=head2 create_grading_assignment_score()
+
+  my $sth = $dbh->prepare(q{
+  	INSERT INTO GradingAssignmentScore
+  		(
+  			RefId, StudentPersonal_RefId, TeachingGroup_RefId, GradingAssignment_RefId,
+  			ScorePoints, ScorePercent, ScoreLetter, ScoreDescription
+  		)
+  	VALUES 
+  		(
+  			?, ?, ?, ?, ?, ?, ?, ?
+  		)
+  });
+  $sth2->execute( $sd->create_grading_assignment_score($stId], $tgId, $gaId));
+
+  ScorePoints: random number between 0 and 10
+  ScorePercent: empty
+  ScoreLetter: empty
+  ScoreDescription: random text
+
+=cut
+
+sub create_grading_assignment_score {
+	my ($self, $stId, $tgId, $gaId) = @_;
+
+	return ( 
+		make_new_id(),
+		$stId,
+		$tgId,
+		$gaId,
+		int(rand(10) + 1),
+		'',
+		'',
+		_rndStr(40, 'A'..'Z', 0..9, 'a'..'z', '     '),
+	);
+}
+
 =head2 _rndStr()
 
 Generate a random string from the supplied character sets
@@ -760,6 +806,7 @@ From: http://www.perlmonks.org/?node_id=233028
 sub _rndStr { 
 	join'', @_[ map{ rand @_ } 1 .. shift ];
 }
+
 
 =head1 AUTHOR
 
