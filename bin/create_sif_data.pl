@@ -28,7 +28,7 @@ use Data::Dumper;
 
 my $sd = SIF::Data->new();
 
-my ($schools, $students, $staff, $rooms, $groups, $fix, $codeset, $create_db, 
+my ($schools, $students, $staff, $rooms, $groups, $grading, $fix, $codeset, $create_db, 
     $db_name, $ttable, $school_id, $elements, $silent) = get_args();
 
 if (defined $create_db) {
@@ -86,6 +86,8 @@ if ($ttable) {
 
 	create_groups($groups, $school_id);
 
+	create_grading($school_id);
+
 	fix_data($fix);
 
 	code_set($codeset);
@@ -103,6 +105,7 @@ sub get_args {
 	my $staff     = undef;
 	my $rooms     = undef;
 	my $groups    = undef;
+	my $grading   = undef;
 	my $fix       = undef;
 	my $codeset   = undef;
 	my $create_db = undef;
@@ -119,6 +122,7 @@ sub get_args {
 		"create-staff=s"           => \$staff,
 		"create-rooms=s"           => \$rooms,
 		"create-teaching-groups"   => \$groups,
+		"create-grading"           => \$grading,
 		"fix"                      => \$fix,
 		"codeset"                  => \$codeset,
 		"create-database=s"        => \$create_db,
@@ -136,6 +140,7 @@ sub get_args {
 	++$elements if ($staff);
 	++$elements if ($rooms);
 	++$elements if ($groups);
+	++$elements if ($grading);
 
 	if ($create_db && $db_name) {
 		print "\nCannot specify both --create-database and --database in one command\n";
@@ -169,7 +174,7 @@ sub get_args {
 		$school_id = $ttable;
 	}
 
-	return ($schools, $students, $staff, $rooms, $groups, $fix, $codeset, $create_db, $db_name, $ttable,  $school_id, $elements, $silent);
+	return ($schools, $students, $staff, $rooms, $groups, $grading, $fix, $codeset, $create_db, $db_name, $ttable,  $school_id, $elements, $silent);
 }
 
 sub usage_exit {
@@ -195,6 +200,9 @@ Sample usage is:
   ./create_sif_data.pl --create-rooms=3..5      # Create random 3-5 rooms
 
   ./create_sif_data.pl --create-teaching-groups # Create groups for all years and students
+
+  ./create_sif_data.pl --create-grading         # Populate grading assignment tables
+
   -----------------------------------------------------------------------
   ./create_sif_data.pl --create-time-table=school_id
           # Creates new Teaching Groups and Timetable in selected school
@@ -289,6 +297,13 @@ sub create_groups {
 	}
 	return ($students);
 }
+
+sub create_grading {
+	my ($school) = @_;
+
+	print "create_grading()\n";
+}
+
 
 sub create_ttable {
 	my ($ttable, $school) = @_;
