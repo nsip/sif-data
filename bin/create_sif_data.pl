@@ -301,9 +301,7 @@ sub create_groups {
 sub create_grading {
 	my ($school) = @_;
 
-	print "create_grading()\n";
 	make_grading($school);
-
 }
 
 
