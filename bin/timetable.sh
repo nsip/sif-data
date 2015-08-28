@@ -14,3 +14,4 @@ perl bin/create_sif_data.pl --database=$1 --create-time-table=first
 echo "CREATE GRADING"
 perl bin/create_sif_data.pl --database=$1 --create-grading
 
+exit 0
