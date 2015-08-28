@@ -86,7 +86,9 @@ if ($ttable) {
 
 	create_groups($groups, $school_id);
 
+	print "XXX Create grading strt\n";
 	create_grading($grading, $school_id);
+	print "XXX Create grading end\n";
 
 	fix_data($fix);
 
