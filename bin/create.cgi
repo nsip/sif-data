@@ -6,6 +6,8 @@ use HTML::Entities;
 use DBI;
 use YAML;
 
+$ENV{HOME} = "/home/scottp/";
+
 param('form_field');
 print "Content-type: text/html\n\n";
 print "<html><body><h1>DB Creator</h1>";
