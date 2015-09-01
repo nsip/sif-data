@@ -28,8 +28,8 @@ use Data::Dumper;
 
 my $sd = SIF::Data->new();
 
-my ($schools, $students, $staff, $rooms, $groups, $grading, $fix, $codeset, $create_db, 
-    $db_name, $ttable, $school_id, $elements, $silent) = get_args();
+my ($schools, $students, $student_contacts, $staff, $rooms, $groups, $grading, $fix, $codeset, 
+	$create_db, $db_name, $ttable, $school_id, $elements, $silent) = get_args();
 
 if (defined $create_db) {
 	$db_name = $sd->create_database($create_db);
@@ -88,6 +88,8 @@ if ($ttable) {
 
 	create_grading($grading, $school_id);
 
+	create_student_contacts($student_contacts, $school_id);
+
 	fix_data($fix);
 
 	code_set($codeset);
@@ -100,19 +102,20 @@ sub get_args {
 	my $all   = 0;
 	my $help  = 0;
 
-	my $schools   = undef;
-	my $students  = undef;
-	my $staff     = undef;
-	my $rooms     = undef;
-	my $groups    = undef;
-	my $grading   = undef;
-	my $fix       = undef;
-	my $codeset   = undef;
-	my $create_db = undef;
-	my $db_name   = undef;
-	my $school_id = undef;
-	my $ttable    = undef;
-	my $silent    = 0;
+	my $schools          = undef;
+	my $students         = undef;
+	my $staff            = undef;
+	my $rooms            = undef;
+	my $groups           = undef;
+	my $grading          = undef;
+	my $fix              = undef;
+	my $codeset          = undef;
+	my $create_db        = undef;
+	my $db_name          = undef;
+	my $school_id        = undef;
+	my $ttable           = undef;
+	my $student_contacts = undef;
+	my $silent           = 0;
 
 	my $result = GetOptions (
 		"help"                     => \$help,
@@ -129,6 +132,7 @@ sub get_args {
 		"database=s"               => \$db_name,
 		"create-time-table:s"      => \$ttable,
 		"school-id=s"              => \$school_id,
+		"create-student-contacts"  => \$student_contacts,
 	);
 
 	if ($help) {
@@ -141,6 +145,7 @@ sub get_args {
 	++$elements if ($rooms);
 	++$elements if ($groups);
 	++$elements if ($grading);
+	++$elements if ($student_contacts);
 
 	if ($create_db && $db_name) {
 		print "\nCannot specify both --create-database and --database in one command\n";
@@ -174,7 +179,7 @@ sub get_args {
 		$school_id = $ttable;
 	}
 
-	return ($schools, $students, $staff, $rooms, $groups, $grading, $fix, $codeset, $create_db, $db_name, $ttable,  $school_id, $elements, $silent);
+	return ($schools, $students, $student_contacts, $staff, $rooms, $groups, $grading, $fix, $codeset, $create_db, $db_name, $ttable,  $school_id, $elements, $silent);
 }
 
 sub usage_exit {
@@ -303,6 +308,14 @@ sub create_grading {
 
 	if (defined $grading) {
 		make_grading($grading, $school);
+	}
+}
+
+sub create_student_contacts {
+	my ($student_contacts, $school) = @_;
+
+	if (defined $student_contacts) {
+		make_student_contacts($student_contacts, $school);
 	}
 }
 
@@ -1094,6 +1107,25 @@ sub students_in_teaching_group {
 	);
 	$sth->execute($tgId);
 	return $sth->fetchall_arrayref;
+}
+
+#
+# #133: Populate student contact records
+# Tables:
+#     address, language, StudentSchoolEnrollment, StudentContactPersonal, StudentContactRelationship
+#
+
+sub make_student_contacts {
+	my ($student_contacts, $school) = @_;
+
+	my $sth;
+	if (defined $school) {
+		$sth = $dbh->prepare("TODO WHERE TODO = ?");
+		$sth->execute($school);
+	} else {
+		$sth = $dbh->prepare("TODO");
+		$sth->execute();
+	}
 }
 
 sub make_ttable {
