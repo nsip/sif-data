@@ -502,31 +502,59 @@ sub get_date_code {
 	my ($date) = @_;
 
 	my $code = '';
-	my $towards = '';
-	my $value = '';
+	my $towards = 'Yes';
+	my $value = '1.0';
 
-	$code = '0845' if ($date eq '2014-01-28');
-	$code = '0846' if ($date eq '2014-04-18');
-	$code = '0846' if ($date eq '2014-04-25');
+	if ($date eq '2014-01-28') {
+		$code = '0845';
+		$towards = 'No';
+	}
+	if ($date eq '2014-04-18') {
+		$code = '0846';
+		$towards = 'No';
+	}
+	if ($date eq '2014-04-25') {
+		$code = '0846';
+		$towards = 'No';
+	}
 
 	my ($syear, $smth, $sday) = split('-', $date);
 
 	if ($syear eq '2014') {
 		if ($smth eq '04') {
-			$code = '0846' if (($sday >= '05') && ($sday <= '21'));
+			if (($sday >= '05') && ($sday <= '21')) {
+				$code = '0846';
+				$towards = 'No';
+			}
+		}
+		if ($smth eq '06') {
+			if (($sday >= '28') && ($sday <= '30')) {
+				$code = '0846';
+				$towards = 'No';
+			}
 		}
 		if ($smth eq '07') {
-			$code = '0846' if (($sday >= '01') && ($sday <= '13'));
+			if (($sday >= '01') && ($sday <= '13')) {
+				$code = '0846';
+				$towards = 'No';
+			}
 		}
 		if ($smth eq '09') {
-			$code = '0846' if (($sday >= '20') && ($sday <= '30'));
+			if (($sday >= '20') && ($sday <= '30')) {
+				$code = '0846';
+				$towards = 'No';
+			}
 		}
 		if ($smth eq '10') {
-			$code = '0846' if (($sday >= '01') && ($sday <= '05'));
+			if (($sday >= '01') && ($sday <= '05')) {
+				$code = '0846';
+				$towards = 'No';
+			}
 		}
-		print "$sday/$smth - " if ($code eq '0846');
 
 	}
+
+	$value = '0.0' if ($towards eq 'No');
 
 	return ($code, $towards, $value);
 }
