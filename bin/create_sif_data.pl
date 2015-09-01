@@ -24,6 +24,8 @@ use warnings;
 use perl5i::2;
 use SIF::Data;
 use Getopt::Long;
+use DateTime;
+use DateTime::Event::Recurrence;
 use Data::Dumper;
 
 my $sd = SIF::Data->new();
@@ -451,14 +453,95 @@ sub make_calendar {
 			)
 		");
 		$sth->execute(
-				$data->{refid}, $school, $data->{schoolyear},
-				$sd->create_localid(), $data->{daysinsession},
-				$data->{startdate}, $data->{enddate},
+			$data->{refid}, $school, $data->{schoolyear},
+			$sd->create_localid(), $data->{daysinsession},
+			$data->{startdate}, $data->{enddate},
 		);
 
-		print "Calendar created for  $school\n" unless ($silent);
+		my ($cnt) = make_calendar_days($school, $data);
+
+		print "Calendar created with $cnt days\n" unless ($silent);
 
 	return();
+}
+
+sub make_calendar_days {
+	my ($school, $data) = @_;
+
+	my $cnt = 0;
+
+	my $working_days = DateTime::Event::Recurrence->weekly( days => [1 .. +5] );
+
+	my ($syear, $smth, $sday) = split('-', $data->{startdate});
+	my ($eyear, $emth, $eday) = split('-', $data->{enddate});
+
+	my $start = DateTime->new(year => $syear, month => $smth, day => $sday );
+	my $end   = DateTime->new(year => $eyear, month => $emth, day => $eday );
+
+	my @days = $working_days->as_list(
+    	start => $start,
+    	end   => $end
+	);
+
+	foreach my $day (@days) {
+		my $date = substr($day->datetime, 0, 10);
+		my $refid = $sd->make_new_id();
+		++$cnt;
+		my ($type_code, $towards, $value) = get_date_code($date);
+
+
+		my $sth = $dbh->prepare("
+			INSERT INTO CalendarDate (
+				CalendarDate, CalendarSummary_RefId, RefId,
+				SchoolInfo_RefId, SchoolYear,
+				CalendarDateType_Code, CalendarDateNumber, 
+				StudentAttendance_CountsTowardsAttendance,
+				StudentAttendance_AttendanceValue
+			) VALUES (
+				?,?,?,?,?,?,?,?,?
+			)
+		");
+		$sth->execute(
+			$date, $data->{refid}, $refid, $school, $data->{schoolyear},
+			$type_code, $cnt, $towards, $value,
+		);
+
+	}
+
+	return ($cnt);
+}
+
+sub get_date_code {
+	my ($date) = @_;
+
+	my $code = '';
+	my $towards = '';
+	my $value = '';
+
+	$code = '0845' if ($date eq '2014-01-28');
+	$code = '0846' if ($date eq '2014-04-18');
+	$code = '0846' if ($date eq '2014-04-25');
+
+	my ($syear, $smth, $sday) = split('-', $date);
+
+	if ($syear eq '2014') {
+		if ($smth eq '04') {
+			$code = '0846' if (($sday >= '05') && ($sday <= '21'));
+		}
+		if ($smth eq '07') {
+			$code = '0846' if (($sday >= '01') && ($sday <= '13'));
+		}
+		if ($smth eq '09') {
+			$code = '0846' if (($sday >= '20') && ($sday <= '30'));
+		}
+		if ($smth eq '10') {
+			$code = '0846' if (($sday >= '01') && ($sday <= '05'));
+		}
+		print "$sday/$smth - " if ($code eq '0846');
+
+	}
+
+	return ($code, $towards, $value);
 }
 
 sub make_students {
