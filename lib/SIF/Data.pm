@@ -394,6 +394,19 @@ sub create_postcodes {
 	return @postcodes;
 }
 
+=head2 create Financial Account
+
+=cut
+
+sub create_financial_account {
+	my ($self, $data) = @_;
+
+	$data->{refid} = $self->make_new_id;
+
+
+	return $data;
+}
+
 =head2 Load Codeset
 
 =cut

@@ -30,8 +30,9 @@ use Data::Dumper;
 
 my $sd = SIF::Data->new();
 
-my ($schools, $students, $student_contacts, $staff, $rooms, $groups, $grading, $fix, $codeset, 
-	$create_db, $db_name, $ttable, $school_id, $elements, $silent) = get_args();
+my ($schools, $students, $student_contacts, $staff, $rooms, $groups, $grading, 
+	$account, $fix, $codeset, $create_db, $db_name, $ttable, $school_id, 
+	$elements, $silent) = get_args();
 
 if (defined $create_db) {
 	$db_name = $sd->create_database($create_db);
@@ -92,6 +93,8 @@ if ($ttable) {
 
 	create_student_contacts($student_contacts, $school_id);
 
+	create_account($account);
+
 	fix_data($fix);
 
 	code_set($codeset);
@@ -110,6 +113,7 @@ sub get_args {
 	my $rooms            = undef;
 	my $groups           = undef;
 	my $grading          = undef;
+	my $account          = undef;
 	my $fix              = undef;
 	my $codeset          = undef;
 	my $create_db        = undef;
@@ -128,6 +132,7 @@ sub get_args {
 		"create-rooms=s"           => \$rooms,
 		"create-teaching-groups"   => \$groups,
 		"create-grading"           => \$grading,
+		"create-accounts=s"        => \$account,
 		"fix"                      => \$fix,
 		"codeset"                  => \$codeset,
 		"create-database=s"        => \$create_db,
@@ -148,6 +153,11 @@ sub get_args {
 	++$elements if ($groups);
 	++$elements if ($grading);
 	++$elements if ($student_contacts);
+
+	if (! $create_db && ! $db_name) {
+		print "\nA database must be specified or created\n";
+		usage_exit();
+	}
 
 	if ($create_db && $db_name) {
 		print "\nCannot specify both --create-database and --database in one command\n";
@@ -181,7 +191,7 @@ sub get_args {
 		$school_id = $ttable;
 	}
 
-	return ($schools, $students, $student_contacts, $staff, $rooms, $groups, $grading, $fix, $codeset, $create_db, $db_name, $ttable,  $school_id, $elements, $silent);
+	return ($schools, $students, $student_contacts, $staff, $rooms, $groups, $grading, $account, $fix, $codeset, $create_db, $db_name, $ttable,  $school_id, $elements, $silent);
 }
 
 sub usage_exit {
@@ -195,6 +205,7 @@ Sample usage is:
 
   ./create_sif_data.pl --create-schools=16      # Create 16 schools
   ./create_sif_data.pl --create-schools=6..14   # Create random 6-14 schools
+  ./create_sif_data.pl --create-accounts=8..16  # Create random 8-16 Accounts
   -----------------------------------------------------------------------
     Following commands affect all schools in the database unless a school
     RefId is specified as follows
@@ -321,6 +332,15 @@ sub create_student_contacts {
 	}
 }
 
+sub create_account {
+	my($account) = @_;
+
+	if (defined $account) {
+		make_financial_accounts($account);
+	}
+
+	return ($account);
+}
 
 sub create_ttable {
 	my ($ttable, $school) = @_;
@@ -1237,6 +1257,21 @@ sub make_student_contacts {
 		$sth = $dbh->prepare("TODO");
 		$sth->execute();
 	}
+}
+
+sub make_financial_accounts {
+	my ($accounts) = @_;
+
+		my ($num_accounts) = get_range($accounts);
+
+		for (my $i = 0; $i < $num_accounts; $i++){
+
+			my $accnt = $sd->create_financial_account({});
+print "Account $i  $accnt->{refid} \n";
+
+		}
+
+
 }
 
 sub make_ttable {
