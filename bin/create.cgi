@@ -6,6 +6,8 @@ use HTML::Entities;
 use DBI;
 use YAML;
 
+$ENV{HOME} = "/home/scottp/";
+
 param('form_field');
 print "Content-type: text/html\n\n";
 print "<html><body><h1>DB Creator</h1>";
@@ -41,9 +43,9 @@ if ($@) {
 
 eval {
 	unlink "/tmp/$$.log" if (-f "/tmp/$$.log");
-	system ("cd ~scottp/nsip/sif-data; ./bin/timetable.sh $name >> /tmp/$$.log 2>/dev/null");
-	system ("cd ~scottp/nsip/HITS-API; ./create_app.pl $name >> /tmp/$$.log 2>/dev/null");
-	system ("cd ~scottp/nsip/HITS-API; ./create_entry.pl $name >> /tmp/$$.log 2>/dev/null");
+	system ("cd ~scottp/nsip/sif-data; ./bin/timetable.sh $name >> /tmp/$$.log 2>/tmp/$$.err");
+	system ("cd ~scottp/nsip/HITS-API; ./create_app.pl $name >> /tmp/$$.log 2>/tmp/$$.err");
+	system ("cd ~scottp/nsip/HITS-API; ./create_entry.pl $name >> /tmp/$$.log 2>/tmp/$$.err");
 };
 if ($@) {
 	print "<h2>ERRORS</h2>";

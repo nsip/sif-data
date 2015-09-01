@@ -30,7 +30,7 @@ use Data::Dumper;
 
 my $sd = SIF::Data->new();
 
-my ($schools, $students, $staff, $rooms, $groups, $fix, $codeset, $create_db, 
+my ($schools, $students, $staff, $rooms, $groups, $grading, $fix, $codeset, $create_db, 
     $db_name, $ttable, $school_id, $elements, $silent) = get_args();
 
 if (defined $create_db) {
@@ -88,6 +88,8 @@ if ($ttable) {
 
 	create_groups($groups, $school_id);
 
+	create_grading($grading, $school_id);
+
 	fix_data($fix);
 
 	code_set($codeset);
@@ -105,6 +107,7 @@ sub get_args {
 	my $staff     = undef;
 	my $rooms     = undef;
 	my $groups    = undef;
+	my $grading   = undef;
 	my $fix       = undef;
 	my $codeset   = undef;
 	my $create_db = undef;
@@ -121,6 +124,7 @@ sub get_args {
 		"create-staff=s"           => \$staff,
 		"create-rooms=s"           => \$rooms,
 		"create-teaching-groups"   => \$groups,
+		"create-grading"           => \$grading,
 		"fix"                      => \$fix,
 		"codeset"                  => \$codeset,
 		"create-database=s"        => \$create_db,
@@ -138,6 +142,7 @@ sub get_args {
 	++$elements if ($staff);
 	++$elements if ($rooms);
 	++$elements if ($groups);
+	++$elements if ($grading);
 
 	if ($create_db && $db_name) {
 		print "\nCannot specify both --create-database and --database in one command\n";
@@ -171,7 +176,7 @@ sub get_args {
 		$school_id = $ttable;
 	}
 
-	return ($schools, $students, $staff, $rooms, $groups, $fix, $codeset, $create_db, $db_name, $ttable,  $school_id, $elements, $silent);
+	return ($schools, $students, $staff, $rooms, $groups, $grading, $fix, $codeset, $create_db, $db_name, $ttable,  $school_id, $elements, $silent);
 }
 
 sub usage_exit {
@@ -179,33 +184,35 @@ sub usage_exit {
 
 Sample usage is:
 
-  ./create_sif_data.pl --create-database=name	# Create new database  
+  ./create_sif_data.pl --create-database=name   # Create new database  
 
-  ./create_sif_data.pl --database=name_of_db	# Use the named database
+  ./create_sif_data.pl --database=name_of_db    # Use the named database
 
-  ./create_sif_data.pl --create-schools=16	# Create 16 schools
-  ./create_sif_data.pl --create-schools=6..14	# Create random 6-14 schools
+  ./create_sif_data.pl --create-schools=16      # Create 16 schools
+  ./create_sif_data.pl --create-schools=6..14   # Create random 6-14 schools
   -----------------------------------------------------------------------
-	Following commands affect all schools in the database unless a school
-	RefId is specified as follows
-	   --school-id=4002EF5E-22A8-11E4-B112-958031DE1888    
+    Following commands affect all schools in the database unless a school
+    RefId is specified as follows
+       --school-id=4002EF5E-22A8-11E4-B112-958031DE1888    
 
-  ./create_sif_data.pl --create-students=8..21	# Create random 8-21 students
+  ./create_sif_data.pl --create-students=8..21  # Create random 8-21 students
 
-  ./create_sif_data.pl --create-staff=5..20	# Create random 5-20 staff
+  ./create_sif_data.pl --create-staff=5..20     # Create random 5-20 staff
 
-  ./create_sif_data.pl --create-rooms=3..5	# Create random 3-5 rooms
+  ./create_sif_data.pl --create-rooms=3..5      # Create random 3-5 rooms
 
-  ./create_sif_data.pl --create-teaching-groups
-					# Create groups for all years and students
+  ./create_sif_data.pl --create-teaching-groups # Create groups for all years and students
+
+  ./create_sif_data.pl --create-grading         # Populate grading assignment tables
+
   -----------------------------------------------------------------------
   ./create_sif_data.pl --create-time-table=school_id
           # Creates new Teaching Groups and Timetable in selected school
-            Requires school to have been created
+          # Requires school to have been created
   
-  ./create_sif_data.pl --fix           		# Update missing data  
+  ./create_sif_data.pl --fix                   # Update missing data  
 
-  ./create_sif_data.pl --codeset			# Add the codeset
+  ./create_sif_data.pl --codeset               # Add the codeset
 
   By default the program assumes:
   1) It is being run from the top-level repository directory (and that 'data' and 'schema' are subdirectories
@@ -292,6 +299,15 @@ sub create_groups {
 	}
 	return ($students);
 }
+
+sub create_grading {
+	my ($grading, $school) = @_;
+
+	if (defined $grading) {
+		make_grading($grading, $school);
+	}
+}
+
 
 sub create_ttable {
 	my ($ttable, $school) = @_;
@@ -1034,6 +1050,135 @@ sub get_staff {
 	return @staff_list;
 }
 
+#
+# Populate the GradingAssignment and GradingAssignmentScore tables
+#
+
+sub make_grading {
+	my ($grading, $school) = @_;
+
+	my $sth;
+	if (defined $school) {
+		$sth = $dbh->prepare("SELECT * from TeachingGroup WHERE SchoolInfo_RefId = ?");
+		$sth->execute($school);
+	} else {
+		$sth = $dbh->prepare("SELECT * FROM TeachingGroup");
+		$sth->execute();
+	}
+
+	my $num_tg_seen = 0;
+
+	while (my $row = $sth->fetchrow_hashref) {
+
+		$num_tg_seen++;
+		my $students_in_tg = students_in_teaching_group($row->{RefId});
+
+		# Create 5 grading assignments per teaching group 
+
+		for ( 1 .. 5 ) {
+			my $sth = $dbh->prepare(q{
+				INSERT INTO GradingAssignment
+					(
+						RefId,
+						TeachingGroup_RefId,
+						GradingCategory,
+						Description,
+						PointsPossible,
+						CreateDate,
+						DueDate,
+						Weight,
+						MaxAttemptsAllowed,
+						DetailedDescriptionURL
+					)
+				VALUES 
+					(
+						?,
+						?,
+						?,
+						?,
+						?,
+						?,
+						?,
+						?,
+						?,
+						?
+					)
+ 			});
+	
+			my @values = $sd->create_grading_assignment($row->{RefId});
+			$sth->execute( @values );
+
+			my $gaId   = $values[0];
+
+			#
+			# GradingAssignmentScore: 
+			# Create one score per student in a teaching group and grading assignment 
+			# (i.e. num_students_in_tg * 5_assignments_in_tg * num_tg)
+			#
+
+			next if (scalar @{ $students_in_tg } == 0);
+
+			foreach my $stId ( @{ $students_in_tg } ) {
+
+				my $sth2 = $dbh->prepare(q{
+					INSERT INTO GradingAssignmentScore
+						(
+							RefId,
+							StudentPersonal_RefId,
+							TeachingGroup_RefId,
+							GradingAssignment_RefId,
+							ScorePoints,
+							ScorePercent,
+							ScoreLetter,
+							ScoreDescription
+						)
+					VALUES 
+						(
+							?,
+							?,
+							?,
+							?,
+							?,
+							?,
+							?,
+							?
+						)
+ 				});
+				$sth2->execute( $sd->create_grading_assignment_score($stId->[0], $row->{RefId}, $gaId));
+			}
+		} # 1 .. 5 grading assignments
+	} # TeachingGroup rows
+
+	if ( (defined $grading) && ($num_tg_seen == 0) ) {
+		die qq(\nNo teaching groups were found.\nYou may need to run this program with the "--create-teaching-groups" options first);
+	}
+}
+
+sub num_teaching_groups {
+	my ($schoolId) = @_;
+
+	my $sth = $dbh->prepare("SELECT count(*) AS cnt from TeachingGroup WHERE SchoolInfo_RefId = ?");
+	$sth->execute($schoolId);
+	my $row = $sth->fetchrow_hashref;
+
+	return $row->{cnt};
+}
+
+sub students_in_teaching_group {
+	my ($tgId) = @_;
+
+	my $sth = $dbh->prepare("
+		SELECT
+			StudentPersonal_RefId
+		FROM 
+			TeachingGroup_Student 
+		WHERE 
+			TeachingGroup_RefId = ?"
+	);
+	$sth->execute($tgId);
+	return $sth->fetchall_arrayref;
+}
+
 sub make_ttable {
 	my ($school) = @_;
 
@@ -1241,4 +1386,3 @@ sub get_group_stats {
 	
 	return ($school_cnt, $room_cnt);
 }
-
