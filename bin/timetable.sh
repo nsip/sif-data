@@ -13,3 +13,5 @@ echo "CREATE TIME TABLE"
 perl bin/create_sif_data.pl --database=$1 --create-time-table=first
 echo "CREATE GRADING"
 perl bin/create_sif_data.pl --database=$1 --create-grading
+echo "CREATE CONTACTS"
+perl bin/create_sif_data.pl --database=$1 --create-student-contacts
