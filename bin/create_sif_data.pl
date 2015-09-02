@@ -1250,13 +1250,100 @@ sub make_student_contacts {
 	my ($student_contacts, $school) = @_;
 
 	my $sth;
-	if (defined $school) {
-		$sth = $dbh->prepare("TODO WHERE TODO = ?");
-		$sth->execute($school);
-	} else {
-		$sth = $dbh->prepare("TODO");
-		$sth->execute();
+	#if (defined $school) {
+	#	$sth = $dbh->prepare("TODO WHERE TODO = ?");
+	#	$sth->execute($school);
+	#} else {
+	#	$sth = $dbh->prepare("TODO");
+	#	$sth->execute();
+	#}
+	
+	$sth = $dbh->prepare("SELECT RefId FROM StudentPersonal");
+	$sth->execute();
+	
+	my $insert_address = $dbh->prepare("INSERT INTO Address (Person_RefId, AddressType, AddressRole, Line1, City, StateProvince,PostalCode) VALUES (?, '0123', '012A', ?, ?, ?, ?)");
+	my $insert_language = $dbh->prepare("INSERT INTO Language (Person_RefId, LanguageCode, LanguageType) VALUES (?, ?, ?)");
+
+	# XXX Temp hack ignore duplicates here
+	my $insert_contact = $dbh->prepare(q{
+		INSERT IGNORE INTO StudentContactPersonal 
+			(
+				RefId, LocalId, 
+				Title, FamilyName, GivenName, PreferredGivenName, PreferredFamilyName, 
+				Sex, 
+				PhoneNumberType, PhoneNumber, 
+				Email, EmailType, 
+				SchoolEducationLevel, NonSchoolEducation, EmploymentType
+			)
+		VALUES
+			(
+				?, ?,
+				?, ?, ?, ?, ?,
+				?,
+				?, ?, 
+				?, ?,
+				?, ?, ?
+			)
+	});
+
+	my $done_address = 0;
+	my $done_contact = 0;
+	my $done_language = 0;
+	while (my $row = $sth->fetchrow_hashref) {
+		# STUDENT CONTACT PERSONAL - 2
+		for (my $i = 0; $i < 1; $i++) {
+			$done_contact++;
+			# print "Creating contact - $row->{RefId} $i\n";
+			my $mf = (rand(10) > 5);
+			$insert_contact->execute(
+				$row->{RefId}, int(rand(1000000)),
+				$mf ? "Mr" : "Ms", "First", "Last", "First", "Last",
+				$mf ? 1 : 2,
+				"0096", int(rand(100000000)),
+				'email@somewhere.com', "01",
+				int(rand(5)), int(rand(4) + 4), int(rand(4)) # XXX Note wrong... see #133
+			);
+		}
+
+		# ADDRESS
+		$done_address++;
+		# print "Creating address - $row->{RefId}\n";
+		$insert_address->execute(
+			$row->{RefId},
+			"Line1",
+			"City1",
+			"StatePrivince",
+			"PostalCode"
+		);
+
+		# LANGUAGE
+		$done_language++;
+		# print "Creating Language - $row->{RefId}\n";
+		$insert_language->execute(
+			$row->{RefId},
+			"1201",
+			"1"
+		);
+
+		# 20% extra record
+		if (rand(10) < 2) {
+			$done_language++;
+			# print "Creating 2nd Language - $row->{RefId}\n";
+			$insert_language->execute(
+				$row->{RefId},
+				int(rand(10000)),
+				"2"
+			);
+		}
+
+		# STUDENT CONTACT PERSONAL
+
 	}
+
+	print "\n$done_contact contacts created \n" unless ($silent);
+	print "\n$done_language languages created \n" unless ($silent);
+	print "\n$done_address addresses created \n" unless ($silent);
+	$dbh->commit();
 }
 
 sub make_financial_accounts {
