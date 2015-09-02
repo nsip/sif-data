@@ -407,6 +407,71 @@ sub create_financial_account {
 	return $data;
 }
 
+=head2 Load Accounts
+
+=cut
+
+sub load_accounts {
+	my ($self) = @_;
+
+	my @faccounts;
+	my $csv = Text::CSV->new ( { binary => 1 } )  # should set binary attribute.
+		or die "Cannot use CSV: ".Text::CSV->error_diag ();
+
+	my $data_dir = './data';
+	$data_dir = "$self->{config}->{data_dir}"  if (defined $self->{config}->{data_dir});
+
+	open my $fh, "<:encoding(utf8)", "$data_dir/financialaccounts.csv" or die "$data_dir/financialaccounts.csv: $!";
+
+	# NOTE Skip first row - assume fields?
+	$csv->getline( $fh );
+
+	while ( my $row = $csv->getline( $fh ) ) {
+	        push @faccounts, $row;
+	}
+	$csv->eof or $csv->error_diag();
+	close $fh;
+
+	return \@faccounts;
+}
+
+=head2 Create Locations
+
+=cut
+
+sub create_locations {
+	my ($self, $data) = @_;
+
+	$data->{refid} = $self->make_new_id;
+
+	my $rnd = int(rand(100));
+	my $type = 'NonSchool';;
+	$type = 'School' if ($rnd < 80);
+	$data->{type} = $type;
+
+	if ($type eq 'School') {
+		$data->{category} = 'School';
+		$data->{name} = $self->create_school_name;
+
+	} else {
+		my @types = ('HR','Professional Development','Accounting',
+			'Management','Cleaning');
+		my $num = int(rand(scalar(@types)));
+		$data->{category} = $types[$num];
+		$data->{name} = $types[$num];
+
+	}
+
+	$data->{localid} = $self->create_localid();
+	$data->{stateprov} = (int(rand(999999)) + 10000);
+	$data->{desc} = undef;
+	$data->{parent} = undef;
+	$data->{schref} = undef;
+	$data->{phone} = undef;
+
+	return $data;
+}
+
 =head2 Load Codeset
 
 =cut
@@ -554,7 +619,7 @@ sub make_short_name {
 	my ($self) = @_;
 
 	my @subjects = ("MAT", "ENG", "PHYS", "BIO", "CHEM", "COMP",
-          "VIS", "ECON", "HIST");
+	                "VIS", "ECON", "HIST");
 	my $short_name = $subjects[rand @subjects];
 	return $short_name;
 }

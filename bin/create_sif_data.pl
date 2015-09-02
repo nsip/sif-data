@@ -1262,16 +1262,105 @@ sub make_student_contacts {
 sub make_financial_accounts {
 	my ($accounts) = @_;
 
-		my ($num_accounts) = get_range($accounts);
+	my ($num_accounts) = get_range($accounts);
 
-		for (my $i = 0; $i < $num_accounts; $i++){
+	my $faccounts = $sd->load_accounts();
+	my $extent = scalar(@{$faccounts});
 
-			my $accnt = $sd->create_financial_account({});
-print "Account $i  $accnt->{refid} \n";
+	my ($location_list, $locations) = get_locations($num_accounts);
+#print "$locations returned to here\n";
 
-		}
+	for (my $i = 0; $i < $num_accounts; $i++){
+
+		my $accnt = $sd->create_financial_account({});
+
+		my $rand = int(rand($extent));
 
 
+
+	
+
+
+
+
+# print "Account $i  $accnt->{refid} \n";
+# print "$rand -  @{$faccounts}[$rand]->[0] | @{$faccounts}[$rand]->[1]\n";
+
+	}
+
+	return;
+}
+
+sub get_locations {
+	my ($number) = @_;
+
+	my @location_list;
+	my $select = "SELECT RefId from LocationInfo";
+	my $sth;
+	$sth = $dbh->prepare($select);
+	$sth->execute();
+
+	my $locations = 0;
+	while (my $location_row = $sth->fetchrow_hashref) {
+		++$locations;
+	}
+
+	if (! $locations) {
+		my $min = $number;
+		my $max = $number * 2;
+		my ($done) = make_locations($min, $max);
+		print "\n$done Locations created\n" unless ($silent);
+	}
+
+	$sth->execute();
+	$locations = 0;
+	while (my $location_row = $sth->fetchrow_hashref) {
+		push @location_list, $location_row->{RefId};
+		++$locations;
+	}
+	return (\@location_list, $locations);	
+
+}
+
+sub make_locations {
+	my ($min, $max) = @_;
+
+	my $locations = 0;
+	my ($number) = get_range($min . '..' . $max);
+
+	for (my $i = 0; $i < $number; $i++){
+
+		my $location = $sd->create_locations({});
+
+		my $desc = '';
+
+		++$locations;
+
+		my $sth = $dbh->prepare("
+			INSERT INTO LocationInfo (RefId, LocationType,
+				SiteCategory, Name, Description, LocalId,
+				StateProvinceId, Parent_LocationInfo_RefId,
+				SchoolInfo_REfId, PhoneNumber)
+			Values (?,?,?,?,?,?,?,?,?,?)");
+		$sth->execute($location->{refid}, $location->{type},
+			$location->{category}, $location->{name},
+			$location->{desc}, $location->{localid}, 
+			$location->{stateprov}, $location->{parent}, 
+			$location->{school}, $location->{phone});	
+
+
+# print "Created - $location->{refid} - type $location->{type}";
+# print "    $location->{localid} \n";
+# print "name is $location->{name} - catyegory $location->{category}  ";
+# print "   $location->{stateprov}  \n";
+
+
+## elements are  {refid}  {type}  {category}  {name} {localid} 
+##  {stateprov}  {phone} {desc}  {parent} {school}
+
+	}
+
+	return $locations;
 }
 
 sub make_ttable {
