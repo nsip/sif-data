@@ -706,7 +706,7 @@ CREATE TABLE IF NOT EXISTS Invoice (
 	Related_PurchaseOrder_RefId  VARCHAR(36), -- joins to PurchaseOrder/RefId?,
 	Voluntary VARCHAR(200),
 	FOREIGN KEY (LocationInfo_RefId) REFERENCES LocationInfo(RefId),
-	FOREIGN KEY (Related_PurchaseOrder_RefId) REFERENCES LocationInfo(RefId)
+	FOREIGN KEY (Related_PurchaseOrder_RefId) REFERENCES PurchaseOrder(RefId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS FinancialClass (
