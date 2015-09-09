@@ -31,7 +31,7 @@ use Data::Dumper;
 my $sd = SIF::Data->new();
 
 my ($schools, $students, $student_contacts, $staff, $rooms, $groups, 
-	$grading, $account, $vendors, $fix, $codeset, $create_db, 
+	$grading, $account, $vendors, $debtors, $fix, $codeset, $create_db, 
 	$db_name, $ttable, $school_id, $elements, $silent) = get_args();
 
 if (defined $create_db) {
@@ -97,6 +97,8 @@ if ($ttable) {
 
 	create_vendors($vendors);
 
+	create_debtors($debtors);
+
 	fix_data($fix);
 
 	code_set($codeset);
@@ -117,6 +119,7 @@ sub get_args {
 	my $grading          = undef;
 	my $account          = undef;
 	my $vendors          = undef;
+	my $debtors          = undef;
 	my $fix              = undef;
 	my $codeset          = undef;
 	my $create_db        = undef;
@@ -137,6 +140,7 @@ sub get_args {
 		"create-grading"           => \$grading,
 		"create-accounts=s"        => \$account,
 		"create-vendors=s"         => \$vendors,
+		"create-debtors=s"         => \$debtors,
 		"fix"                      => \$fix,
 		"codeset"                  => \$codeset,
 		"create-database=s"        => \$create_db,
@@ -196,8 +200,8 @@ sub get_args {
 	}
 
 	return ($schools, $students, $student_contacts, $staff, $rooms, 
-	$groups, $grading, $account, $vendors, $fix, $codeset, $create_db, 
-	$db_name, $ttable,  $school_id, $elements, $silent);
+	$groups, $grading, $account, $vendors, $debtors, $fix, $codeset, 
+	$create_db, $db_name, $ttable,  $school_id, $elements, $silent);
 }
 
 sub usage_exit {
@@ -213,6 +217,7 @@ Sample usage is:
   ./create_sif_data.pl --create-schools=6..14   # Create random 6-14 schools
   ./create_sif_data.pl --create-accounts=8..16  # Create random 8-16 Accounts
   ./create_sif_data.pl --create-vendors=8..16   # Create random 8-16 Vendors
+  ./create_sif_data.pl --create-debtors=8..16   # Create random 8-16 Debtors
   -----------------------------------------------------------------------
     Following commands affect all schools in the database unless a school
     RefId is specified as follows
@@ -357,6 +362,16 @@ sub create_vendors {
 	}
 
 	return ($vendors);
+}
+
+sub create_debtors {
+	my($vendors) = @_;
+
+	if (defined $debtors) {
+		make_debtors($debtors);
+	}
+
+	return ($debtors);
 }
 
 sub create_ttable {
@@ -1384,6 +1399,7 @@ sub make_financial_accounts {
 			my $loc = int(rand($locations));
 			$location = $location_list->[$loc];
 		}
+#TODO Sub_act Needs populating in a second pass
 
 		my ($faccount, $fa_name, $classref, $sub_act) = get_faccount_detail($extent, $faccounts);
 
@@ -1430,6 +1446,9 @@ sub get_faccount_detail {
 	my $sub_act  = undef;
 
 	# get random account for SubAccountRefId
+
+#TODO Needs populating in a second pass
+
 	if (int(rand(100)) < 50) {
 		my $sth = $dbh->prepare("
 			SELECT RefId FROM FinancialAccount");
@@ -1536,6 +1555,11 @@ sub make_locations {
             my $r = int(rand($schools));
 			$schoolref = $school_list[$r];
 		}
+#TODO Check localid for 6 digits - returned 5 and 4 in some instances
+
+#TODO populate ParentLocationRefId in a second pass
+
+#TODO Create random phone numbers
 
 		$sth = $dbh->prepare("
 			INSERT INTO LocationInfo (RefId, LocationType,
@@ -1568,6 +1592,7 @@ sub make_vendors {
 	for (my $i = 0; $i < $num_vendors; $i++){
 
 		my $vendor = $sd->create_vendor({});
+#TODO Create random phone numbers
 
 		my $sth;
 		$sth = $dbh->prepare("
@@ -1594,6 +1619,64 @@ sub make_vendors {
 	}
 
 	print "$created Vendors created\n" unless ($silent);
+
+	return;
+}
+
+sub get_vendors {
+	my ($number) = @_;
+
+	my @vendor_list;
+	my $sth;
+	$sth = $dbh->prepare("
+		SELECT RefId from VendorInfo");
+	$sth->execute();
+
+	my $vendors = 0;
+	while (my $vendor_row = $sth->fetchrow_hashref) {
+		++$vendors;
+	}
+print "vendors = $vendors\n";
+
+	if (! $vendors) {
+		my $min = $number;
+		my $max = $number * 2;
+		my ($done) = make_vendors($min, $max);
+		print "\n$done Vendors created\n" unless ($silent);
+	}
+
+	$sth->execute();
+	$vendors = 0;
+	while (my $vendor_row = $sth->fetchrow_hashref) {
+		push @vendor_list, $vendor_row->{RefId};
+		++$vendors;
+	}
+	return (\@vendor_list, $vendors);	
+
+}
+
+sub make_debtors {
+
+	my ($num_debtors) = get_range($debtors);
+	my $created;
+
+	# need to get or make Vendors
+	my ($vendor_list, $vendors) = get_vendors($num_debtors);
+
+	# need to get or make StudentContacts (implies need school(s))
+
+	for (my $i = 0; $i < $num_debtors; $i++){
+
+
+
+
+
+
+
+		++$created;
+	}
+
+	print "$created Debtors created\n" unless ($silent);
 
 	return;
 }

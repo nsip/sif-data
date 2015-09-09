@@ -558,6 +558,20 @@ sub create_vendor {
 	return $data;
 }
 
+=head2 Create Debtor   
+
+=cut
+
+sub create_debtor {
+	my ($self, $data) = @_;
+
+	$data->{refid} = $self->make_new_id;
+
+	$data->{note} = '';
+
+	return $data;
+}
+
 =head2 Load Codeset
 
 =cut
