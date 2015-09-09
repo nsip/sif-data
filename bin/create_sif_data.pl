@@ -30,9 +30,9 @@ use Data::Dumper;
 
 my $sd = SIF::Data->new();
 
-my ($schools, $students, $student_contacts, $staff, $rooms, $groups, $grading, 
-	$account, $fix, $codeset, $create_db, $db_name, $ttable, $school_id, 
-	$elements, $silent) = get_args();
+my ($schools, $students, $student_contacts, $staff, $rooms, $groups, 
+	$grading, $account, $vendors, $fix, $codeset, $create_db, 
+	$db_name, $ttable, $school_id, $elements, $silent) = get_args();
 
 if (defined $create_db) {
 	$db_name = $sd->create_database($create_db);
@@ -95,6 +95,8 @@ if ($ttable) {
 
 	create_account($account);
 
+	create_vendors($vendors);
+
 	fix_data($fix);
 
 	code_set($codeset);
@@ -114,6 +116,7 @@ sub get_args {
 	my $groups           = undef;
 	my $grading          = undef;
 	my $account          = undef;
+	my $vendors          = undef;
 	my $fix              = undef;
 	my $codeset          = undef;
 	my $create_db        = undef;
@@ -133,6 +136,7 @@ sub get_args {
 		"create-teaching-groups"   => \$groups,
 		"create-grading"           => \$grading,
 		"create-accounts=s"        => \$account,
+		"create-vendors=s"         => \$vendors,
 		"fix"                      => \$fix,
 		"codeset"                  => \$codeset,
 		"create-database=s"        => \$create_db,
@@ -191,7 +195,9 @@ sub get_args {
 		$school_id = $ttable;
 	}
 
-	return ($schools, $students, $student_contacts, $staff, $rooms, $groups, $grading, $account, $fix, $codeset, $create_db, $db_name, $ttable,  $school_id, $elements, $silent);
+	return ($schools, $students, $student_contacts, $staff, $rooms, 
+	$groups, $grading, $account, $vendors, $fix, $codeset, $create_db, 
+	$db_name, $ttable,  $school_id, $elements, $silent);
 }
 
 sub usage_exit {
@@ -206,6 +212,7 @@ Sample usage is:
   ./create_sif_data.pl --create-schools=16      # Create 16 schools
   ./create_sif_data.pl --create-schools=6..14   # Create random 6-14 schools
   ./create_sif_data.pl --create-accounts=8..16  # Create random 8-16 Accounts
+  ./create_sif_data.pl --create-vendors=8..16   # Create random 8-16 Vendors
   -----------------------------------------------------------------------
     Following commands affect all schools in the database unless a school
     RefId is specified as follows
@@ -340,6 +347,16 @@ sub create_account {
 	}
 
 	return ($account);
+}
+
+sub create_vendors {
+	my($vendors) = @_;
+
+	if (defined $vendors) {
+		make_vendors($vendors);
+	}
+
+	return ($vendors);
 }
 
 sub create_ttable {
@@ -1355,36 +1372,117 @@ sub make_financial_accounts {
 	my $extent = scalar(@{$faccounts});
 
 	my ($location_list, $locations) = get_locations($num_accounts);
-#print "$locations returned to here\n";
+
+	my $created = 0;
 
 	for (my $i = 0; $i < $num_accounts; $i++){
 
 		my $accnt = $sd->create_financial_account({});
 
-		my $rand = int(rand($extent));
+		my $location = undef;
+		if (int(rand(100)) > 50) {
+			my $loc = int(rand($locations));
+			$location = $location_list->[$loc];
+		}
 
+		my ($faccount, $fa_name, $classref, $sub_act) = get_faccount_detail($extent, $faccounts);
 
+		my $sth = $dbh->prepare("
+			INSERT INTO FinancialAccount (RefId, SubAccount_RefId,
+			LocationInfo_RefId, AccountNumber, Name, Description, 
+			FinancialClass_RefId, CreationDate, CreationTime)
+			Values (?,?,?,?,?,?,?,?,?)");
+		$sth->execute($accnt->{refid}, $sub_act, $location, 
+			$faccount, $fa_name, $accnt->{description}, $classref, 
+			$accnt->{date_created}, $accnt->{time_created});
 
-	
-
-
-
-
-# print "Account $i  $accnt->{refid} \n";
-# print "$rand -  @{$faccounts}[$rand]->[0] | @{$faccounts}[$rand]->[1]\n";
-
+		++$created;
 	}
+	print "$created Finacial Accounts created\n" unless ($silent);
 
 	return;
 }
+
+sub get_faccount_detail {
+	my ($extent, $faccounts) = @_;
+
+	my $unique = 0;
+	my $rand;
+	my $max = 0;
+	until ($unique) {
+		$rand = int(rand($extent));
+		my $sth;
+		$sth = $dbh->prepare("
+			SELECT AccountNumber FROM FinancialAccount where 
+			AccountNumber = ?");
+		$sth->execute(@{$faccounts}[$rand]->[0]);
+		my $acts = 0;
+		while (my $a = $sth->fetchrow_hashref) {
+			++$acts;
+			++$max;
+		}
+		$unique = 1 if ($acts == 0);
+		$unique = 1 if ($max >= $extent);  # All accounts allocated
+	}
+
+	my $faccount = @{$faccounts}[$rand]->[0];
+	my $fa_name  = @{$faccounts}[$rand]->[1];
+	my $sub_act  = undef;
+
+	# get random account for SubAccountRefId
+	if (int(rand(100)) < 50) {
+		my $sth = $dbh->prepare("
+			SELECT RefId FROM FinancialAccount");
+		$sth->execute();
+		my $acts = 0;
+		while (my $ac = $sth->fetchrow_hashref) {
+			++$acts;
+		}
+		my $pos = int(rand($acts));
+		$sth->execute();
+		$acts = 0;
+		while (my $ac = $sth->fetchrow_hashref) {
+			++$acts;
+			$sub_act = $ac->{RefId} if ($acts == $pos);
+		}
+	}
+
+	# get or make FinancialClass
+	my $class = substr($faccount, 0, 2);
+	my $classref;
+	my $sth;
+	$sth = $dbh->prepare("
+		SELECT RefId FROM FinancialClass WHERE Name = ?");
+	$sth->execute($class);
+	my $cnt = 0;
+	while (my $cl = $sth->fetchrow_hashref) {
+		++$cnt;
+		$classref = $cl->{RefId};
+	}
+	if (! $cnt) {
+		my $fin_class = $sd->create_financial_class({});
+
+		my $sth = $dbh->prepare("
+			INSERT INTO FinancialClass (RefId, Name, Description,
+				ClassType)
+			Values (?,?,?,?)");
+		$sth->execute($fin_class->{refid}, $class, 
+			$fin_class->{description}, $fin_class->{classtype});
+
+		$classref = $fin_class->{refid};
+	}
+
+	return ($faccount, $fa_name, $classref, $sub_act);
+}
+
 
 sub get_locations {
 	my ($number) = @_;
 
 	my @location_list;
-	my $select = "SELECT RefId from LocationInfo";
 	my $sth;
-	$sth = $dbh->prepare($select);
+	$sth = $dbh->prepare("
+		SELECT RefId from LocationInfo");
 	$sth->execute();
 
 	my $locations = 0;
@@ -1419,35 +1517,105 @@ sub make_locations {
 
 		my $location = $sd->create_locations({});
 
-		my $desc = '';
+		# get random school RefId
+		my $sth;
+		$sth = $dbh->prepare("
+			SELECT RefId from SchoolInfo");
+		$sth->execute();
 
-		++$locations;
+		my $schools = 0;
+		my @school_list;
+		while (my $school_row = $sth->fetchrow_hashref) {
+			push @school_list, $school_row->{RefId};
+			++$schools;
+		}
+		my $schoolref = undef;
+		if ($schools == 1) {
+			$schoolref = $school_list[0];
+		} elsif ($schools > 1) {
+            my $r = int(rand($schools));
+			$schoolref = $school_list[$r];
+		}
 
-		my $sth = $dbh->prepare("
+		$sth = $dbh->prepare("
 			INSERT INTO LocationInfo (RefId, LocationType,
 				SiteCategory, Name, Description, LocalId,
 				StateProvinceId, Parent_LocationInfo_RefId,
-				SchoolInfo_REfId, PhoneNumber)
+				SchoolInfo_RefId, PhoneNumber)
 			Values (?,?,?,?,?,?,?,?,?,?)");
 		$sth->execute($location->{refid}, $location->{type},
 			$location->{category}, $location->{name},
 			$location->{desc}, $location->{localid}, 
 			$location->{stateprov}, $location->{parent}, 
-			$location->{school}, $location->{phone});	
+			$schoolref, $location->{phone});	
 
+		my $type = 'Location';
+		my $role = undef;
+		make_address($location->{refid}, $type, $role);
 
-# print "Created - $location->{refid} - type $location->{type}";
-# print "    $location->{localid} \n";
-# print "name is $location->{name} - catyegory $location->{category}  ";
-# print "   $location->{stateprov}  \n";
-
-
-## elements are  {refid}  {type}  {category}  {name} {localid} 
-##  {stateprov}  {phone} {desc}  {parent} {school}
-
+		++$locations;
 	}
 
 	return $locations;
+}
+
+sub make_vendors {
+	my ($vendors) = @_;
+
+	my ($num_vendors) = get_range($vendors);
+	my $created;
+
+	for (my $i = 0; $i < $num_vendors; $i++){
+
+		my $vendor = $sd->create_vendor({});
+
+		my $sth;
+		$sth = $dbh->prepare("
+			INSERT INTO VendorInfo (RefId, Name, ContactInfo_FamilyName,
+				ContactInfo_GivenName,  ContactInfo_MiddleName, 
+				ContactInfo_PositionTitle,  ContactInfo_Role,  
+				ContactInfo_Email,  ContactInfo_PhoneNumber, CustomerId,
+				ABN, RegisteredForGST, PaymentTerms, BPay, BSB,
+				AccountNumber, AccountName)
+			Values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+		$sth->execute($vendor->{refid}, $vendor->{name},
+			$vendor->{familyname}, $vendor->{givenname}, 
+			$vendor->{middlename}, $vendor->{position}, 
+			$vendor->{role}, $vendor->{email}, $vendor->{phone}, 
+			$vendor->{id}, $vendor->{abn}, $vendor->{gst}, 
+			$vendor->{terms}, $vendor->{bpay}, $vendor->{bsb}, 
+			$vendor->{accountnumber}, $vendor->{accountname});
+
+		++$created;
+
+		my $type = 'Vendor';
+		my $role = undef;
+		make_address($vendor->{refid}, $type, $role);
+	}
+
+	print "$created Vendors created\n" unless ($silent);
+
+	return;
+}
+
+sub make_address {
+	my ($refid, $type, $role) = @_;
+
+	my $address = $sd->create_address({});
+
+	my $line1 = undef;
+	my $line2 = undef;
+
+	my $sth = $dbh->prepare("
+		INSERT INTO Address (Person_RefId, AddressType,
+			AddressRole, StreetNumber, StreetName, Line1, Line2, 
+			City, StateProvince, PostalCode)
+		Values (?,?,?,?,?,?,?,?,?,?)");
+	$sth->execute($refid, $type, $role, $address->{StreetNumber},
+		$address->{StreetName}, $line1, $line2, $address->{City}, 
+		$address->{StateProvince}, $address->{PostalCode});
+
+	return;
 }
 
 sub make_ttable {

@@ -402,6 +402,13 @@ sub create_financial_account {
 	my ($self, $data) = @_;
 
 	$data->{refid} = $self->make_new_id;
+	$data->{description} = undef;
+
+	my $min =  '2012-01-01';
+	my $max =  '2015-12-31';
+	$data->{date_created} = rand_date( min => $min, max => $max );
+
+	$data->{time_created} = rand_time();
 
 
 	return $data;
@@ -435,6 +442,31 @@ sub load_accounts {
 	return \@faccounts;
 }
 
+=head2 Create Financial Class
+
+=cut
+
+sub create_financial_class {
+	my ($self, $data) = @_;
+
+	$data->{refid} = $self->make_new_id;
+	$data->{name} = undef;
+	$data->{description} = undef;
+
+	my @types = (
+		"Asset", 
+		"Liability", 
+		"Revenue",
+		"Expense",
+	);
+	my $index = rand @types;
+	my $type = $types[$index];
+
+	$data->{classtype} = $type;
+
+	return $data;
+}
+
 =head2 Create Locations
 
 =cut
@@ -452,14 +484,12 @@ sub create_locations {
 	if ($type eq 'School') {
 		$data->{category} = 'School';
 		$data->{name} = $self->create_school_name;
-
 	} else {
 		my @types = ('HR','Professional Development','Accounting',
 			'Management','Cleaning');
 		my $num = int(rand(scalar(@types)));
 		$data->{category} = $types[$num];
 		$data->{name} = $types[$num];
-
 	}
 
 	$data->{localid} = $self->create_localid();
@@ -469,6 +499,62 @@ sub create_locations {
 	$data->{schref} = undef;
 	$data->{phone} = undef;
 
+	return $data;
+}
+
+=head2 Create Vendor   
+
+=cut
+
+sub create_vendor {
+	my ($self, $data) = @_;
+
+	$data->{refid} = $self->make_new_id;
+
+	my $r = Data::RandomPerson->new();
+	my $p = $r->create();
+	my @types = ("Company", "Pty Ltd", "Ltd", "Pty", "Inc");
+	my $vendor_type = $types[rand @types];
+	my $vendor_name = "$p->{lastname} $vendor_type";
+	$data->{name} = $vendor_name;
+
+	my @p;
+	## $r = Data::RandomPerson->new();
+	$p[0] = $r->create();
+	$data->{familyname} = $p[0]->{lastname};
+	$data->{givenname}  = $p[0]->{firstname}; 
+
+	if ($p[0]->{gender} eq 'f') {
+		$p[1] = Data::RandomPerson::Names::Female->new();
+		$data->{middlename} = $p[1]->get();
+	} else {
+		$p[1] = Data::RandomPerson::Names::Male->new();
+		$data->{middlename} = $p[1]->get();
+	}
+
+	$data->{position} = 'Sales';
+	$data->{role} = 'Sales';
+	
+	my @domain = qw/com.au com com.au org.au/;
+
+	my $email =  ''
+		. $data->{givenname} . '.' . $data->{familyname}
+		. '@'
+		.$data->{name} . '.'
+		. $domain[int rand($#domain + 1)];
+	$email =~ s/ //g;
+
+	$data->{email} = lc $email;
+
+	$data->{phone} = '';
+	$data->{id} = int(rand(99999)) + 1000;
+	$data->{abn} = int(rand(99999999999)) + 1000000000;
+	$data->{gst} = 'Y';
+	$data->{terms} = '15 days';
+	$data->{bpay} = int(rand(999999)) + 10000;
+	$data->{bsb} = int(rand(999999)) + 10000;
+	$data->{accountnumber} = int(rand(999999)) + 10000;
+	$data->{accountname} = $data->{name};
 	return $data;
 }
 
