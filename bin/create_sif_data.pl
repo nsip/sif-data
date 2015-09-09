@@ -1555,11 +1555,10 @@ sub make_locations {
             my $r = int(rand($schools));
 			$schoolref = $school_list[$r];
 		}
-#TODO Check localid for 6 digits - returned 5 and 4 in some instances
 
-#TODO populate ParentLocationRefId in a second pass
+		#TODO Check localid for 6 digits - returned 5 and 4 in some instances
 
-#TODO Create random phone numbers
+		#TODO populate ParentLocationRefId in a second pass
 
 		$sth = $dbh->prepare("
 			INSERT INTO LocationInfo (RefId, LocationType,
@@ -1592,7 +1591,6 @@ sub make_vendors {
 	for (my $i = 0; $i < $num_vendors; $i++){
 
 		my $vendor = $sd->create_vendor({});
-#TODO Create random phone numbers
 
 		my $sth;
 		$sth = $dbh->prepare("

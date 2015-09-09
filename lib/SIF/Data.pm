@@ -16,11 +16,11 @@ SIF::Data - Create school info (Students, Staff, Schools, Timetables, etc)
 
 =head1 VERSION
 
-Version 1.03
+Version 1.04
 
 =cut
 
-our $VERSION = '1.03';
+our $VERSION = '1.04';
 
 
 =head1 SYNOPSIS
@@ -157,7 +157,7 @@ sub make_new_id {
 
 =cut
 
-sub create_school_name{
+sub create_school_name {
 	my ($self) = @_;
 
 	my $r = Data::RandomPerson->new();
@@ -497,7 +497,7 @@ sub create_locations {
 	$data->{desc} = undef;
 	$data->{parent} = undef;
 	$data->{schref} = undef;
-	$data->{phone} = undef;
+	$data->{phone} = $self->create_phone_number();
 
 	return $data;
 }
@@ -532,8 +532,8 @@ sub create_vendor {
 		$data->{middlename} = $p[1]->get();
 	}
 
-	$data->{position} = 'Sales';
-	$data->{role} = 'Sales';
+	$data->{position}      = 'Sales';
+	$data->{role}          = 'Sales';
 	
 	my @domain = qw/com.au com com.au org.au/;
 
@@ -544,17 +544,17 @@ sub create_vendor {
 		. $domain[int rand($#domain + 1)];
 	$email =~ s/ //g;
 
-	$data->{email} = lc $email;
-
-	$data->{phone} = '';
-	$data->{id} = int(rand(99999)) + 1000;
-	$data->{abn} = int(rand(99999999999)) + 1000000000;
-	$data->{gst} = 'Y';
-	$data->{terms} = '15 days';
-	$data->{bpay} = int(rand(999999)) + 10000;
-	$data->{bsb} = int(rand(999999)) + 10000;
+	$data->{email}         = lc $email;
+	$data->{phone}         = $self->create_phone_number();
+	$data->{id}            = int(rand(99999)) + 1000;
+	$data->{abn}           = int(rand(99999999999)) + 1000000000;
+	$data->{gst}           = 'Y';
+	$data->{terms}         = '15 days';
+	$data->{bpay}          = int(rand(999999)) + 10000;
+	$data->{bsb}           = int(rand(999999)) + 10000;
 	$data->{accountnumber} = int(rand(999999)) + 10000;
-	$data->{accountname} = $data->{name};
+	$data->{accountname}   = $data->{name};
+
 	return $data;
 }
 
@@ -966,6 +966,46 @@ sub create_grading_assignment_score {
 		'',
 		_rndStr(40, 'A'..'Z', 0..9, 'a'..'z', '     '),
 	);
+}
+
+=head2 create_phone_number()
+
+Generate a random Australian phone number
+
+  use SIF::Data;
+  my $sd = SIF::Data->new();
+
+  # Generate a number with no area code
+  
+  my $phone_number = $sd->create_phone_number();
+
+  # Generate a number with an area code
+  
+  $phone_number = $sd->create_phone_number(1);
+
+=cut
+
+sub create_phone_number { 
+	my ($self, $area_code_flag) = @_;
+
+	my @area_codes = (
+		'02', # 	Central East      - New South Wales & Australian Capital Territory
+		'03', # 	South East        - Victoria & Tasmania
+		'04', # 	Mobile Telephones - Australia-wide
+		'07', # 	North East        - Queensland
+		'08', # 	Central & West    - Western Australia, South Australia & Northern Territory 
+	);
+
+	my $area_code = '';
+	my $number1 = int(rand(9000) + 1000);
+	my $number2 = int(rand(9000) + 1000);
+
+	if ((defined $area_code_flag) && ($area_code_flag)) {
+		$area_code =  $area_codes[int(rand(5))];
+	}
+
+	(my $phone_number = join " ", $area_code, $number1, $number2) =~ s/^ //;
+	return $phone_number;
 }
 
 =head2 _rndStr()
