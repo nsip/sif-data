@@ -492,7 +492,7 @@ sub create_locations {
 		$data->{name} = $types[$num];
 	}
 
-	$data->{localid} = $self->create_localid();
+	$data->{localid} = (int(rand(999999)) + 10000);
 	$data->{stateprov} = (int(rand(999999)) + 10000);
 	$data->{desc} = undef;
 	$data->{parent} = undef;
@@ -519,7 +519,6 @@ sub create_vendor {
 	$data->{name} = $vendor_name;
 
 	my @p;
-	## $r = Data::RandomPerson->new();
 	$p[0] = $r->create();
 	$data->{familyname} = $p[0]->{lastname};
 	$data->{givenname}  = $p[0]->{firstname}; 
@@ -554,20 +553,6 @@ sub create_vendor {
 	$data->{bsb}           = int(rand(999999)) + 10000;
 	$data->{accountnumber} = int(rand(999999)) + 10000;
 	$data->{accountname}   = $data->{name};
-
-	return $data;
-}
-
-=head2 Create Debtor   
-
-=cut
-
-sub create_debtor {
-	my ($self, $data) = @_;
-
-	$data->{refid} = $self->make_new_id;
-
-	$data->{note} = '';
 
 	return $data;
 }

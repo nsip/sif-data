@@ -97,7 +97,7 @@ if ($ttable) {
 
 	create_vendors($vendors);
 
-	create_debtors($debtors);
+	create_debtors($debtors, $schools);
 
 	fix_data($fix);
 
@@ -217,7 +217,6 @@ Sample usage is:
   ./create_sif_data.pl --create-schools=6..14   # Create random 6-14 schools
   ./create_sif_data.pl --create-accounts=8..16  # Create random 8-16 Accounts
   ./create_sif_data.pl --create-vendors=8..16   # Create random 8-16 Vendors
-  ./create_sif_data.pl --create-debtors=8..16   # Create random 8-16 Debtors
   -----------------------------------------------------------------------
     Following commands affect all schools in the database unless a school
     RefId is specified as follows
@@ -230,6 +229,8 @@ Sample usage is:
   ./create_sif_data.pl --create-rooms=3..5      # Create random 3-5 rooms
 
   ./create_sif_data.pl --create-teaching-groups # Create groups for all years and students
+
+  ./create_sif_data.pl --create-debtors=8..16   # Create random 8-16 Debtors
 
   ./create_sif_data.pl --create-grading         # Populate grading assignment tables
 
@@ -365,10 +366,10 @@ sub create_vendors {
 }
 
 sub create_debtors {
-	my($vendors) = @_;
+	my($debtors, $schools) = @_;
 
 	if (defined $debtors) {
-		make_debtors($debtors);
+		make_debtors($debtors, $schools);
 	}
 
 	return ($debtors);
@@ -1090,7 +1091,12 @@ sub get_students {
 	}
 
 	my @student_list;
-	my $select = "SELECT RefId from StudentPersonal WHERE SchoolInfo_RefId = \"$school\" and YearLevel = \"$year\"";
+	my $select;
+	if (defined $year) {
+		$select = "SELECT RefId from StudentPersonal WHERE SchoolInfo_RefId = \"$school\" and YearLevel = \"$year\"";
+	} else {
+		$select = "SELECT RefId from StudentPersonal WHERE SchoolInfo_RefId = \"$school\"";
+	}
 	my $sth;
 	$sth = $dbh->prepare($select);
 	$sth->execute();
@@ -1388,6 +1394,8 @@ sub make_financial_accounts {
 
 	my ($location_list, $locations) = get_locations($num_accounts);
 
+	my @new_accounts;
+
 	my $created = 0;
 
 	for (my $i = 0; $i < $num_accounts; $i++){
@@ -1395,13 +1403,13 @@ sub make_financial_accounts {
 		my $accnt = $sd->create_financial_account({});
 
 		my $location = undef;
-		if (int(rand(100)) > 50) {
+		if ($created/2 == int($created/2)) {
 			my $loc = int(rand($locations));
 			$location = $location_list->[$loc];
 		}
-#TODO Sub_act Needs populating in a second pass
 
-		my ($faccount, $fa_name, $classref, $sub_act) = get_faccount_detail($extent, $faccounts);
+		my ($faccount, $fa_name, $classref) = get_faccount_detail($extent, $faccounts);
+		my $sub_act = undef;
 
 		my $sth = $dbh->prepare("
 			INSERT INTO FinancialAccount (RefId, SubAccount_RefId,
@@ -1413,6 +1421,42 @@ sub make_financial_accounts {
 			$accnt->{date_created}, $accnt->{time_created});
 
 		++$created;
+
+		push @new_accounts, $accnt->{refid};
+	}
+
+	# Populate Sub_act in a second pass
+	# get array of existing FinancialAccounts
+	my $sth = $dbh->prepare("
+		SELECT RefId from FinancialAccount");
+	$sth->execute;
+
+	my $count = 0;
+	my @account_list;
+	while (my $account_row = $sth->fetchrow_hashref) {
+		push @account_list, $account_row->{RefId};
+		++$count;
+	}
+
+	my $link = 0;
+	foreach my $account (@new_accounts) {
+		++$link;
+		if ($link/2 == int($link/2)) {
+			my $found = 0;
+			until ($found) {
+				my $try = @account_list[int(rand($count))];
+				unless  ($try eq $account) {
+					$sth = $dbh->prepare("
+						UPDATE FinancialAccount SET SubAccount_RefId=?
+						WHERE RefId = ?");
+					$sth->bind_param(1,$try);
+					$sth->bind_param(2,$account);
+					$sth->execute();
+
+					$found = 1;
+				}
+			}
+		}
 	}
 	print "$created Finacial Accounts created\n" unless ($silent);
 
@@ -1443,28 +1487,6 @@ sub get_faccount_detail {
 
 	my $faccount = @{$faccounts}[$rand]->[0];
 	my $fa_name  = @{$faccounts}[$rand]->[1];
-	my $sub_act  = undef;
-
-	# get random account for SubAccountRefId
-
-#TODO Needs populating in a second pass
-
-	if (int(rand(100)) < 50) {
-		my $sth = $dbh->prepare("
-			SELECT RefId FROM FinancialAccount");
-		$sth->execute();
-		my $acts = 0;
-		while (my $ac = $sth->fetchrow_hashref) {
-			++$acts;
-		}
-		my $pos = int(rand($acts));
-		$sth->execute();
-		$acts = 0;
-		while (my $ac = $sth->fetchrow_hashref) {
-			++$acts;
-			$sub_act = $ac->{RefId} if ($acts == $pos);
-		}
-	}
 
 	# get or make FinancialClass
 	my $class = substr($faccount, 0, 2);
@@ -1491,7 +1513,7 @@ sub get_faccount_detail {
 		$classref = $fin_class->{refid};
 	}
 
-	return ($faccount, $fa_name, $classref, $sub_act);
+	return ($faccount, $fa_name, $classref);
 }
 
 
@@ -1530,6 +1552,7 @@ sub make_locations {
 	my ($min, $max) = @_;
 
 	my $locations = 0;
+	my @new_locations;
 	my ($number) = get_range($min . '..' . $max);
 
 	for (my $i = 0; $i < $number; $i++){
@@ -1556,10 +1579,6 @@ sub make_locations {
 			$schoolref = $school_list[$r];
 		}
 
-		#TODO Check localid for 6 digits - returned 5 and 4 in some instances
-
-		#TODO populate ParentLocationRefId in a second pass
-
 		$sth = $dbh->prepare("
 			INSERT INTO LocationInfo (RefId, LocationType,
 				SiteCategory, Name, Description, LocalId,
@@ -1576,7 +1595,40 @@ sub make_locations {
 		my $role = undef;
 		make_address($location->{refid}, $type, $role);
 
+		push @new_locations, $location->{refid};
+
 		++$locations;
+	}
+
+	# populate ParentLocationRefId in a second pass
+	# get array of existing locations
+	my $sth = $dbh->prepare("
+		SELECT RefId from LocationInfo");
+	$sth->execute;
+
+	my $count = 0;
+	my @location_list;
+	while (my $location_row = $sth->fetchrow_hashref) {
+		push @location_list, $location_row->{RefId};
+		++$count;
+	}
+
+	foreach my $parent (@new_locations) {
+
+		my $found = 0;
+		until ($found) {
+			my $try = @location_list[int(rand($count))];
+			unless  ($try eq $parent) {
+				$sth = $dbh->prepare("
+					UPDATE LocationInfo SET Parent_LocationInfo_RefId=?
+					WHERE RefId = ?");
+				$sth->bind_param(1,$try);
+				$sth->bind_param(2,$parent);
+				$sth->execute();
+
+				$found = 1;
+			}
+		}
 	}
 
 	return $locations;
@@ -1625,58 +1677,130 @@ sub get_vendors {
 	my ($number) = @_;
 
 	my @vendor_list;
+	my @vname_list;
+
 	my $sth;
 	$sth = $dbh->prepare("
-		SELECT RefId from VendorInfo");
+		SELECT RefId, ContactInfo_GivenName, ContactInfo_FamilyName from VendorInfo");
 	$sth->execute();
 
 	my $vendors = 0;
 	while (my $vendor_row = $sth->fetchrow_hashref) {
 		++$vendors;
 	}
-print "vendors = $vendors\n";
 
 	if (! $vendors) {
 		my $min = $number;
 		my $max = $number * 2;
 		my ($done) = make_vendors($min, $max);
-		print "\n$done Vendors created\n" unless ($silent);
 	}
 
 	$sth->execute();
 	$vendors = 0;
 	while (my $vendor_row = $sth->fetchrow_hashref) {
 		push @vendor_list, $vendor_row->{RefId};
+		push @vname_list, $vendor_row->{ContactInfo_GivenName} . " " . $vendor_row->{ContactInfo_FamilyName};
 		++$vendors;
 	}
-	return (\@vendor_list, $vendors);	
+
+	return (\@vendor_list, $vendors, \@vname_list);	
 
 }
 
 sub make_debtors {
+	my ($debtors, $school) = @_;
 
-	my ($num_debtors) = get_range($debtors);
+	my $school_sth;
+	if (defined $school) {
+		$school_sth = $dbh->prepare("SELECT * from SchoolInfo WHERE RefId = \"$school\"");
+	} else {
+		$school_sth = $dbh->prepare("SELECT * FROM SchoolInfo");
+	}
+	$school_sth->execute();
+
 	my $created;
+	while (my $row = $school_sth->fetchrow_hashref) {
+		my $schoolid = $row->{RefId};
 
-	# need to get or make Vendors
-	my ($vendor_list, $vendors) = get_vendors($num_debtors);
+		my $student_base = '15..38';      # Number to create if none found
+		my ($students_ref, $num_students) = get_students($schoolid, $student_base);
 
-	# need to get or make StudentContacts (implies need school(s))
+		my ($num_debtors) = get_range($debtors);
+		my ($contact_list, $contacts, $cname_list) = get_student_contacts($num_debtors, $schoolid);
 
-	for (my $i = 0; $i < $num_debtors; $i++){
+		my ($vendor_list, $vendors, $vname_list) = get_vendors($num_debtors);
+
+		for (my $i = 0; $i < $num_debtors; $i++){
+
+			my $refid = $sd->make_new_id();
+			my $billedentity;
+			my $entityref;
+			my $billname;
+			my $discount;
+			my $random;
+			if (int($i/2) == $i/2) {
+				$random = int(rand($vendors));
+				$billedentity = $vendor_list->[$random];
+				$entityref = 'VendorInfo';
+				$billname = $vname_list->[$random];
+				$discount = 0;
+			} else {
+				$random = int(rand($contacts));
+				$billedentity = $contact_list->[$random];
+				$entityref = 'StudentContactPersonal';
+				$billname = $cname_list->[$random];
+				$discount = 10;
+			}
+			my $billnote = undef;
+			
+print "$refid - $billedentity - $entityref - $billname - $discount \n";
 
 
 
 
 
 
-
-		++$created;
+			++$created;
+		}
 	}
 
 	print "$created Debtors created\n" unless ($silent);
 
 	return;
+}
+
+sub get_student_contacts {
+	my ($number, $school) = @_;
+
+	my @contact_list;
+	my @name_list;
+	my $contacts = 0;
+
+	my $sth;
+	$sth = $dbh->prepare("
+		SELECT RefId, GivenName, FamilyName from StudentContactPersonal");
+	$sth->execute();
+
+	while (my $contacts_row = $sth->fetchrow_hashref) {
+		++$contacts;
+	}
+
+	if (! $contacts) {
+		my $min = $number;
+		my $max = $number * 2;
+		my $num = $min . '..' . $max;
+		my ($done) = make_student_contacts($num, $school);
+	}
+
+	$sth->execute();
+	$contacts = 0;
+	while (my $contacts_row = $sth->fetchrow_hashref) {
+		push @contact_list, $contacts_row->{RefId};
+		push @name_list, $contacts_row->{GivenName} . " " . $contacts_row->{FamilyName};
+		++$contacts;
+	}
+
+	return (\@contact_list, $contacts, \@name_list);
 }
 
 sub make_address {
