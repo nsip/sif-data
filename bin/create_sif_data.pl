@@ -720,7 +720,12 @@ sub make_staff {
 		for(my $i = 0; $i < $num_staff; $i++){
 			my $data = $sd->create_StaffPersonal({});
 
-			my $BirthDate = int(rand(45)) + 1950;
+			my $BirthDate = sprintf(
+				"%04d-%02d-%02d", 
+				int(rand(45)) + 1950,
+				int(rand(12)) + 1,
+				int(rand(28)) + 1,
+			);
 
 			my $local_id = $sd->create_localid();
 			my  $sth0 = $dbh->prepare("INSERT INTO StaffPersonal (RefId,
@@ -1324,6 +1329,25 @@ sub make_student_contacts {
 			)
 	});
 
+	my $insert_relationship = $dbh->prepare(q{
+		INSERT IGNORE INTO StudentContactRelationship
+			(
+				RefId, StudentPersonal_RefId, StudentContactPersonal_RefId,
+				Relationship, ParentLegalGuardian, 
+				PickupRights, LivesWith, AccessToRecords,
+				EmergencyContact, HasCustody, DisciplinaryContact, PrimaryCareProvider,
+				FeesBilling, FamilyMail, InterventionOrder
+			)
+		VALUES
+			(
+				?, ?, ?,
+				?, ?,
+				?, ?, ?,
+				?, ?, ?, ?,
+				?, ?, ?
+			)
+	});
+
 	my $done_address = 0;
 	my $done_contact = 0;
 	my $done_language = 0;
@@ -1333,13 +1357,26 @@ sub make_student_contacts {
 			$done_contact++;
 			# print "Creating contact - $row->{RefId} $i\n";
 			my $mf = (rand(10) > 5);
+
+			my $refid = $sd->make_new_id();
+			my $relationship = rand(10) <= 8 ? 01 : int(rand(12) + 2);
 			$insert_contact->execute(
-				$row->{RefId}, int(rand(1000000)),
+				$refid, int(rand(1000000)),
 				$mf ? "Mr" : "Ms", "First", "Last", "First", "Last",
 				$mf ? 1 : 2,
 				"0096", int(rand(100000000)),
 				'email@somewhere.com', "01",
 				int(rand(5)), int(rand(4) + 4), int(rand(4)) # XXX Note wrong... see #133
+			);
+
+			$insert_relationship->execute(
+				# Random ID, Student Personal, Contact ID
+				$sd->make_new_id, $row->{RefId}, $refid,
+				$relationship, 
+				$relationship == 1 ? ( $mf ? "Parent1" : "Parent2") : "",
+				rand(10) < 9 ? 'Y' : 'N', rand(10) < 9 ? 'Y' : 'N', rand(10) < 9 ? 'Y' : 'N',
+				rand(10) < 9 ? 'Y' : 'N', rand(10) < 9 ? 'Y' : 'N', rand(10) < 9 ? 'Y' : 'N', rand(10) < 9 ? 'Y' : 'N',
+				rand(10) < 9 ? 'Y' : 'N', rand(10) < 9 ? 'Y' : 'N', rand(10) < 9 ? 'Y' : 'N',
 			);
 		}
 
