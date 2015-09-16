@@ -32,7 +32,8 @@ my $sd = SIF::Data->new();
 
 my ($schools, $students, $student_contacts, $staff, $rooms, $groups, 
 	$grading, $account, $vendors, $debtors, $fix, $codeset, $create_db, 
-	$db_name, $ttable, $school_id, $elements, $silent) = get_args();
+	$db_name, $ttable, $school_id, $elements, $fobjects, 
+	$silent) = get_args();
 
 if (defined $create_db) {
 	$db_name = $sd->create_database($create_db);
@@ -93,11 +94,13 @@ if ($ttable) {
 
 	create_student_contacts($student_contacts, $school_id);
 
-	create_account($account);
+	create_accounts($account);
 
 	create_vendors($vendors);
 
 	create_debtors($debtors, $schools);
+
+	create_financial_objects($fobjects);
 
 	fix_data($fix);
 
@@ -127,6 +130,7 @@ sub get_args {
 	my $school_id        = undef;
 	my $ttable           = undef;
 	my $student_contacts = undef;
+	my $fobjects         = undef;
 	my $silent           = 0;
 
 	my $result = GetOptions (
@@ -147,6 +151,7 @@ sub get_args {
 		"database=s"               => \$db_name,
 		"create-time-table:s"      => \$ttable,
 		"school-id=s"              => \$school_id,
+		"create-fobjects=s"        => \$fobjects,
 		"create-student-contacts"  => \$student_contacts,
 	);
 
@@ -201,7 +206,8 @@ sub get_args {
 
 	return ($schools, $students, $student_contacts, $staff, $rooms, 
 	$groups, $grading, $account, $vendors, $debtors, $fix, $codeset, 
-	$create_db, $db_name, $ttable,  $school_id, $elements, $silent);
+	$create_db, $db_name, $ttable,  $school_id, $elements, $fobjects, 
+	$silent);
 }
 
 sub usage_exit {
@@ -239,6 +245,10 @@ Sample usage is:
           # Creates new Teaching Groups and Timetable in selected school
           # Requires school to have been created
   
+  ./create_sif_data.pl --create-fobjects=number_of_schools
+		  # Creates financial objects.
+		  # Requires database be specified and have been created
+
   ./create_sif_data.pl --fix                   # Update missing data  
 
   ./create_sif_data.pl --codeset               # Add the codeset
@@ -345,7 +355,7 @@ sub create_student_contacts {
 	}
 }
 
-sub create_account {
+sub create_accounts {
 	my($account) = @_;
 
 	if (defined $account) {
@@ -373,6 +383,21 @@ sub create_debtors {
 	}
 
 	return ($debtors);
+}
+
+sub create_financial_objects {
+	my($fobjects) = @_;
+
+	if (defined $fobjects) {
+		create_schools($fobjects);
+
+		my $val = ($fobjects * 3) . '..' . ($fobjects *10);
+		create_accounts($val);
+
+		create_debtors('10..23'); 		#per school
+	}
+
+	return ($fobjects);
 }
 
 sub create_ttable {
@@ -1139,7 +1164,7 @@ sub get_staff {
 	if ($staff < $max) {
 		my $num = $max - $staff;
 		my ($done, $xxx) = make_staff("$num", $school);
-		print "\n$done staff created for school $school\n" unless ($silent);
+		print "$done staff created for school $school\n" unless ($silent);
 	}
 
 	$sth->execute();
@@ -1674,7 +1699,10 @@ sub make_vendors {
 }
 
 sub get_vendors {
-	my ($number) = @_;
+	my ($number, $force) = @_;
+
+	$force = 0 if (! defined $force);	# $force forces new vendors  
+										# for each school
 
 	my @vendor_list;
 	my @vname_list;
@@ -1689,10 +1717,13 @@ sub get_vendors {
 		++$vendors;
 	}
 
+	$vendors = 0 if ($force);
+
 	if (! $vendors) {
 		my $min = $number;
 		my $max = $number * 2;
-		my ($done) = make_vendors($min, $max);
+		my $num = $min . '..' . $max;
+		my ($done) = make_vendors($num);
 	}
 
 	$sth->execute();
@@ -1722,13 +1753,20 @@ sub make_debtors {
 	while (my $row = $school_sth->fetchrow_hashref) {
 		my $schoolid = $row->{RefId};
 
-		my $student_base = '15..38';      # Number to create if none found
+		my ($num_debtors) = get_range($debtors);
+
+		my $student_base = '32..45';    # Number to create if none found
 		my ($students_ref, $num_students) = get_students($schoolid, $student_base);
 
-		my ($num_debtors) = get_range($debtors);
-		my ($contact_list, $contacts, $cname_list) = get_student_contacts($num_debtors, $schoolid);
+		my $item_base = $num_debtors * 2;
+		my $force = 1;     # forces new items for each school
 
-		my ($vendor_list, $vendors, $vname_list) = get_vendors($num_debtors);
+		my ($contact_list, $contacts, $cname_list) = get_student_contacts($item_base, $schoolid, $force, $silent);
+
+		my ($vendor_list, $vendors, $vname_list) = get_vendors($item_base, $force);
+		my $lower = int($num_students / 33);
+		my $upper = int($num_students / 18);
+		my (@staff) = get_staff($schoolid, $lower, $upper);
 
 		for (my $i = 0; $i < $num_debtors; $i++){
 
@@ -1753,24 +1791,29 @@ sub make_debtors {
 			}
 			my $billnote = undef;
 			
-print "$refid - $billedentity - $entityref - $billname - $discount \n";
-
-
-
-
-
+			my $sth;
+			$sth = $dbh->prepare("
+				INSERT INTO Debtor (RefId, BilledEntity, 
+				BilledEntity_SIFRefObject,  BillingName, BillingNote, 
+				Discount)	
+				Values (?,?,?,?,?,?)");
+			$sth->execute($refid, $billedentity, $entityref, 
+				$billname, $billnote, $discount);
 
 			++$created;
 		}
 	}
 
-	print "$created Debtors created\n" unless ($silent);
+	print "\n$created Debtors created\n" unless ($silent);
 
 	return;
 }
 
 sub get_student_contacts {
-	my ($number, $school) = @_;
+	my ($number, $school, $force, $silent) = @_;
+
+	$force = 0 if (! defined $force);	# $force forces new contacts 
+										# for each school
 
 	my @contact_list;
 	my @name_list;
@@ -1785,11 +1828,14 @@ sub get_student_contacts {
 		++$contacts;
 	}
 
+	$contacts = 0 if ($force);
+
 	if (! $contacts) {
 		my $min = $number;
 		my $max = $number * 2;
 		my $num = $min . '..' . $max;
-		my ($done) = make_student_contacts($num, $school);
+		my ($done) = make_contacts($num);
+		print "$done StudentContactPersonal records created\n" unless ($silent);
 	}
 
 	$sth->execute();
@@ -1801,6 +1847,40 @@ sub get_student_contacts {
 	}
 
 	return (\@contact_list, $contacts, \@name_list);
+}
+
+sub make_contacts {
+	my ($contacts) = @_;
+
+	my ($num_contacts) = get_range($contacts);
+	my $created = 0;
+
+	for (my $i = 0; $i < $num_contacts; $i++){
+
+		my $contact = $sd->create_studen_contact({});
+
+		my $sth;
+		$sth = $dbh->prepare("
+			INSERT INTO StudentContactPersonal (RefId, LocalId, Title,
+				FamilyName, GivenName, PreferredGivenName, 
+				PreferredFamilyName, MiddleName, Sex, PhoneNumberType, 
+				PhoneNumber, Email, EmailType, SchoolEducationLevel, 
+				NonSchoolEducation, EmploymentType)
+			Values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+
+		$sth->execute($contact->{refid}, $contact->{localid},
+			$contact->{title}, $contact->{familyname}, 
+			$contact->{givenname}, $contact->{preferredgivenname}, 
+			$contact->{preferredfamilyname}, $contact->{middlename}, 
+			$contact->{sex}, $contact->{phonenumbertype}, 
+			$contact->{phonenumber}, $contact->{email}, 
+			$contact->{emailtype}, $contact->{educationlevel}, 
+			$contact->{nonschooled}, $contact->{employtype});
+
+		++$created;
+
+	}
+	return $created;
 }
 
 sub make_address {

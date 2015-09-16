@@ -492,8 +492,8 @@ sub create_locations {
 		$data->{name} = $types[$num];
 	}
 
-	$data->{localid} = (int(rand(999999)) + 10000);
-	$data->{stateprov} = (int(rand(999999)) + 10000);
+	$data->{localid} = (int(rand(900000)) + 100000);
+	$data->{stateprov} = (int(rand(900000)) + 100000);
 	$data->{desc} = undef;
 	$data->{parent} = undef;
 	$data->{schref} = undef;
@@ -553,6 +553,61 @@ sub create_vendor {
 	$data->{bsb}           = int(rand(999999)) + 10000;
 	$data->{accountnumber} = int(rand(999999)) + 10000;
 	$data->{accountname}   = $data->{name};
+
+	return $data;
+}
+
+=head2 Create StudentContactPersonal
+
+=cut
+
+sub create_studen_contact {
+	my ($self, $data) = @_;
+
+	$data->{refid} = $self->make_new_id;
+	$data->{localid} = (int(rand(900000)) + 100000);
+
+	my $sex;
+
+	my $r = Data::RandomPerson->new();
+	my @p;
+
+	$p[0] = $r->create();
+	$data->{familyname} = $p[0]->{lastname};
+	$data->{givenname}  = $p[0]->{firstname}; 
+
+	if ($p[0]->{gender} eq 'f') {
+		$sex = 'Female';
+		$p[1] = Data::RandomPerson::Names::Female->new();
+		$data->{middlename} = $p[1]->get();
+		$data->{title} = create_salutation($sex);
+
+	} else {
+		$sex = 'Male';
+		$p[1] = Data::RandomPerson::Names::Male->new();
+		$data->{middlename} = $p[1]->get();
+		$data->{title} = create_salutation($sex);
+	}
+
+	$data->{preferredgivenname} = $data->{givenname};
+	$data->{preferredfamilyname} = $data->{familyname};
+	$data->{sex} = $self->map_codeset_value('Sex Code', $sex);
+	$data->{phonenumbertype} = '0096';
+	$data->{phonenumber} = $self->create_phone_number();
+	
+	$data->{email}  = create_email(
+		$data->{givenname}, 
+		$data->{middlename}, 
+		$data->{familyname}
+	);
+	$data->{emailtype} = '01';
+
+	my @level = (0, 1, 2, 3, 4);
+	my @nonsc = (0, 5, 6, 7, 8);
+	my @etype = (1, 2, 3, 4, 8, 9);
+	$data->{educationlevel} = $level[rand @level];
+	$data->{nonschooled}    = $nonsc[rand @nonsc];
+	$data->{employtype}     = $etype[rand @etype];
 
 	return $data;
 }
