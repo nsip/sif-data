@@ -1384,7 +1384,9 @@ sub make_student_contacts {
 			my $mf = (rand(10) > 5);
 
 			my $refid = $sd->make_new_id();
-			my $relationship = rand(10) <= 8 ? 01 : int(rand(12) + 2);
+			my $refid2 = $sd->make_new_id();
+			my $relationship = rand(10) <= 8 ? "1" : int(rand(12) + 2);
+			$relationship = "0$relationship" if ($relationship < 10);
 			$insert_contact->execute(
 				$refid, int(rand(1000000)),
 				$mf ? "Mr" : "Ms", "First", "Last", "First", "Last",
@@ -1396,7 +1398,7 @@ sub make_student_contacts {
 
 			$insert_relationship->execute(
 				# Random ID, Student Personal, Contact ID
-				$sd->make_new_id, $row->{RefId}, $refid,
+				$refid2, $row->{RefId}, $refid,
 				$relationship, 
 				$relationship == 1 ? ( $mf ? "Parent1" : "Parent2") : "",
 				rand(10) < 9 ? 'Y' : 'N', rand(10) < 9 ? 'Y' : 'N', rand(10) < 9 ? 'Y' : 'N',
@@ -1511,9 +1513,7 @@ sub make_financial_accounts {
 					$sth = $dbh->prepare("
 						UPDATE FinancialAccount SET SubAccount_RefId=?
 						WHERE RefId = ?");
-					$sth->bind_param(1,$try);
-					$sth->bind_param(2,$account);
-					$sth->execute();
+					$sth->execute($try, $account);
 
 					$found = 1;
 				}
@@ -1681,12 +1681,11 @@ sub make_locations {
 		until ($found) {
 			my $try = @location_list[int(rand($count))];
 			unless  ($try eq $parent) {
-				$sth = $dbh->prepare("
+				$sth = $dbh->prepare(q{
 					UPDATE LocationInfo SET Parent_LocationInfo_RefId=?
-					WHERE RefId = ?");
-				$sth->bind_param(1,$try);
-				$sth->bind_param(2,$parent);
-				$sth->execute();
+					WHERE RefId = ?
+				});
+				$sth->execute($try, $parent);
 
 				$found = 1;
 			}
