@@ -1,0 +1,14 @@
+<StudentPersonal>
+  <LocalId>SPLocalID</LocalId>  
+  <PersonInfo>     
+    <Name Type="LGL">       
+        <FamilyName>TheFamilyName Dan</FamilyName>      
+        <GivenName>TheGivenNAme Dan</GivenName>       
+     </Name> 
+   </PersonInfo>
+   <MostRecent>
+       <SchoolLocalId>SchoolID</SchoolLocalId>    
+       <YearLevel>YearLevel</YearLevel>  
+  </MostRecent>
+</StudentPersonal> 
+

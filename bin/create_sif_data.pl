@@ -434,6 +434,7 @@ sub code_set {
 
 		my $old_count = 0;
 		my $old_data = {};
+		# XXX XML - How to do a basic SELECT from the Kafka list
 		my $sth = $dbh->prepare(q{
 			SELECT * FROM CodeSet
 		});
@@ -488,6 +489,9 @@ sub make_schools {
 		my $data = $sd->create_SchoolInfo({});
 		my $uuid = $sd->make_new_id();
 
+		# 
+		# XXX - Change 'prepare' to an XML Query
+		#
 		my $sth = $dbh->prepare("
 			INSERT INTO SchoolInfo (
 				RefId, LocalId, SchoolName, CampusSchoolCampusId, CampusAdminStatus, CampusCampusType,
@@ -499,6 +503,10 @@ sub make_schools {
 				?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?
 			)
 		");
+	
+		#
+		# XXX - Change execute to substitute list of variables by number or name
+		#
 		$sth->execute(
 			$uuid, $sd->create_localid(), $sd->create_school_name(),
 			$data->{CampusSchoolCampusId}, $data->{CampusAdminStatus}, $data->{CampusCampusType},
