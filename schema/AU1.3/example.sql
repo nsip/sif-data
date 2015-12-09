@@ -92,21 +92,21 @@ CREATE TABLE IF NOT EXISTS StudentPersonal (
 	MostRecent_SchoolACARAId varchar(200),
 	MostRecent_SchoolCampusId varchar(200),
 	MostRecent_HomeroomLocalId varchar(200),
-	MostRecent_Parent1Sex varchar(200),
-	MostRecent_Parent2Sex varchar(200),
-	MostRecent_Parent1Relationship varchar(200),
-	MostRecent_Parent2Relationship varchar(200),
 	MostRecent_FTE varchar(200),
 	MostRecent_Homegroup varchar(200),
 	MostRecent_ClassCode varchar(200),
 	MostRecent_MembershipType varchar(200),
-	MostRecent_OtherEnrollmentSchoolStateProvinceId varchar(200),
+	MostRecent_OtherEnrollmentSchoolACARAId varchar(200),
 	MostRecent_FFPOS varchar(200),
 	MostRecent_ReportingSchool varchar(200),
 	EducationSupport varchar(200),
 	HomeSchooledStudent varchar(200),
-	ParentPermissionForMatching varchar(200),
+	Sensitive varchar(200),
 	ESL varchar(200),
+
+	-- From HITS-Internal/issues/3
+	MostRecent_TestLevel varchar(200),
+	OfflineDelivery varchar(200),
 
 	PhoneNumber varchar(200),
 	Email varchar(200),		-- DI
@@ -190,6 +190,12 @@ CREATE TABLE IF NOT EXISTS StaffPersonal (
 	FullName varchar(2000),
 	-- Check use of Salutation
 	Salutation varchar(25),
+
+	-- As per HITS-Internal/Issues/3
+	MostRecent_SchoolACARAId varchar(200),
+	MostRecent_SchoolLocalId varchar(200),
+	MostRecent_LocalCampusId varchar(200),
+
 	FOREIGN KEY (SchoolInfo_RefId) REFERENCES SchoolInfo(RefId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
