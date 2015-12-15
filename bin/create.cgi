@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 use perl5i::2;
 use CGI qw{ :standard };
 use CGI::Carp qw{ fatalsToBrowser };

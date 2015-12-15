@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 # Name: create_sif_data.pl
 #		By default the program assumes: 
 #		1) It is being run from the top-level repository directory (and that 'data' and 'schema' are subdirectories 
