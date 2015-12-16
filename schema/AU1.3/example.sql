@@ -879,4 +879,14 @@ CREATE TABLE IF NOT EXISTS GradingAssignmentScore (
 	FOREIGN KEY (GradingAssignment_RefId) REFERENCES GradingAssignment(RefId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE PersonPicture (
+	RefId VARCHAR(36), -- primary key
+	ParentObject_RefId VARCHAR(36),--- link to one of StudentPersonal?, StaffPersonal?, StudentContactPersonal?
+	ParentObjectRefId_SIF_RefObject VARCHAR(200), --- one of StudentPersonal?, StaffPersonal?, StudentContactPersonal?
+	SchoolYear varchar(200),
+	PictureSource BLOB, --- can contain binhex of JPEG
+	PictureSourceType varchar(200), -- whether URL, JPEG, GIF, etc. Two digit number
+	OKToPublish varchar(200) -- boolean
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 -- end NN 20141014
