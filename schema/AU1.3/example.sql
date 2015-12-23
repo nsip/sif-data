@@ -101,7 +101,7 @@ CREATE TABLE IF NOT EXISTS StudentPersonal (
 	MostRecent_ReportingSchool varchar(200),
 	EducationSupport varchar(200),
 	HomeSchooledStudent varchar(200),
-	Sensitive varchar(200),
+	SensitiveData varchar(200),
 	ESL varchar(200),
 
 	-- From HITS-Internal/issues/3
@@ -880,13 +880,13 @@ CREATE TABLE IF NOT EXISTS GradingAssignmentScore (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE PersonPicture (
-	RefId VARCHAR(36), -- primary key
-	ParentObject_RefId VARCHAR(36),--- link to one of StudentPersonal?, StaffPersonal?, StudentContactPersonal?
-	ParentObjectRefId_SIF_RefObject VARCHAR(200), --- one of StudentPersonal?, StaffPersonal?, StudentContactPersonal?
+	RefId VARCHAR(36),
+	ParentObject_RefId VARCHAR(36),
+	ParentObjectRefId_SIF_RefObject VARCHAR(200),
 	SchoolYear varchar(200),
-	PictureSource TEXT, --- can contain binhex of JPEG
-	PictureSourceType varchar(200), -- whether URL, JPEG, GIF, etc. Two digit number
-	OKToPublish varchar(200) -- boolean
+	PictureSource TEXT,
+	PictureSourceType varchar(200),
+	OKToPublish varchar(200)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- end NN 20141014
