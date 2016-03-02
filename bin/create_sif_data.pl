@@ -1281,7 +1281,13 @@ sub make_grading {
 							?
 						)
  				});
-				$sth2->execute( $sd->create_grading_assignment_score($stId->[0], $row->{RefId}, $gaId));
+				$sth2->execute( 
+					$sd->create_grading_assignment_score(
+						$stId->[0], 
+						$row->{RefId}, 
+						$gaId
+					)
+				);
 			}
 		} # 1 .. 5 grading assignments
 	} # TeachingGroup rows
@@ -1408,7 +1414,8 @@ sub make_student_contacts {
 				# Random ID, Student Personal, Contact ID
 				$refid2, $row->{RefId}, $refid,
 				$relationship, 
-				$relationship == 1 ? ( $mf ? "Parent1" : "Parent2") : "",
+				# (see #XXX) $relationship == 1 ? ( $mf ? "Parent1" : "Parent2") : "",
+				['Y','N','U','X']->[int(rand(4))],
 				rand(10) < 9 ? 'Y' : 'N', rand(10) < 9 ? 'Y' : 'N', rand(10) < 9 ? 'Y' : 'N',
 				rand(10) < 9 ? 'Y' : 'N', rand(10) < 9 ? 'Y' : 'N', rand(10) < 9 ? 'Y' : 'N', rand(10) < 9 ? 'Y' : 'N',
 				rand(10) < 9 ? 'Y' : 'N', rand(10) < 9 ? 'Y' : 'N', rand(10) < 9 ? 'Y' : 'N',
