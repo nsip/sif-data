@@ -13,6 +13,7 @@ print "Content-type: text/html\n\n";
 print "<html><body><h1>DB Creator</h1>";
 
 my $name = param('name') || shift;
+my $type = param('type') || 'timetable';
 print "<h1>Creating/Checking = $name</h1>";
 
 eval {
@@ -43,7 +44,16 @@ if ($@) {
 
 eval {
 	unlink "/tmp/$$.log" if (-f "/tmp/$$.log");
-	system ("cd ~scottp/nsip/sif-data; ./bin/timetable.sh $name >> /tmp/$$.log 2>/tmp/$$.err");
+	if ($type eq 'timetable') {
+		system ("cd ~scottp/nsip/sif-data; ./bin/timetable.sh $name >> /tmp/$$.log 2>/tmp/$$.err");
+	}
+	elsif ($type eq 'basic') {
+		system ("cd ~scottp/nsip/sif-data; ./bin/basic.sh $name >> /tmp/$$.log 2>/tmp/$$.err");
+	}
+	else {
+		die "Type must be 'basic' or 'timetable'\n";
+	}
+
 	system ("cd ~scottp/nsip/HITS-API; ./create_app.pl $name >> /tmp/$$.log 2>/tmp/$$.err");
 	system ("cd ~scottp/nsip/HITS-API; ./create_entry.pl $name >> /tmp/$$.log 2>/tmp/$$.err");
 };
@@ -63,6 +73,8 @@ while (<$IN>) {
 		$token = $1;
 	}
 }
+
+print "<p>TYPE = $type</p>\n";
 
 print "<h2>Created.</h2>";
 print qq{<a 
