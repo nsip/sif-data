@@ -50,8 +50,11 @@ eval {
 	elsif ($type eq 'basic') {
 		system ("cd ~scottp/nsip/sif-data; ./bin/basic.sh $name >> /tmp/$$.log 2>/tmp/$$.err");
 	}
+	elsif ($type eq 'empty') {
+		system ("cd ~scottp/nsip/sif-data; ./bin/empty.sh $name >> /tmp/$$.log 2>/tmp/$$.err");
+	}
 	else {
-		die "Type must be 'basic' or 'timetable'\n";
+		die "Type must be 'basic' or 'timetable' or 'empty'\n";
 	}
 
 	system ("cd ~scottp/nsip/HITS-API; ./create_app.pl $name >> /tmp/$$.log 2>/tmp/$$.err");
