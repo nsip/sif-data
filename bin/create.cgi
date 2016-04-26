@@ -5,16 +5,24 @@ use CGI::Carp qw{ fatalsToBrowser };
 use HTML::Entities;
 use DBI;
 use YAML;
+use JSON;
 
 $ENV{HOME} = "/home/scottp/";
 
 param('form_field');
-print "Content-type: text/html\n\n";
-print "<html><body><h1>DB Creator</h1>";
 
 my $name = param('name') || shift;
 my $type = param('type') || 'timetable';
-print "<h1>Creating/Checking = $name</h1>";
+my $encode = param('encode') || 'html';
+
+if ($encode eq 'json') {
+	print "Content-type: text/json\n\n";
+}
+else {
+	print "Content-type: text/html\n\n";
+	print "<html><body><h1>DB Creator</h1>";
+	print "<h1>Creating/Checking = $name</h1>";
+}
 
 eval {
 	die "Must provide a name as a parameter\n" if ($name eq "");
@@ -35,8 +43,17 @@ eval {
 	die "$name already exists as an app\n" if ($sth->fetchrow_hashref);
 };
 if ($@) {
-	die $@;
-	print "</body></html>";
+	if ($encode eq 'json') {
+		print to_json({
+			success => 0,
+			error => $@ . "",
+		});
+		exit 0;
+	}
+	else {
+		die $@;
+		print "</body></html>";
+	}
 }
 
 # XXX check name doesn't exist anywhere !
@@ -61,10 +78,25 @@ eval {
 	system ("cd ~scottp/nsip/HITS-API; ./create_entry.pl $name >> /tmp/$$.log 2>/tmp/$$.err");
 };
 if ($@) {
-	print "<h2>ERRORS</h2>";
-	print "<pre>";
-	print encode_entities($@, "\200-\377");
-	print "</pre>";
+	if ($encode eq 'json') {
+		open (my $IN, "/tmp/$$.log");
+		my $buffer = "";
+		while (<$IN>) {
+			$buffer .= $_;
+		}
+
+		print to_json({
+			success => 0,
+			error => encode_entities($@, "\200-\377") . "\n" . $buffer,
+		});
+		exit 0;
+	}
+	else {
+		print "<h2>ERRORS</h2>";
+		print "<pre>";
+		print encode_entities($@, "\200-\377");
+		print "</pre>";
+	}
 }
 
 open (my $IN, "/tmp/$$.log");
@@ -77,16 +109,28 @@ while (<$IN>) {
 	}
 }
 
-print "<p>TYPE = $type</p>\n";
+if ($encode eq 'json') {
+	print to_json({
+		success => 1,
+		error => "",
+		data => encode_entities($buffer, "\200-\377"),
+		token => $token,
+		href => "http://hits.dev.nsip.edu.au/devdash/index.html?token=$token",
+	});
+}
+else {
 
-print "<h2>Created.</h2>";
-print qq{<a 
-	href="http://hits.dev.nsip.edu.au/devdash/index.html?token=$token"
->http://hits.dev.nsip.edu.au/devdash/index.html?token=$token
-</a>};
+	print "<p>TYPE = $type</p>\n";
 
-print "<pre>LOG START\n";
-print encode_entities($buffer, "\200-\377");
-print "LOG END</pre>\n";
+	print "<h2>Created.</h2>";
+	print qq{<a 
+		href="http://hits.dev.nsip.edu.au/devdash/index.html?token=$token"
+	>http://hits.dev.nsip.edu.au/devdash/index.html?token=$token
+	</a>};
 
-print "</body></html>\n";
+	print "<pre>LOG START\n";
+	print encode_entities($buffer, "\200-\377");
+	print "LOG END</pre>\n";
+
+	print "</body></html>\n";
+}
