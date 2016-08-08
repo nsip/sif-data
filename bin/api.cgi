@@ -12,6 +12,7 @@ $ENV{HOME} = "/home/scottp/";
 param('form_field');
 
 my $name = param('name') || shift;
+my $schools = param('schools') || shift;
 
 print "Content-type: text/json\n\n";
 
@@ -46,7 +47,22 @@ if ($@) {
 
 eval {
 	unlink "/tmp/$$.log" if (-f "/tmp/$$.log");
-	system ("cd ~scottp/nsip/sif-data; ./bin/empty.sh $name >> /tmp/$$.log 2>/tmp/$$.err");
+
+	$ENV{PERL5LIB} = "lib";
+
+	system ("cd ~scottp/nsip/sif-data; perl bin/create_sif_data.pl --create-database=$name >> /tmp/$$.log 2>/tmp/$$.err");
+	system ("cd ~scottp/nsip/sif-data; perl bin/create_sif_data.pl --database=$name --create-schools=$schools >> /tmp/$$.log 2>/tmp/$$.err");
+
+	## =7..20
+	#echo "CREATE TIME TABLE"
+	#perl bin/create_sif_data.pl --database=$1 --create-time-table=first
+	#echo "CREATE GRADING"
+	#perl bin/create_sif_data.pl --database=$1 --create-grading
+	#echo "CREATE CONTACTS"
+	#perl bin/create_sif_data.pl --database=$1 --create-student-contacts
+	#echo "CREATE ACCOUNTS"
+	#perl bin/create_sif_data.pl --database=$1 --create-accounts=8..16 --create-vendors=8..16 --create-debtors=8..16
+	#system ("cd ~scottp/nsip/sif-data; ./bin/empty.sh $name >> /tmp/$$.log 2>/tmp/$$.err");
 	system ("cd ~scottp/nsip/HITS-API; ./create_app.pl $name >> /tmp/$$.log 2>/tmp/$$.err");
 	system ("cd ~scottp/nsip/HITS-API; ./create_entry.pl $name >> /tmp/$$.log 2>/tmp/$$.err");
 };

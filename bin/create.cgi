@@ -26,7 +26,8 @@ else {
 
 eval {
 	die "Must provide a name as a parameter\n" if ($name eq "");
-	die "Name must be a-z0-9\n" if ($name !~ /^[a-z0-9]+$/);
+	die "Name must be a-z0-9\n" if ($name !~ /^[a-z0-9\-]+$/);
+	$name =~ s/\-//g;
 	my $config = YAML::LoadFile("../../../.nsip_sif_data");
 	my $dbh_hits = DBI->connect(
 		$config->{mysql_dsn_hits}, 
