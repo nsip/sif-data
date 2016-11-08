@@ -1,18 +1,18 @@
 #!/usr/bin/env perl
 # Name: create_sif_data.pl
-#		By default the program assumes: 
-#		1) It is being run from the top-level repository directory (and that 'data' and 'schema' are subdirectories 
+#		By default the program assumes:
+#		1) It is being run from the top-level repository directory (and that 'data' and 'schema' are subdirectories
 #		   of the current directory)
 # 		2) That the user has a ~/.nsip_sif_data config file
 #
-#       To run the program from elsewhere, specify the location of the 'data' and 'schema' directories in the 
+#       To run the program from elsewhere, specify the location of the 'data' and 'schema' directories in the
 #		~/.nsip_sif_data config file
 #
 # Usage:
-#		Specify the database on the command line: 
+#		Specify the database on the command line:
 #			./create_sif_data.pl --database=siftest01  --create-schools=1
 #
-#		Use the database found in the ~/.nsip_sif_data file: 
+#		Use the database found in the ~/.nsip_sif_data file:
 #			./create_sif_data.pl --create-schools=1
 #
 # Help:
@@ -30,9 +30,9 @@ use Data::Dumper;
 
 my $sd = SIF::Data->new();
 
-my ($schools, $students, $student_contacts, $staff, $rooms, $groups, 
-	$grading, $account, $vendors, $debtors, $fix, $codeset, $create_db, 
-	$db_name, $ttable, $school_id, $elements, $fobjects, 
+my ($schools, $students, $student_contacts, $staff, $rooms, $groups,
+	$grading, $account, $vendors, $debtors, $fix, $codeset, $create_db,
+	$db_name, $ttable, $school_id, $elements, $fobjects,
 	$silent) = get_args();
 
 if (defined $create_db) {
@@ -204,9 +204,9 @@ sub get_args {
 		$school_id = $ttable;
 	}
 
-	return ($schools, $students, $student_contacts, $staff, $rooms, 
-	$groups, $grading, $account, $vendors, $debtors, $fix, $codeset, 
-	$create_db, $db_name, $ttable,  $school_id, $elements, $fobjects, 
+	return ($schools, $students, $student_contacts, $staff, $rooms,
+	$groups, $grading, $account, $vendors, $debtors, $fix, $codeset,
+	$create_db, $db_name, $ttable,  $school_id, $elements, $fobjects,
 	$silent);
 }
 
@@ -215,7 +215,7 @@ sub usage_exit {
 
 Sample usage is:
 
-  ./create_sif_data.pl --create-database=name   # Create new database  
+  ./create_sif_data.pl --create-database=name   # Create new database
 
   ./create_sif_data.pl --database=name_of_db    # Use the named database
 
@@ -226,7 +226,7 @@ Sample usage is:
   -----------------------------------------------------------------------
     Following commands affect all schools in the database unless a school
     RefId is specified as follows
-       --school-id=4002EF5E-22A8-11E4-B112-958031DE1888    
+       --school-id=4002EF5E-22A8-11E4-B112-958031DE1888
 
   ./create_sif_data.pl --create-students=8..21  # Create random 8-21 students
 
@@ -244,12 +244,12 @@ Sample usage is:
   ./create_sif_data.pl --create-time-table=school_id
           # Creates new Teaching Groups and Timetable in selected school
           # Requires school to have been created
-  
+
   ./create_sif_data.pl --create-fobjects=number_of_schools
 		  # Creates financial objects.
 		  # Requires database be specified and have been created
 
-  ./create_sif_data.pl --fix                   # Update missing data  
+  ./create_sif_data.pl --fix                   # Update missing data
 
   ./create_sif_data.pl --codeset               # Add the codeset
 
@@ -489,21 +489,21 @@ sub make_schools {
 		my $data = $sd->create_SchoolInfo({});
 		my $uuid = $sd->make_new_id();
 
-		# 
+		#
 		# XXX - Change 'prepare' to an XML Query
 		#
 		my $sth = $dbh->prepare("
 			INSERT INTO SchoolInfo (
 				RefId, LocalId, SchoolName, CampusSchoolCampusId, CampusAdminStatus, CampusCampusType,
-				StateProvinceId, CommonwealthId, SchoolSector, OperationalStatus, 
-				IndependentSchool, SchoolType, 
+				StateProvinceId, CommonwealthId, SchoolSector, OperationalStatus,
+				IndependentSchool, SchoolType,
 				Address_Street_StreetNumber, Address_Street_StreetName, Address_City, Address_StateProvince,
 				Address_PostalCode, Address_ARIA, Entity_Open
 			) VALUES (
 				?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?
 			)
 		");
-	
+
 		#
 		# XXX - Change execute to substitute list of variables by number or name
 		#
@@ -580,7 +580,7 @@ sub make_calendar_days {
 			INSERT INTO CalendarDate (
 				CalendarDate, CalendarSummary_RefId, RefId,
 				SchoolInfo_RefId, SchoolYear,
-				CalendarDateType_Code, CalendarDateNumber, 
+				CalendarDateType_Code, CalendarDateNumber,
 				StudentAttendance_CountsTowardsAttendance,
 				StudentAttendance_AttendanceValue
 			) VALUES (
@@ -706,19 +706,19 @@ sub make_students {
 				$data->{MostRecent_Parent1NonSchoolEducation}, $data->{MostRecent_Parent2NonSchoolEducation},
 				$data->{MostRecent_Parent1EmploymentType}, $data->{MostRecent_Parent2EmploymentType},
 				$data->{Email}
-			); 
+			);
 
 			# Add to StudentSchoolEnrollment
 			my $enroll = $sd->create_StudentSchoolEnrollment($data->{yearlevel});
 			my  $sth1 = $dbh->prepare("INSERT INTO StudentSchoolEnrollment (
-			RefId, StudentPersonal_RefId, SchoolInfo_refId, MembershipType, 
+			RefId, StudentPersonal_RefId, SchoolInfo_refId, MembershipType,
 			SchoolYear, TimeFrame, YearLevel, FTE, EntryDate)
 
 			Values(?,?,?,?,?,?,?,?,?)");
 
 			$sth1->execute(
-				$enroll->{refid}, $data->{refid}, $schoolid, 
-				$enroll->{MembershipType}, $enroll->{SchoolYear}, 
+				$enroll->{refid}, $data->{refid}, $schoolid,
+				$enroll->{MembershipType}, $enroll->{SchoolYear},
 				$enroll->{TimeFrame}, $enroll->{YearLevel}, $enroll->{FTE},
 				$enroll->{EntryDate}
 			);
@@ -744,7 +744,7 @@ sub make_staff {
 	$sth->execute();
 
 	# Insert staff into table
-	my $refid; 
+	my $refid;
 	while (my $row = $sth->fetchrow_hashref) {
 		my $schoolid = $row->{RefId};
 
@@ -754,7 +754,7 @@ sub make_staff {
 			my $data = $sd->create_StaffPersonal({});
 
 			my $BirthDate = sprintf(
-				"%04d-%02d-%02d", 
+				"%04d-%02d-%02d",
 				int(rand(45)) + 1950,
 				int(rand(12)) + 1,
 				int(rand(28)) + 1,
@@ -763,7 +763,7 @@ sub make_staff {
 			my $local_id = $sd->create_localid();
 			my  $sth0 = $dbh->prepare("INSERT INTO StaffPersonal (RefId,
 			LocalId, FamilyName, GivenName, MiddleName, PreferredGivenName,
-			SchoolInfo_RefId, StateProvinceId, Sex, EmploymentStatus, 
+			SchoolInfo_RefId, StateProvinceId, Sex, EmploymentStatus,
 			PhoneNumber, Email, BirthDate, PreferredFamilyName, Salutation)
 			Values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
@@ -783,16 +783,16 @@ sub make_staff {
 			# Add to StaffAssignment
 			my $assign = $sd->create_StaffAssignment({});
 			my  $sth1 = $dbh->prepare("INSERT INTO StaffAssignment (RefId,
-			SchoolInfo_RefId, SchoolYear, StaffPersonal_RefID, Description, 
-			PrimaryAssignment, JobStartDate, JobEndDate, JobFunction, 
+			SchoolInfo_RefId, SchoolYear, StaffPersonal_RefID, Description,
+			PrimaryAssignment, JobStartDate, JobEndDate, JobFunction,
 			StaffActivity_Code)
 			Values(?,?,?,?,?,?,?,?,?,?)");
 
 			$sth1->execute(
 				$assign->{refid}, $schoolid, $assign->{SchoolYear},
-				$refid, $assign->{Description}, 
-				$assign->{PrimaryAssignment}, $assign->{JobStartDate}, 
-				$assign->{JobEndDate}, $assign->{JobFunction}, 
+				$refid, $assign->{Description},
+				$assign->{PrimaryAssignment}, $assign->{JobStartDate},
+				$assign->{JobEndDate}, $assign->{JobFunction},
 				$assign->{StaffActivity_Code}
 			);
 
@@ -801,7 +801,7 @@ sub make_staff {
 			my $type2 = 'pep';
 			$type2 = 'cep' if ($cnt == int($cnt / 10));
 			my $other = 'random_string';
-			my $sth2 = $dbh->prepare("INSERT INTO StaffPersonal_OtherId 
+			my $sth2 = $dbh->prepare("INSERT INTO StaffPersonal_OtherId
 			(StaffPersonal_RefId, OtherId, OtherIdType)
 			Values(?,?,?)");
 
@@ -853,7 +853,7 @@ sub make_rooms {
 				SchoolInfo_RefId, RoomNumber, Description, Capacity,
 				RoomSize, RoomType)
 				Values(?,?,?,?,?,?,?)");
-			$sth->execute($refId, $schoolid, $roomNumber, $description, 
+			$sth->execute($refId, $schoolid, $roomNumber, $description,
 				$capacity, $roomsize, $roomtype);
 			++$cnt;
 		}
@@ -889,7 +889,7 @@ sub make_groups {
 		while (my $room = $room_sth->fetchrow_hashref) {
 			++$rooms;
 		}
-		
+
 		if ($rooms < 12 ) {
 			my $num = 12 - $rooms;
 			my ($new_rooms, $xxx) = make_rooms($num, $schoolid);
@@ -901,7 +901,7 @@ sub make_groups {
 		$room_sth->execute();
 
 		# get $n random, unique subjects for years 10 - 12
-		
+
 		my $n = 4;
 		my ($subject_ref, $num_subjects) = get_subjects($schoolid, $n);
 
@@ -984,7 +984,7 @@ sub make_groups {
 							add_students($refid, $studentg[$s]);
 						}
 
-						add_staff($refid, $schoolid, $rooms);	
+						add_staff($refid, $schoolid, $rooms);
 					}
 				}
 
@@ -1001,7 +1001,7 @@ sub make_groups {
 				# select students and staff - or create them
 				add_students($refid, $assigned[$i]);
 
-				add_staff($refid, $schoolid, $rooms);	
+				add_staff($refid, $schoolid, $rooms);
 			}
 		}
 		++$cnt;
@@ -1030,8 +1030,8 @@ sub make_teaching_group {
 		)
 	");
 	$sth->execute(
-		$data->{refid}, $data->{short_name}, $data->{long_name}, 
-			$data->{localid}, $data->{yearlevel}, 
+		$data->{refid}, $data->{short_name}, $data->{long_name},
+			$data->{localid}, $data->{yearlevel},
 			$data->{schoolid}, $data->{kla}
 	);
 
@@ -1044,8 +1044,8 @@ sub add_students {
 	foreach my $student (@$students) {
 
 		my $sth_tg_student = $dbh->prepare(q{
-			INSERT INTO TeachingGroup_Student 
-			(TeachingGroup_RefId, StudentPersonal_RefId) 
+			INSERT INTO TeachingGroup_Student
+			(TeachingGroup_RefId, StudentPersonal_RefId)
 			VALUES (?, ?)
  		});
 
@@ -1057,7 +1057,7 @@ sub add_students {
 	return($students);
 }
 
-sub add_staff { 
+sub add_staff {
 	my ($refid, $schoolid, $rooms) = @_;
 
 	my $lower = $rooms + 2;
@@ -1074,8 +1074,8 @@ sub add_staff {
 
 	my $sth_tg_staff = $dbh->prepare(q{
 		INSERT INTO TeachingGroup_Teacher
-		(TeachingGroup_RefId, StaffPersonal_RefId, 
-		TeacherAssociation, TeacherLocalId) 
+		(TeachingGroup_RefId, StaffPersonal_RefId,
+		TeacherAssociation, TeacherLocalId)
 		VALUES (?, ?, ?, ?)
  	});
 
@@ -1098,7 +1098,7 @@ sub get_subjects {
 	my $subjects = 0;
 	while (my $subject_row = $sth->fetchrow_hashref) {
 		++$subjects;
-	}	
+	}
 
 	my $num = $n * 3;
 	if ($subjects < $num) {
@@ -1111,7 +1111,7 @@ sub get_subjects {
 	$sth->execute();
 	$subjects = 0;
 	while (my $subject_row = $sth->fetchrow_hashref) {
-		push @subject_list, $subject_row->{SubjectShortName};	
+		push @subject_list, $subject_row->{SubjectShortName};
 		++$subjects;
 	}
 
@@ -1142,7 +1142,7 @@ sub get_students {
 	my $students = 0;
 	while (my $student_row = $sth->fetchrow_hashref) {
 		++$students;
-	}	
+	}
 
 	if (! $students) {
 		my $min = $upper * 2;
@@ -1154,7 +1154,7 @@ sub get_students {
 	$sth->execute();
 	$students = 0;
 	while (my $student_row = $sth->fetchrow_hashref) {
-		push @student_list, $student_row->{RefId};	
+		push @student_list, $student_row->{RefId};
 		++$students;
 	}
 	return (\@student_list, $students);
@@ -1172,7 +1172,7 @@ sub get_staff {
 	my $staff = 0;
 	while (my $staff_row = $sth->fetchrow_hashref) {
 		++$staff;
-	}	
+	}
 
 	if ($staff < $max) {
 		my $num = $max - $staff;
@@ -1182,7 +1182,7 @@ sub get_staff {
 
 	$sth->execute();
 	while (my $staff_row = $sth->fetchrow_hashref) {
-		push @staff_list, $staff_row->{RefId};	
+		push @staff_list, $staff_row->{RefId};
 	}
 	return @staff_list;
 }
@@ -1210,7 +1210,7 @@ sub make_grading {
 		$num_tg_seen++;
 		my $students_in_tg = students_in_teaching_group($row->{RefId});
 
-		# Create 5 grading assignments per teaching group 
+		# Create 5 grading assignments per teaching group
 
 		for ( 1 .. 5 ) {
 			my $sth = $dbh->prepare(q{
@@ -1227,7 +1227,7 @@ sub make_grading {
 						MaxAttemptsAllowed,
 						DetailedDescriptionURL
 					)
-				VALUES 
+				VALUES
 					(
 						?,
 						?,
@@ -1241,15 +1241,15 @@ sub make_grading {
 						?
 					)
  			});
-	
+
 			my @values = $sd->create_grading_assignment($row->{RefId});
 			$sth->execute( @values );
 
 			my $gaId   = $values[0];
 
 			#
-			# GradingAssignmentScore: 
-			# Create one score per student in a teaching group and grading assignment 
+			# GradingAssignmentScore:
+			# Create one score per student in a teaching group and grading assignment
 			# (i.e. num_students_in_tg * 5_assignments_in_tg * num_tg)
 			#
 
@@ -1269,7 +1269,7 @@ sub make_grading {
 							ScoreLetter,
 							ScoreDescription
 						)
-					VALUES 
+					VALUES
 						(
 							?,
 							?,
@@ -1281,10 +1281,10 @@ sub make_grading {
 							?
 						)
  				});
-				$sth2->execute( 
+				$sth2->execute(
 					$sd->create_grading_assignment_score(
-						$stId->[0], 
-						$row->{RefId}, 
+						$stId->[0],
+						$row->{RefId},
 						$gaId
 					)
 				);
@@ -1313,9 +1313,9 @@ sub students_in_teaching_group {
 	my $sth = $dbh->prepare("
 		SELECT
 			StudentPersonal_RefId
-		FROM 
-			TeachingGroup_Student 
-		WHERE 
+		FROM
+			TeachingGroup_Student
+		WHERE
 			TeachingGroup_RefId = ?"
 	);
 	$sth->execute($tgId);
@@ -1339,22 +1339,22 @@ sub make_student_contacts {
 	#	$sth = $dbh->prepare("TODO");
 	#	$sth->execute();
 	#}
-	
+
 	$sth = $dbh->prepare("SELECT RefId FROM StudentPersonal");
 	$sth->execute();
-	
+
 	my $insert_address = $dbh->prepare("INSERT INTO Address (Person_RefId, AddressType, AddressRole, Line1, City, StateProvince,PostalCode) VALUES (?, '0123', '012A', ?, ?, ?, ?)");
 	my $insert_language = $dbh->prepare("INSERT INTO Language (Person_RefId, LanguageCode, LanguageType) VALUES (?, ?, ?)");
 
 	# XXX Temp hack ignore duplicates here
 	my $insert_contact = $dbh->prepare(q{
-		INSERT IGNORE INTO StudentContactPersonal 
+		INSERT IGNORE INTO StudentContactPersonal
 			(
-				RefId, LocalId, 
-				Title, FamilyName, GivenName, PreferredGivenName, PreferredFamilyName, 
-				Sex, 
-				PhoneNumberType, PhoneNumber, 
-				Email, EmailType, 
+				RefId, LocalId,
+				Title, FamilyName, GivenName, PreferredGivenName, PreferredFamilyName,
+				Sex,
+				PhoneNumberType, PhoneNumber,
+				Email, EmailType,
 				SchoolEducationLevel, NonSchoolEducation, EmploymentType
 			)
 		VALUES
@@ -1362,7 +1362,7 @@ sub make_student_contacts {
 				?, ?,
 				?, ?, ?, ?, ?,
 				?,
-				?, ?, 
+				?, ?,
 				?, ?,
 				?, ?, ?
 			)
@@ -1372,7 +1372,7 @@ sub make_student_contacts {
 		INSERT IGNORE INTO StudentContactRelationship
 			(
 				RefId, StudentPersonal_RefId, StudentContactPersonal_RefId,
-				Relationship, ParentLegalGuardian, 
+				Relationship, ParentLegalGuardian,
 				PickupRights, LivesWith, AccessToRecords,
 				EmergencyContact, HasCustody, DisciplinaryContact, PrimaryCareProvider,
 				FeesBilling, FamilyMail, InterventionOrder
@@ -1413,7 +1413,7 @@ sub make_student_contacts {
 			$insert_relationship->execute(
 				# Random ID, Student Personal, Contact ID
 				$refid2, $row->{RefId}, $refid,
-				$relationship, 
+				$relationship,
 				# (see #XXX) $relationship == 1 ? ( $mf ? "Parent1" : "Parent2") : "",
 				['Y','N','U','X']->[int(rand(4))],
 				rand(10) < 9 ? 'Y' : 'N', rand(10) < 9 ? 'Y' : 'N', rand(10) < 9 ? 'Y' : 'N',
@@ -1492,11 +1492,11 @@ sub make_financial_accounts {
 
 		my $sth = $dbh->prepare("
 			INSERT INTO FinancialAccount (RefId, SubAccount_RefId,
-			LocationInfo_RefId, AccountNumber, Name, Description, 
+			LocationInfo_RefId, AccountNumber, Name, Description,
 			FinancialClass_RefId, CreationDate, CreationTime)
 			Values (?,?,?,?,?,?,?,?,?)");
-		$sth->execute($accnt->{refid}, $sub_act, $location, 
-			$faccount, $fa_name, $accnt->{description}, $classref, 
+		$sth->execute($accnt->{refid}, $sub_act, $location,
+			$faccount, $fa_name, $accnt->{description}, $classref,
 			$accnt->{date_created}, $accnt->{time_created});
 
 		++$created;
@@ -1550,7 +1550,7 @@ sub get_faccount_detail {
 		$rand = int(rand($extent));
 		my $sth;
 		$sth = $dbh->prepare("
-			SELECT AccountNumber FROM FinancialAccount where 
+			SELECT AccountNumber FROM FinancialAccount where
 			AccountNumber = ?");
 		$sth->execute(@{$faccounts}[$rand]->[0]);
 		my $acts = 0;
@@ -1584,7 +1584,7 @@ sub get_faccount_detail {
 			INSERT INTO FinancialClass (RefId, Name, Description,
 				ClassType)
 			Values (?,?,?,?)");
-		$sth->execute($fin_class->{refid}, $class, 
+		$sth->execute($fin_class->{refid}, $class,
 			$fin_class->{description}, $fin_class->{classtype});
 
 		$classref = $fin_class->{refid};
@@ -1621,7 +1621,7 @@ sub get_locations {
 		push @location_list, $location_row->{RefId};
 		++$locations;
 	}
-	return (\@location_list, $locations);	
+	return (\@location_list, $locations);
 
 }
 
@@ -1664,9 +1664,9 @@ sub make_locations {
 			Values (?,?,?,?,?,?,?,?,?,?)");
 		$sth->execute($location->{refid}, $location->{type},
 			$location->{category}, $location->{name},
-			$location->{desc}, $location->{localid}, 
-			$location->{stateprov}, $location->{parent}, 
-			$schoolref, $location->{phone});	
+			$location->{desc}, $location->{localid},
+			$location->{stateprov}, $location->{parent},
+			$schoolref, $location->{phone});
 
 		my $type = 'Location';
 		my $role = undef;
@@ -1723,18 +1723,18 @@ sub make_vendors {
 		my $sth;
 		$sth = $dbh->prepare("
 			INSERT INTO VendorInfo (RefId, Name, ContactInfo_FamilyName,
-				ContactInfo_GivenName,  ContactInfo_MiddleName, 
-				ContactInfo_PositionTitle,  ContactInfo_Role,  
+				ContactInfo_GivenName,  ContactInfo_MiddleName,
+				ContactInfo_PositionTitle,  ContactInfo_Role,
 				ContactInfo_Email,  ContactInfo_PhoneNumber, CustomerId,
 				ABN, RegisteredForGST, PaymentTerms, BPay, BSB,
 				AccountNumber, AccountName)
 			Values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 		$sth->execute($vendor->{refid}, $vendor->{name},
-			$vendor->{familyname}, $vendor->{givenname}, 
-			$vendor->{middlename}, $vendor->{position}, 
-			$vendor->{role}, $vendor->{email}, $vendor->{phone}, 
-			$vendor->{id}, $vendor->{abn}, $vendor->{gst}, 
-			$vendor->{terms}, $vendor->{bpay}, $vendor->{bsb}, 
+			$vendor->{familyname}, $vendor->{givenname},
+			$vendor->{middlename}, $vendor->{position},
+			$vendor->{role}, $vendor->{email}, $vendor->{phone},
+			$vendor->{id}, $vendor->{abn}, $vendor->{gst},
+			$vendor->{terms}, $vendor->{bpay}, $vendor->{bsb},
 			$vendor->{accountnumber}, $vendor->{accountname});
 
 		++$created;
@@ -1752,7 +1752,7 @@ sub make_vendors {
 sub get_vendors {
 	my ($number, $force) = @_;
 
-	$force = 0 if (! defined $force);	# $force forces new vendors  
+	$force = 0 if (! defined $force);	# $force forces new vendors
 										# for each school
 
 	my @vendor_list;
@@ -1785,7 +1785,7 @@ sub get_vendors {
 		++$vendors;
 	}
 
-	return (\@vendor_list, $vendors, \@vname_list);	
+	return (\@vendor_list, $vendors, \@vname_list);
 
 }
 
@@ -1841,14 +1841,14 @@ sub make_debtors {
 				$discount = 10;
 			}
 			my $billnote = undef;
-			
+
 			my $sth;
 			$sth = $dbh->prepare("
-				INSERT INTO Debtor (RefId, BilledEntity, 
-				BilledEntity_SIFRefObject,  BillingName, BillingNote, 
-				Discount)	
+				INSERT INTO Debtor (RefId, BilledEntity,
+				BilledEntity_SIFRefObject,  BillingName, BillingNote,
+				Discount)
 				Values (?,?,?,?,?,?)");
-			$sth->execute($refid, $billedentity, $entityref, 
+			$sth->execute($refid, $billedentity, $entityref,
 				$billname, $billnote, $discount);
 
 			++$created;
@@ -1863,7 +1863,7 @@ sub make_debtors {
 sub get_student_contacts {
 	my ($number, $school, $force, $silent) = @_;
 
-	$force = 0 if (! defined $force);	# $force forces new contacts 
+	$force = 0 if (! defined $force);	# $force forces new contacts
 										# for each school
 
 	my @contact_list;
@@ -1913,19 +1913,19 @@ sub make_contacts {
 		my $sth;
 		$sth = $dbh->prepare("
 			INSERT INTO StudentContactPersonal (RefId, LocalId, Title,
-				FamilyName, GivenName, PreferredGivenName, 
-				PreferredFamilyName, MiddleName, Sex, PhoneNumberType, 
-				PhoneNumber, Email, EmailType, SchoolEducationLevel, 
+				FamilyName, GivenName, PreferredGivenName,
+				PreferredFamilyName, MiddleName, Sex, PhoneNumberType,
+				PhoneNumber, Email, EmailType, SchoolEducationLevel,
 				NonSchoolEducation, EmploymentType)
 			Values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
 		$sth->execute($contact->{refid}, $contact->{localid},
-			$contact->{title}, $contact->{familyname}, 
-			$contact->{givenname}, $contact->{preferredgivenname}, 
-			$contact->{preferredfamilyname}, $contact->{middlename}, 
-			$contact->{sex}, $contact->{phonenumbertype}, 
-			$contact->{phonenumber}, $contact->{email}, 
-			$contact->{emailtype}, $contact->{educationlevel}, 
+			$contact->{title}, $contact->{familyname},
+			$contact->{givenname}, $contact->{preferredgivenname},
+			$contact->{preferredfamilyname}, $contact->{middlename},
+			$contact->{sex}, $contact->{phonenumbertype},
+			$contact->{phonenumber}, $contact->{email},
+			$contact->{emailtype}, $contact->{educationlevel},
 			$contact->{nonschooled}, $contact->{employtype});
 
 		++$created;
@@ -1944,11 +1944,11 @@ sub make_address {
 
 	my $sth = $dbh->prepare("
 		INSERT INTO Address (Person_RefId, AddressType,
-			AddressRole, StreetNumber, StreetName, Line1, Line2, 
+			AddressRole, StreetNumber, StreetName, Line1, Line2,
 			City, StateProvince, PostalCode)
 		Values (?,?,?,?,?,?,?,?,?,?)");
 	$sth->execute($refid, $type, $role, $address->{StreetNumber},
-		$address->{StreetName}, $line1, $line2, $address->{City}, 
+		$address->{StreetName}, $line1, $line2, $address->{City},
 		$address->{StateProvince}, $address->{PostalCode});
 
 	return;
@@ -1991,7 +1991,7 @@ sub make_ttable {
 		++$cnt
 	}
 	return ($cnt, $cells);
-} 
+}
 
 sub make_timetable_cell {
 	my ($ttid, $ttsid, $school, $dayid, $periodid) = @_;
@@ -2007,7 +2007,7 @@ sub make_timetable_cell {
 	while (my $room = $room_sth->fetchrow_hashref) {
 		++$rooms;
 	}
-	my $rmid;	
+	my $rmid;
 	if (! $rooms) {
 		my ($xxx, $roomid) = make_rooms(1, $school);
 		$rmid = $roomid;
@@ -2032,7 +2032,7 @@ sub make_timetable_cell {
 		++$num_staff;
 	}
 
-	my $staffid;	
+	my $staffid;
 	if (! $num_staff) {
 		my ($xxx, $stid) = make_staff(1, $school);
 		$staffid = $stid;
@@ -2095,11 +2095,11 @@ sub make_timetable_subject {
 	my $subjecttype = $sd->make_subject_type();
 	my $size = int(rand(15) + 5);
 	my $sth = $dbh->prepare(q{
-		INSERT INTO TimeTableSubject 
+		INSERT INTO TimeTableSubject
 			(RefId, SubjectLocalId,AcademicYear,Faculty,SubjectShortName,
 			SubjectLongName,SubjectType,SchoolInfo_RefId,SchoolYear,
 			ProposedMinClassSize, ProposedMaxClassSize, Semester)
-		VALUES 
+		VALUES
 			(?,?,?,?,?,?,?,?,?,?,?, ?)
 	});
 	$sth->execute(
@@ -2158,6 +2158,6 @@ sub get_group_stats {
 
 	my $school_cnt = check_schools();
 	my $room_cnt   = check_rooms();
-	
+
 	return ($school_cnt, $room_cnt);
 }
