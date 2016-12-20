@@ -888,259 +888,311 @@ CREATE TABLE PersonPicture (
 	OKToPublish varchar(200)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
 -- NAPLAN start
-
-CREATE TABLE NAPTest (
-  RefId varchar(36) NOT NULL,
-  LocalId varchar(200) DEFAULT NULL,
-  TestName varchar(2000) DEFAULT NULL,
-  TestLevel varchar(200) DEFAULT NULL,
-  TestType varchar(200) DEFAULT NULL,
-  Domain varchar(200) DEFAULT NULL,
-  TestYear varchar(200) DEFAULT NULL,
-  PRIMARY KEY (RefId)
+CREATE TABLE `NAPTest` (
+  `RefId` varchar(36) NOT NULL,
+  `LocalId` varchar(200) DEFAULT NULL,
+  `TestName` varchar(2000) DEFAULT NULL,
+  `TestLevel` varchar(200) DEFAULT NULL,
+  `TestType` varchar(200) DEFAULT NULL,
+  `Domain` varchar(200) DEFAULT NULL,
+  `TestYear` varchar(200) DEFAULT NULL,
+  `StagesCount` varchar(45) DEFAULT NULL,
+  `BandProficiency_Level1Lower` varchar(45) DEFAULT NULL,
+  `BandProficiency_Level1Upper` varchar(45) DEFAULT NULL,
+  `BandProficiency_Level2Lower` varchar(45) DEFAULT NULL,
+  `BandProficiency_Level2Upper` varchar(45) DEFAULT NULL,
+  `BandProficiency_Level3Lower` varchar(45) DEFAULT NULL,
+  `BandProficiency_Level3Upper` varchar(45) DEFAULT NULL,
+  `BandProficiency_Level4Lower` varchar(45) DEFAULT NULL,
+  `BandProficiency_Level4Upper` varchar(45) DEFAULT NULL,
+  `DomainBands_Band1Lower` varchar(45) DEFAULT NULL,
+  `DomainBands_Band1Upper` varchar(45) DEFAULT NULL,
+  `DomainBands_Band2Lower` varchar(45) DEFAULT NULL,
+  `DomainBands_Band2Upper` varchar(45) DEFAULT NULL,
+  `DomainBands_Band3Lower` varchar(45) DEFAULT NULL,
+  `DomainBands_Band3Upper` varchar(45) DEFAULT NULL,
+  `DomainBands_Band4Lower` varchar(45) DEFAULT NULL,
+  `DomainBands_Band4Upper` varchar(45) DEFAULT NULL,
+  `DomainBands_Band5Lower` varchar(45) DEFAULT NULL,
+  `DomainBands_Band5Upper` varchar(45) DEFAULT NULL,
+  `DomainBands_Band6Lower` varchar(45) DEFAULT NULL,
+  `DomainBands_Band6Upper` varchar(45) DEFAULT NULL,
+  `DomainBands_Band7Lower` varchar(45) DEFAULT NULL,
+  `DomainBands_Band7Upper` varchar(45) DEFAULT NULL,
+  `DomainBands_Band8Lower` varchar(45) DEFAULT NULL,
+  `DomainBands_Band8Upper` varchar(45) DEFAULT NULL,
+  `DomainBands_Band9Lower` varchar(45) DEFAULT NULL,
+  `DomainBands_Band9Upper` varchar(45) DEFAULT NULL,
+  `DomainBands_Band10Lower` varchar(45) DEFAULT NULL,
+  `DomainBands_Band10Upper` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`RefId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-CREATE TABLE NAPTestItem (
-  RefId varchar(36) NOT NULL,
-  LocalId varchar(200) DEFAULT NULL,
-  CorrectAnswer varchar(2000) DEFAULT NULL,
-  Domain varchar(200) DEFAULT NULL,
-  ExemplarURL varchar(2000) DEFAULT NULL,
-  ItemDescriptor varchar(2000) DEFAULT NULL,
-  ItemDifficulty varchar(200) DEFAULT NULL,
-  ItemProficiencyBand varchar(200) DEFAULT NULL,
-  ItemSubstitutedForRefId varchar(36) DEFAULT NULL,
-  MarkingType varchar(200) DEFAULT NULL,
-  MaximumScore varchar(200) DEFAULT NULL,
-  ReleasedStatus varchar(45) DEFAULT NULL,
-  Subdomain varchar(200) DEFAULT NULL,
-  WritingGenre varchar(200) DEFAULT NULL,
-  PRIMARY KEY (RefId)
+CREATE TABLE `NAPEventStudentLink` (
+  `RefId` varchar(36) NOT NULL,
+  `ExemptionReason` varchar(2000) DEFAULT NULL,
+  `ParticipationCode` varchar(200) DEFAULT NULL,
+  `ParticipationText` varchar(2000) DEFAULT NULL,
+  `SchoolInfo_RefId` varchar(36) DEFAULT NULL,
+  `StudentPersonal_RefId` varchar(36) DEFAULT NULL,
+  `NAPTest_RefId` varchar(36) DEFAULT NULL,
+  `EventDate` varchar(45) DEFAULT NULL,
+  `Device` varchar(2000) DEFAULT NULL,
+  `DOBRange` varchar(45) DEFAULT NULL,
+  `LapsedTimeTest` varchar(200) DEFAULT NULL,
+  `NAPJurisdiction` varchar(200) DEFAULT NULL,
+  `PersonalDetailsChanged` varchar(45) DEFAULT NULL,
+  `PossibleDuplicate` varchar(45) DEFAULT NULL,
+  `PSIOtherIdMatch` varchar(45) DEFAULT NULL,
+  `StartTime` varchar(45) DEFAULT NULL,
+  `System` varchar(2000) DEFAULT NULL,
+  PRIMARY KEY (`RefId`),
+  KEY `NAPEventStudentLink_SchoolInfo_FK_idx` (`SchoolInfo_RefId`),
+  KEY `NAPEventStudentLink_NAPTest_FK_idx` (`NAPTest_RefId`),
+  KEY `NAPEventStudentLink_StudentPersonal_FK_idx` (`StudentPersonal_RefId`),
+  CONSTRAINT `NAPEventStudentLink_NAPTest_FK` FOREIGN KEY (`NAPTest_RefId`) REFERENCES `NAPTest` (`RefId`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-CREATE TABLE NAPTestlet (
-  RefId varchar(36) NOT NULL,
-  LocalId varchar(200) DEFAULT NULL,
-  NAPTest_RefId varchar(36) DEFAULT NULL,
-  TestletName varchar(2000) DEFAULT NULL,
-  Node varchar(200) DEFAULT NULL,
-  TestletSubscore varchar(200) DEFAULT NULL,
-  TestletType varchar(200) DEFAULT NULL,
-  PRIMARY KEY (RefId)
+CREATE TABLE `NAPEventStudentLink_TestDisruption` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `NAPEventStudentLink_RefId` varchar(36) NOT NULL,
+  `Event` varchar(2000) DEFAULT NULL,
+  `Code` varchar(200) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `NAPEventStudentLink_TestDisruption_IX` (`NAPEventStudentLink_RefId`),
+  CONSTRAINT `NAPEventStudentLink_TestDisruption_FK` FOREIGN KEY (`NAPEventStudentLink_RefId`) REFERENCES `NAPEventStudentLink` (`RefId`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+
+CREATE TABLE `NAPEventStudentLink_Adjustment` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `NAPEventStudentLink_RefId` varchar(36) NOT NULL,
+  `BookletType` varchar(200) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `NAPEventStudentLink_Adjustment_FK_idx` (`NAPEventStudentLink_RefId`),
+  CONSTRAINT `NAPEventStudentLink_Adjustment_FK` FOREIGN KEY (`NAPEventStudentLink_RefId`) REFERENCES `NAPEventStudentLink` (`RefId`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+
+CREATE TABLE `NAPEventStudentLink_Adjustment_PNPCode` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `Adjustment_Id` int(11) DEFAULT NULL,
+  `Code` varchar(200) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `Adjustment_PNPCode_FK_idx` (`Adjustment_Id`),
+  CONSTRAINT `Adjustment_PNPCode_FK` FOREIGN KEY (`Adjustment_Id`) REFERENCES `NAPEventStudentLink_Adjustment` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+
+CREATE TABLE `NAPTestScoreSummary` (
+  `RefId` varchar(36) NOT NULL,
+  `NAPTest_RefId` varchar(36) DEFAULT NULL,
+  `SchoolInfo_RefId` varchar(36) DEFAULT NULL,
+  `DomainNationalAverage` varchar(45) DEFAULT NULL,
+  `DomainSchoolAverage` varchar(45) DEFAULT NULL,
+  `DomainJurisdictionAverage` varchar(45) DEFAULT NULL,
+  `DomainTopNational60Percent` varchar(45) DEFAULT NULL,
+  `DomainBottomNational60Percent` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`RefId`),
+  KEY `TestScoreSummary_Test_FK_idx` (`NAPTest_RefId`),
+  KEY `TestScoreSummary_School_FK_idx` (`SchoolInfo_RefId`),
+  CONSTRAINT `TestScoreSummary_Test_FK` FOREIGN KEY (`NAPTest_RefId`) REFERENCES `NAPTest` (`RefId`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-CREATE TABLE NAPEventStudentLink (
-  RefId varchar(36) NOT NULL,
-  ExemptionReason varchar(2000) DEFAULT NULL,
-  ParticipationCode varchar(200) DEFAULT NULL,
-  ParticipationText varchar(2000) DEFAULT NULL,
-  SchoolInfo_RefId varchar(36) DEFAULT NULL,
-  StudentPersonal_RefId varchar(36) DEFAULT NULL,
-  NAPTest_RefId varchar(36) DEFAULT NULL,
-  PRIMARY KEY (RefId),
-  KEY NAPEventStudentLink_SchoolInfo_FK_idx (SchoolInfo_RefId),
-  KEY NAPEventStudentLink_NAPTest_FK_idx (NAPTest_RefId),
-  KEY NAPEventStudentLink_StudentPersonal_FK_idx (StudentPersonal_RefId),
-  CONSTRAINT NAPEventStudentLink_NAPTest_FK FOREIGN KEY (NAPTest_RefId) REFERENCES NAPTest (RefId) ON DELETE NO ACTION ON UPDATE NO ACTION
+CREATE TABLE `NAPTestlet` (
+  `RefId` varchar(36) NOT NULL,
+  `NAPTest_RefId` varchar(36) DEFAULT NULL,
+  `LocalId` varchar(200) DEFAULT NULL,
+  `TestletName` varchar(2000) DEFAULT NULL,
+  `TestletMaximumScore` varchar(200) DEFAULT NULL,
+  `Node` varchar(200) DEFAULT NULL,
+  `LocationInStage` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`RefId`),
+  KEY `NAPTestlet_NAPTest_FK_idx` (`NAPTest_RefId`),
+  CONSTRAINT `NAPTestlet_NAPTest_FK` FOREIGN KEY (`NAPTest_RefId`) REFERENCES `NAPTest` (`RefId`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-CREATE TABLE NAPEventStudentLink_Adjustment (
-  id int(11) NOT NULL AUTO_INCREMENT,
-  NAPEventStudentLink_RefId varchar(36) NOT NULL,
-  BookletType varchar(200) DEFAULT NULL,
-  AdjustmentDomain varchar(200) DEFAULT NULL,
-  PRIMARY KEY (id),
-  KEY NAPEventStudentLink_Adjustment_FK_idx (NAPEventStudentLink_RefId),
-  CONSTRAINT NAPEventStudentLink_Adjustment_FK FOREIGN KEY (NAPEventStudentLink_RefId) REFERENCES NAPEventStudentLink (RefId) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
-
-CREATE TABLE NAPEventStudentLink_Adjustment_PNPCode (
-  id int(11) NOT NULL AUTO_INCREMENT,
-  Adjustment_Id int(11) DEFAULT NULL,
-  Code varchar(200) DEFAULT NULL,
-  PRIMARY KEY (id),
-  KEY Adjustment_PNPCode_FK_idx (Adjustment_Id),
-  CONSTRAINT Adjustment_PNPCode_FK FOREIGN KEY (Adjustment_Id) REFERENCES NAPEventStudentLink_Adjustment (id) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
-
-CREATE TABLE NAPEventStudentLink_TestDisruption (
-  id int(11) NOT NULL AUTO_INCREMENT,
-  NAPEventStudentLink_RefId varchar(36) NOT NULL,
-  code varchar(200) DEFAULT NULL,
-  event varchar(2000) DEFAULT NULL,
-  PRIMARY KEY (id),
-  KEY NAPEventStudentLink_TestDisruption_IX (NAPEventStudentLink_RefId),
-  CONSTRAINT NAPEventStudentLink_TestDisruption_FK FOREIGN KEY (NAPEventStudentLink_RefId) REFERENCES NAPEventStudentLink (RefId) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
-
-CREATE TABLE NAPStudentResponseSet (
-  RefId varchar(36) NOT NULL,
-  NAPTest_RefId varchar(36) NOT NULL,
-  StudentPersonal_RefId varchar(36) NOT NULL,
-  CalibrationSampleFlag varchar(200) DEFAULT NULL,
-  EquatingSampleFlag varchar(200) DEFAULT NULL,
-  PathTakenForDomain varchar(2000) DEFAULT NULL,
-  ReportExclusionFlag varchar(200) DEFAULT NULL,
-  PRIMARY KEY (RefId),
-  KEY NAPStudentResponseSet_NAPTest_FK_idx (NAPTest_RefId),
-  CONSTRAINT NAPStudentResponseSet_NAPTest_FK FOREIGN KEY (NAPTest_RefId) REFERENCES NAPTest (RefId) ON DELETE NO ACTION ON UPDATE NO ACTION
+CREATE TABLE `NAPTestItem` (
+  `RefId` varchar(36) NOT NULL,
+  `LocalId` varchar(200) DEFAULT NULL,
+  `CorrectAnswer` varchar(2000) DEFAULT NULL,
+  `ExemplarURL` varchar(2000) DEFAULT NULL,
+  `ItemType` varchar(200) DEFAULT NULL,
+  `ItemDescriptor` varchar(2000) DEFAULT NULL,
+  `ItemDifficulty` varchar(200) DEFAULT NULL,
+  `ItemDifficultyLogit5` varchar(200) DEFAULT NULL,
+  `ItemDifficultyLogit5SE` varchar(200) DEFAULT NULL,
+  `ItemDifficultyLogit62` varchar(200) DEFAULT NULL,
+  `ItemDifficultyLogit62SE` varchar(200) DEFAULT NULL,
+  `ItemProficiencyBand` varchar(200) DEFAULT NULL,
+  `ItemProficiencyLevel` varchar(200) DEFAULT NULL,
+  `MarkingType` varchar(200) DEFAULT NULL,
+  `MaximumScore` varchar(200) DEFAULT NULL,
+  `MultipleChoiceOptionCount` varchar(200) DEFAULT NULL,
+  `ReleasedStatus` varchar(45) DEFAULT NULL,
+  `Subdomain` varchar(200) DEFAULT NULL,
+  `WritingGenre` varchar(200) DEFAULT NULL,
+  PRIMARY KEY (`RefId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-CREATE TABLE NAPStudentResponseSet_DomainScore (
-  Id int(11) NOT NULL AUTO_INCREMENT,
-  NAPStudentResponseSet_RefId varchar(36) NOT NULL,
-  RawScore varchar(200) DEFAULT NULL,
-  ScaledScoreStandardError varchar(200) DEFAULT NULL,
-  StudentDomainBand varchar(200) DEFAULT NULL,
-  StudentProficiency varchar(200) DEFAULT NULL,
-  ScaledScoreValue varchar(200) DEFAULT NULL,
-  PRIMARY KEY (Id),
-  KEY DomainScore_NAPStudentResponseSet_FK_idx (NAPStudentResponseSet_RefId),
-  CONSTRAINT DomainScore_NAPStudentResponseSet_FK FOREIGN KEY (NAPStudentResponseSet_RefId) REFERENCES NAPStudentResponseSet (RefId) ON DELETE NO ACTION ON UPDATE NO ACTION
+CREATE TABLE `NAPTestItem_ContentDescription` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `NAPTestItem_RefId` varchar(36) NOT NULL,
+  `ContentDescription` varchar(2000) DEFAULT NULL,
+  PRIMARY KEY (`Id`),
+  KEY `ContentDescription_TestItem_FK_idx` (`NAPTestItem_RefId`),
+  CONSTRAINT `ContentDescription_TestItem_FK` FOREIGN KEY (`NAPTestItem_RefId`) REFERENCES `NAPTestItem` (`RefId`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
-CREATE TABLE NAPStudentResponseSet_Testlet (
-  Id int(11) NOT NULL AUTO_INCREMENT,
-  NAPStudentResponseSet_RefId varchar(36) NOT NULL,
-  NAPTestlet_RefId varchar(36) NOT NULL,
-  TestletScore varchar(200) DEFAULT NULL,
-  PRIMARY KEY (Id),
-  KEY TestletResponse_NAPStudentResponseSet_FK_idx (NAPStudentResponseSet_RefId),
-  KEY TestletResponse_NAPTestlet_FK_idx (NAPTestlet_RefId),
-  CONSTRAINT TestletResponse_NAPStudentResponseSet_FK FOREIGN KEY (NAPStudentResponseSet_RefId) REFERENCES NAPStudentResponseSet (RefId) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT TestletResponse_NAPTestlet_FK FOREIGN KEY (NAPTestlet_RefId) REFERENCES NAPTestlet (RefId) ON DELETE NO ACTION ON UPDATE NO ACTION
+CREATE TABLE `NAPTestItem_Stimulus` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `NAPTestItem_RefId` varchar(36) NOT NULL,
+  `LocalId` varchar(200) DEFAULT NULL,
+  `Content` varchar(2000) DEFAULT NULL,
+  `Descriptor` varchar(2000) DEFAULT NULL,
+  `Domain` varchar(200) DEFAULT NULL,
+  `StimulusType` varchar(200) DEFAULT NULL,
+  `TextGenre` varchar(200) DEFAULT NULL,
+  `TextType` varchar(200) DEFAULT NULL,
+  `WordCount` varchar(200) DEFAULT NULL,
+  PRIMARY KEY (`Id`),
+  KEY `Stimulus_TestItem_FK_idx` (`NAPTestItem_RefId`),
+  CONSTRAINT `Stimulus_TestItem_FK` FOREIGN KEY (`NAPTestItem_RefId`) REFERENCES `NAPTestItem` (`RefId`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
-CREATE TABLE NAPStudentResponseSet_Testlet_TestItem (
-  Id int(11) NOT NULL AUTO_INCREMENT,
-  ResponseTestlet_Id int(11) NOT NULL,
-  NAPTestItem_RefId varchar(36) NOT NULL,
-  ItemWeight varchar(200) DEFAULT NULL,
-  Response varchar(2000) DEFAULT NULL,
-  ResponseCorrectness varchar(200) DEFAULT NULL,
-  Score varchar(200) DEFAULT NULL,
-  Script blob,
-  SequenceNumber int(11) DEFAULT NULL,
-  PRIMARY KEY (Id),
-  KEY ResponseTestItem_ResponseTestlet_FK_idx (ResponseTestlet_Id),
-  KEY ResponseTestItem_NAPTestItem_FK_idx (NAPTestItem_RefId),
-  CONSTRAINT ResponseTestItem_NAPTestItem_FK FOREIGN KEY (NAPTestItem_RefId) REFERENCES NAPTestItem (RefId) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT ResponseTestItem_ResponseTestlet_FK FOREIGN KEY (ResponseTestlet_Id) REFERENCES NAPStudentResponseSet_Testlet (Id) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
-
-CREATE TABLE NAPStudentResponseSet_Testlet_TestItem_Subscore (
-  Id int(11) NOT NULL AUTO_INCREMENT,
-  ResponseTestItem_Id int(11) NOT NULL,
-  SubscoreType varchar(200) DEFAULT NULL,
-  SubscoreValue varchar(200) DEFAULT NULL,
-  PRIMARY KEY (Id),
-  KEY Subscore_ResponseTestItem_FK_idx (ResponseTestItem_Id),
-  CONSTRAINT Subscore_ResponseTestItem_FK FOREIGN KEY (ResponseTestItem_Id) REFERENCES NAPStudentResponseSet_Testlet_TestItem (Id) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
-
-CREATE TABLE NAPTestItem_ContentDescription (
-  Id int(11) NOT NULL AUTO_INCREMENT,
-  NAPTestItem_RefId varchar(36) NOT NULL,
-  ContentDescription varchar(2000) DEFAULT NULL,
-  PRIMARY KEY (Id),
-  KEY ContentDescription_TestItem_FK_idx (NAPTestItem_RefId),
-  CONSTRAINT ContentDescription_TestItem_FK FOREIGN KEY (NAPTestItem_RefId) REFERENCES NAPTestItem (RefId) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
-
-CREATE TABLE NAPTestItem_ItemType (
-  Id int(11) NOT NULL AUTO_INCREMENT,
-  NAPTestItem_RefId varchar(36) NOT NULL,
-  ItemType varchar(200) DEFAULT NULL,
-  PRIMARY KEY (Id),
-  KEY ItemType_TestItem_FK_idx (NAPTestItem_RefId),
-  CONSTRAINT ItemType_TestItem_FK FOREIGN KEY (NAPTestItem_RefId) REFERENCES NAPTestItem (RefId) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
-
-CREATE TABLE NAPTestItem_NAPWritingRubric (
-  Id int(11) NOT NULL AUTO_INCREMENT,
-  NAPTestItem_RefId varchar(36) NOT NULL,
-  Descriptor varchar(2000) DEFAULT NULL,
-  RubricName varchar(200) DEFAULT NULL,
-  RubricType varchar(200) DEFAULT NULL,
-  ScoringGuideReference varchar(200) DEFAULT NULL,
-  PRIMARY KEY (Id),
-  KEY WritingRubric_TestItem_FK_idx (NAPTestItem_RefId),
-  CONSTRAINT WritingRubric_TestItem_FK FOREIGN KEY (NAPTestItem_RefId) REFERENCES NAPTestItem (RefId) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
-
-CREATE TABLE NAPTestItem_NAPWritingRubric_Score (
-  Id int(11) NOT NULL AUTO_INCREMENT,
-  NAPWritingRubric_Id int(11) NOT NULL,
-  MaxScoreValue varchar(200) DEFAULT NULL,
-  PRIMARY KEY (Id),
-  KEY Score_WritingRubric_FK_idx (NAPWritingRubric_Id),
-  CONSTRAINT Score_WritingRubric_FK FOREIGN KEY (NAPWritingRubric_Id) REFERENCES NAPTestItem_NAPWritingRubric (Id) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
-
-CREATE TABLE NAPTestItem_NAPWritingRubric_Score_ScoreDescription (
-  Id int(11) NOT NULL AUTO_INCREMENT,
-  Score_Id int(11) NOT NULL,
-  Description varchar(2000) DEFAULT NULL,
-  ScoreCommentCode varchar(200) DEFAULT NULL,
-  ScoreValue varchar(200) DEFAULT NULL,
-  PRIMARY KEY (Id),
-  KEY ScoreDescription_Score_FK_idx (Score_Id),
-  CONSTRAINT ScoreDescription_Score_FK FOREIGN KEY (Score_Id) REFERENCES NAPTestItem_NAPWritingRubric_Score (Id) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
-
-CREATE TABLE NAPTestItem_Stimulus (
-  Id int(11) NOT NULL AUTO_INCREMENT,
-  NAPTestItem_RefId varchar(36) NOT NULL,
-  Content varchar(2000) DEFAULT NULL,
-  Descriptor varchar(2000) DEFAULT NULL,
-  Domain varchar(200) DEFAULT NULL,
-  LocalId varchar(200) DEFAULT NULL,
-  StimulusType varchar(200) DEFAULT NULL,
-  TextGenre varchar(200) DEFAULT NULL,
-  TextType varchar(200) DEFAULT NULL,
-  WordCount varchar(200) DEFAULT NULL,
-  PRIMARY KEY (Id),
-  KEY Stimulus_TestItem_FK_idx (NAPTestItem_RefId),
-  CONSTRAINT Stimulus_TestItem_FK FOREIGN KEY (NAPTestItem_RefId) REFERENCES NAPTestItem (RefId) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
-
-CREATE TABLE NAPTestItem_SubstituteItemPNPCode (
-  Id int(11) NOT NULL AUTO_INCREMENT,
-  NAPTestItem_RefId varchar(36) NOT NULL,
-  Code varchar(200) DEFAULT NULL,
-  PRIMARY KEY (Id),
-  KEY PNPCode_TestItem_FK_idx (NAPTestItem_RefId),
-  CONSTRAINT PNPCode_TestItem_FK FOREIGN KEY (NAPTestItem_RefId) REFERENCES NAPTestItem (RefId) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
-
-CREATE TABLE NAPTestlet_TestItem (
-  id int(11) NOT NULL AUTO_INCREMENT,
-  NAPTestlet_RefId varchar(36) NOT NULL,
-  NAPTestItem_RefId varchar(36) NOT NULL,
-  NAPTestlet_NAPTestItem_Sequence int(11) DEFAULT NULL,
-  NAPTestItem_NAPTestlet_Sequence int(11) DEFAULT NULL,
-  PRIMARY KEY (id),
-  KEY TestletTestItem_Testlet_FK_idx (NAPTestlet_RefId),
-  KEY TestletTestItem_TestItem_FK_idx (NAPTestItem_RefId),
-  CONSTRAINT TestletTestItem_TestItem_FK FOREIGN KEY (NAPTestItem_RefId) REFERENCES NAPTestItem (RefId) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT TestletTestItem_Testlet_FK FOREIGN KEY (NAPTestlet_RefId) REFERENCES NAPTestlet (RefId) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
-
-CREATE TABLE NAPTestScoreSummary (
-  RefId varchar(36) NOT NULL,
-  NAPTest_RefId varchar(36) DEFAULT NULL,
-  SchoolInfo_RefId varchar(36) DEFAULT NULL,
-  DomainNationalAverage varchar(45) DEFAULT NULL,
-  DomainSchoolAverage varchar(45) DEFAULT NULL,
-  DomainJurisdictionAverage varchar(45) DEFAULT NULL,
-  DomainTopNational60Percent varchar(45) DEFAULT NULL,
-  DomainBottomNational60Percent varchar(45) DEFAULT NULL,
-  PRIMARY KEY (RefId),
-  KEY TestScoreSummary_Test_FK_idx (NAPTest_RefId),
-  KEY TestScoreSummary_School_FK_idx (SchoolInfo_RefId),
-  CONSTRAINT TestScoreSummary_Test_FK FOREIGN KEY (NAPTest_RefId) REFERENCES NAPTest (RefId) ON DELETE NO ACTION ON UPDATE NO ACTION
+CREATE TABLE `NAPTestItem_SubstituteItem` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `NAPTestItem_RefId` varchar(36) NOT NULL,
+  `SubstituteItem_RefId` varchar(45) NOT NULL,
+  PRIMARY KEY (`Id`),
+  KEY `TestItem_FK_idx` (`NAPTestItem_RefId`),
+  KEY `SubstituteItem_FK_idx` (`SubstituteItem_RefId`),
+  CONSTRAINT `SubstituteItem_FK` FOREIGN KEY (`SubstituteItem_RefId`) REFERENCES `NAPTestItem` (`RefId`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `TestItem_FK` FOREIGN KEY (`NAPTestItem_RefId`) REFERENCES `NAPTestItem` (`RefId`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
--- NAPLAN end
+CREATE TABLE `ItemSubstitutedFor_PNPCode` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `ItemSubstitutedFor_Id` int(11) NOT NULL,
+  `Code` varchar(200) NOT NULL,
+  PRIMARY KEY (`Id`),
+  KEY `ItemSubstitutedFor_FK_idx` (`ItemSubstitutedFor_Id`),
+  CONSTRAINT `ItemSubstitutedFor_FK` FOREIGN KEY (`ItemSubstitutedFor_Id`) REFERENCES `NAPTestItem_SubstituteItem` (`Id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE `NAPTestItem_NAPWritingRubric` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `NAPTestItem_RefId` varchar(36) NOT NULL,
+  `Descriptor` varchar(2000) DEFAULT NULL,
+  `RubricType` varchar(200) DEFAULT NULL,
+  `RubricName` varchar(200) DEFAULT NULL,
+  `ScoringGuideReference` varchar(200) DEFAULT NULL,
+  PRIMARY KEY (`Id`),
+  KEY `WritingRubric_TestItem_FK_idx` (`NAPTestItem_RefId`),
+  CONSTRAINT `WritingRubric_TestItem_FK` FOREIGN KEY (`NAPTestItem_RefId`) REFERENCES `NAPTestItem` (`RefId`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+
+CREATE TABLE `NAPTestItem_NAPWritingRubric_Score` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `NAPWritingRubric_Id` int(11) NOT NULL,
+  `MaxScoreValue` varchar(200) DEFAULT NULL,
+  PRIMARY KEY (`Id`),
+  KEY `Score_WritingRubric_FK_idx` (`NAPWritingRubric_Id`),
+  CONSTRAINT `Score_WritingRubric_FK` FOREIGN KEY (`NAPWritingRubric_Id`) REFERENCES `NAPTestItem_NAPWritingRubric` (`Id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+
+CREATE TABLE `NAPTestItem_NAPWritingRubric_Score_ScoreDescription` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `Score_Id` int(11) NOT NULL,
+  `Descriptor` varchar(2000) DEFAULT NULL,
+  `ScoreValue` varchar(200) DEFAULT NULL,
+  `ScoreCommentCode` varchar(200) DEFAULT NULL,
+  PRIMARY KEY (`Id`),
+  KEY `ScoreDescription_Score_FK_idx` (`Score_Id`),
+  CONSTRAINT `ScoreDescription_Score_FK` FOREIGN KEY (`Score_Id`) REFERENCES `NAPTestItem_NAPWritingRubric_Score` (`Id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+
+CREATE TABLE `NAPTestlet_TestItem` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `NAPTestlet_RefId` varchar(36) NOT NULL,
+  `NAPTestItem_RefId` varchar(36) NOT NULL,
+  `NAPTestlet_NAPTestItem_Sequence` int(11) DEFAULT NULL,
+  `NAPTestItem_NAPTestlet_Sequence` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `TestletTestItem_Testlet_FK_idx` (`NAPTestlet_RefId`),
+  KEY `TestletTestItem_TestItem_FK_idx` (`NAPTestItem_RefId`),
+  CONSTRAINT `TestletTestItem_TestItem_FK` FOREIGN KEY (`NAPTestItem_RefId`) REFERENCES `NAPTestItem` (`RefId`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `TestletTestItem_Testlet_FK` FOREIGN KEY (`NAPTestlet_RefId`) REFERENCES `NAPTestlet` (`RefId`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+
+CREATE TABLE `NAPStudentResponseSet` (
+  `RefId` varchar(36) NOT NULL,
+  `NAPTest_RefId` varchar(36) NOT NULL,
+  `StudentPersonal_RefId` varchar(36) NOT NULL,
+  `CalibrationSampleFlag` varchar(200) DEFAULT NULL,
+  `EquatingSampleFlag` varchar(200) DEFAULT NULL,
+  `PathTakenForDomain` varchar(2000) DEFAULT NULL,
+  `ReportExclusionFlag` varchar(200) DEFAULT NULL,
+  `ParallelTest` varchar(2000) DEFAULT NULL,
+  PRIMARY KEY (`RefId`),
+  KEY `NAPStudentResponseSet_NAPTest_FK_idx` (`NAPTest_RefId`),
+  CONSTRAINT `NAPStudentResponseSet_NAPTest_FK` FOREIGN KEY (`NAPTest_RefId`) REFERENCES `NAPTest` (`RefId`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE `NAPStudentResponseSet_DomainScore` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `NAPStudentResponseSet_RefId` varchar(36) NOT NULL,
+  `RawScore` varchar(200) DEFAULT NULL,
+  `ScaledScoreStandardError` varchar(200) DEFAULT NULL,
+  `StudentDomainBand` varchar(200) DEFAULT NULL,
+  `StudentProficiency` varchar(200) DEFAULT NULL,
+  `ScaledScoreValue` varchar(200) DEFAULT NULL,
+  PRIMARY KEY (`Id`),
+  KEY `DomainScore_NAPStudentResponseSet_FK_idx` (`NAPStudentResponseSet_RefId`),
+  CONSTRAINT `DomainScore_NAPStudentResponseSet_FK` FOREIGN KEY (`NAPStudentResponseSet_RefId`) REFERENCES `NAPStudentResponseSet` (`RefId`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+
+CREATE TABLE `NAPStudentResponseSet_Testlet` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `NAPStudentResponseSet_RefId` varchar(36) NOT NULL,
+  `NAPTestlet_RefId` varchar(36) NOT NULL,
+  `TestletScore` varchar(200) DEFAULT NULL,
+  PRIMARY KEY (`Id`),
+  KEY `TestletResponse_NAPStudentResponseSet_FK_idx` (`NAPStudentResponseSet_RefId`),
+  KEY `TestletResponse_NAPTestlet_FK_idx` (`NAPTestlet_RefId`),
+  CONSTRAINT `TestletResponse_NAPStudentResponseSet_FK` FOREIGN KEY (`NAPStudentResponseSet_RefId`) REFERENCES `NAPStudentResponseSet` (`RefId`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `TestletResponse_NAPTestlet_FK` FOREIGN KEY (`NAPTestlet_RefId`) REFERENCES `NAPTestlet` (`RefId`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+
+CREATE TABLE `NAPStudentResponseSet_Testlet_TestItem` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `ResponseTestlet_Id` int(11) NOT NULL,
+  `NAPTestItem_RefId` varchar(36) NOT NULL,
+  `ItemWeight` varchar(200) DEFAULT NULL,
+  `Response` varchar(2000) DEFAULT NULL,
+  `ResponseCorrectness` varchar(200) DEFAULT NULL,
+  `Score` varchar(200) DEFAULT NULL,
+  `SequenceNumber` int(11) DEFAULT NULL,
+  `LapsedTimeItem` varchar(200) DEFAULT NULL,
+  PRIMARY KEY (`Id`),
+  KEY `ResponseTestItem_ResponseTestlet_FK_idx` (`ResponseTestlet_Id`),
+  KEY `ResponseTestItem_NAPTestItem_FK_idx` (`NAPTestItem_RefId`),
+  CONSTRAINT `ResponseTestItem_NAPTestItem_FK` FOREIGN KEY (`NAPTestItem_RefId`) REFERENCES `NAPTestItem` (`RefId`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `ResponseTestItem_ResponseTestlet_FK` FOREIGN KEY (`ResponseTestlet_Id`) REFERENCES `NAPStudentResponseSet_Testlet` (`Id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+
+CREATE TABLE `NAPStudentResponseSet_Testlet_TestItem_Subscore` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `ResponseTestItem_Id` int(11) NOT NULL,
+  `SubscoreType` varchar(200) DEFAULT NULL,
+  `SubscoreValue` varchar(200) DEFAULT NULL,
+  PRIMARY KEY (`Id`),
+  KEY `Subscore_ResponseTestItem_FK_idx` (`ResponseTestItem_Id`),
+  CONSTRAINT `Subscore_ResponseTestItem_FK` FOREIGN KEY (`ResponseTestItem_Id`) REFERENCES `NAPStudentResponseSet_Testlet_TestItem` (`Id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+
+CREATE TABLE `NAPCodeFrame` (
+  `RefId` varchar(36) NOT NULL,
+  `NAPTest_RefId` varchar(36) NOT NULL,
+  PRIMARY KEY (`RefId`),
+  KEY `NAPCodeFrame_NAPTest_FK_idx` (`NAPTest_RefId`),
+  CONSTRAINT `NAPCodeFrame_NAPTest_FK` FOREIGN KEY (`NAPTest_RefId`) REFERENCES `NAPTest` (`RefId`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
