@@ -35,10 +35,8 @@ my $dbh_hits = DBI->connect(
 eval {
 	die "Must provide a name as a parameter\n" if ($name eq "");
 	die "Name must be a-z0-9\n" if ($name !~ /^[a-z0-9\-]+$/);
-	$name =~ s/\-//g;
 
 #	"INSERT INTO `database` (account_id, id, name, status, options, `when`) VALUES (?,?,?,'building', ?, NOW())",
-
 
 	my $sth = $dbh_hits->prepare("SELECT status FROM `database` WHERE id = ?");
 	$sth->execute($name);
@@ -46,7 +44,7 @@ eval {
 	if (!$d) {
 		die "$name does not exist\n";
 	}
-	if ($d->{status} != 'building') {
+	if ($d->{status} ne 'building') {
 		die "$name is not ready for building\n";
 	}
 
