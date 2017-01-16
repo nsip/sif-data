@@ -157,7 +157,7 @@ print " Password = " . $sif_template->{PASSWORD} . "\n";
 print " User Token = " . $sif_template->{USER_TOKEN} . "\n";
 print " Access to all schools in DB\n";
 
-exit;
+exit 0;
 
 
 sub uuid {

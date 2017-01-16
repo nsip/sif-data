@@ -39,7 +39,7 @@ eval {
 	die "Must provide a name as a parameter\n" if ($name eq "");
 	die "Name must be a-z0-9\n" if ($name !~ /^[a-z0-9\-]+$/);
 
-#	"INSERT INTO `database` (account_id, id, name, status, options, `when`) VALUES (?,?,?,'building', ?, NOW())",
+#	"INSERT INTO `database` (account_id, id, name, status, options, `when`) VALUES (?,?,?,'wip', ?, NOW())",
 
 	my $sth = $dbh_hits->prepare("SELECT status FROM `database` WHERE id = ?");
 	$sth->execute($name);
@@ -47,7 +47,7 @@ eval {
 	if (!$d) {
 		die "$name does not exist\n" . "SELECT status FROM `database` WHERE id = ?" . "\n";
 	}
-	if ($d->{status} ne 'building') {
+	if ($d->{status} ne 'waiting') {
 		die "$name is not ready for building\n";
 	}
 
@@ -92,7 +92,7 @@ if ($encode eq 'json') {
 		# Continues below
 		open STDIN, "</dev/null";
 		open STDOUT, ">/dev/null";
-		open STDERR, ">/dev/null";
+		# open STDERR, ">/dev/null";
 		# Recommenct in case of fork
 		$dbh_hits = DBI->connect(
 			$config->{mysql_dsn_hits},
@@ -109,7 +109,7 @@ if ($encode eq 'json') {
 
 eval {
 	unlink "/tmp/$$.log" if (-f "/tmp/$$.log");
-	my $sth = $dbh_hits->prepare("UPDATE `database` SET status = 'building', message = ? WHERE id = ?");
+	my $sth = $dbh_hits->prepare("UPDATE `database` SET status = 'wip', message = ? WHERE id = ?");
 	$sth->execute("$type being started", $name);
 	if ($type eq 'timetable') {
 		system ("cd /var/sif/sif-data; ./bin/timetable.sh $name >> /tmp/$$.log 2>/tmp/$$.err");
@@ -124,12 +124,13 @@ eval {
 		die "Type must be 'basic' or 'timetable' or 'empty'\n";
 	}
 
-	my $sth = $dbh_hits->prepare("UPDATE `database` SET status = 'building', message = ? WHERE id = ?");
+	my $sth = $dbh_hits->prepare("UPDATE `database` SET status = 'wip', message = ? WHERE id = ?");
 	$sth->execute("$type being finished, starting permissions", $name);
 	system ("cd /var/sif/sif-data; ./bin/create_app.pl $name >> /tmp/$$.log 2>/tmp/$$.err");
-	system ("cd /var/sif/sif-data; ./bin/create_entry.pl $name >> /tmp/$$.log 2>/tmp/$$.err");
-	my $sth = $dbh_hits->prepare("UPDATE `database` SET status = 'building', message = ? WHERE id = ?");
+	# XXX Still required system ("cd /var/sif/sif-data; ./bin/create_entry.pl $name >> /tmp/$$.log 2>/tmp/$$.err");
+	my $sth = $dbh_hits->prepare("UPDATE `database` SET status = 'wip', message = ? WHERE id = ?");
 	$sth->execute("finsihed permissions", $name);
+	print STDERR "Complete Build $name\n";
 };
 if ($@) {
 	print STDERR "FAILED Build for $name = $@\n";
@@ -143,6 +144,7 @@ if ($@) {
 
 		my $sth = $dbh_hits->prepare("UPDATE `database` SET status = 'error', message = ? WHERE id = ?");
 		$sth->execute(encode_entities($@ . $buffer, "\200-\377"), $name);
+		$dbh_hits->commit();
 		exit 0;
 	}
 	else {
@@ -162,10 +164,13 @@ while (<$IN>) {
 		$token = $1;
 	}
 }
+print STDERR "Found token = $token\n";
 
 if ($encode eq 'json') {
+	print STDERR "Updating DB for $name to complete\n";
 	my $sth = $dbh_hits->prepare("UPDATE `database` SET status = 'complete', message = ?, token = ? WHERE id = ?");
 	$sth->execute(encode_entities($@ . $buffer, "\200-\377"), $token, $name);
+	$dbh_hits->commit();
 	exit 0;
 }
 else {
