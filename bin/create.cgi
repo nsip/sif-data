@@ -10,6 +10,9 @@ use JSON;
 $ENV{HOME} = "/var/sif/";
 
 param('form_field');
+$0 = "create.cgi - Start up";
+
+$| = 1;
 
 my $name = param('name') || shift;
 my $type = param('type') || 'timetable';
@@ -42,7 +45,7 @@ eval {
 	$sth->execute($name);
 	my $d = $sth->fetchrow_hashref;
 	if (!$d) {
-		die "$name does not exist\n";
+		die "$name does not exist\n" . "SELECT status FROM `database` WHERE id = ?" . "\n";
 	}
 	if ($d->{status} ne 'building') {
 		die "$name is not ready for building\n";
@@ -71,32 +74,43 @@ if ($@) {
 
 # Fork now and work in background
 if ($encode eq 'json') {
+	print STDERR "JSON - Create fork\n";
 	my  $pid = fork();
+	print STDERR "JSON - Create fork - PID = $pid\n";
 	if ($pid) {
+		$SIG{CHLD} = 'IGNORE';
 		print to_json({
 			success => 1,
 			pid => $pid,
-			error => "Started background create",
+			message => "Started background create",
 		});
+		print STDERR "Exit\n";
 		exit 0;
 	}
 	elsif ($pid == 0) {
+		$0 = "create.cgi: Background process - $name";
 		# Continues below
-	}
-	else {
-		print to_json({
-			success => 0,
-			error => " Unable to fork process - $!",
-		});
-		exit 0;
+		open STDIN, "</dev/null";
+		open STDOUT, ">/dev/null";
+		open STDERR, ">/dev/null";
+		# Recommenct in case of fork
+		$dbh_hits = DBI->connect(
+			$config->{mysql_dsn_hits},
+			$config->{mysql_user},
+			$config->{mysql_password},
+			{RaiseError => 1, AutoCommit => 1}
+		);
 	}
 }
+
 
 # XXX check name doesn't exist anywhere !
 # XXX Otherwise ask for a name !
 
 eval {
 	unlink "/tmp/$$.log" if (-f "/tmp/$$.log");
+	my $sth = $dbh_hits->prepare("UPDATE `database` SET status = 'building', message = ? WHERE id = ?");
+	$sth->execute("$type being started", $name);
 	if ($type eq 'timetable') {
 		system ("cd /var/sif/sif-data; ./bin/timetable.sh $name >> /tmp/$$.log 2>/tmp/$$.err");
 	}
@@ -110,10 +124,15 @@ eval {
 		die "Type must be 'basic' or 'timetable' or 'empty'\n";
 	}
 
+	my $sth = $dbh_hits->prepare("UPDATE `database` SET status = 'building', message = ? WHERE id = ?");
+	$sth->execute("$type being finished, starting permissions", $name);
 	system ("cd /var/sif/sif-data; ./bin/create_app.pl $name >> /tmp/$$.log 2>/tmp/$$.err");
 	system ("cd /var/sif/sif-data; ./bin/create_entry.pl $name >> /tmp/$$.log 2>/tmp/$$.err");
+	my $sth = $dbh_hits->prepare("UPDATE `database` SET status = 'building', message = ? WHERE id = ?");
+	$sth->execute("finsihed permissions", $name);
 };
 if ($@) {
+	print STDERR "FAILED Build for $name = $@\n";
 	if ($encode eq 'json') {
 		# XXX Just update DB and exit
 		open (my $IN, "/tmp/$$.log");
