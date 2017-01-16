@@ -30,17 +30,17 @@ eval {
 	$name =~ s/\-//g;
 	my $config = YAML::LoadFile("/etc/nsip/nsip_sif_data");
 	my $dbh_hits = DBI->connect(
-		$config->{mysql_dsn_hits}, 
-		$config->{mysql_user}, 
+		$config->{mysql_dsn_hits},
+		$config->{mysql_user},
 		$config->{mysql_password},
 		{RaiseError => 1, AutoCommit => 1}
 	);
 
 	# XXX hits database, sis table.
-	my $sth = $dbh_hits->prepare("SELECT * FROM database WHERE id = ?");
-	$sth->execute($name);
-	die "$name already exists as a sis\n" if ($sth->fetchrow_hashref);
-	
+	#my $sth = $dbh_hits->prepare("SELECT * FROM database WHERE id = ?");
+	#$sth->execute($name);
+	#die "$name already exists as a sis\n" if ($sth->fetchrow_hashref);
+
 	# XXX app
 	#$sth = $dbh_hits->prepare("SELECT * FROM app WHERE id = ?");
 	#$sth->execute($name);
@@ -78,9 +78,8 @@ eval {
 		die "Type must be 'basic' or 'timetable' or 'empty'\n";
 	}
 
-# XXX Suck in new code here !
-	system ("cd ~scottp/nsip/HITS-API; ./create_app.pl $name >> /tmp/$$.log 2>/tmp/$$.err");
-	system ("cd ~scottp/nsip/HITS-API; ./create_entry.pl $name >> /tmp/$$.log 2>/tmp/$$.err");
+	system ("cd /var/sif/sif-data; ./bin/create_app.pl $name >> /tmp/$$.log 2>/tmp/$$.err");
+	system ("cd /var/sif/sif-data; ./bin/create_entry.pl $name >> /tmp/$$.log 2>/tmp/$$.err");
 };
 if ($@) {
 	if ($encode eq 'json') {
@@ -128,7 +127,7 @@ else {
 	print "<p>TYPE = $type</p>\n";
 
 	print "<h2>Created.</h2>";
-	print qq{<a 
+	print qq{<a
 		href="http://hits.dev.nsip.edu.au/devdash/index.html?token=$token"
 	>http://hits.dev.nsip.edu.au/devdash/index.html?token=$token
 	</a>};
