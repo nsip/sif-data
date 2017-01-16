@@ -7,7 +7,7 @@ use DBI;
 use YAML;
 use JSON;
 
-$ENV{HOME} = "/home/scottp/";
+$ENV{HOME} = "/var/sif/";
 
 param('form_field');
 
@@ -35,13 +35,16 @@ eval {
 		$config->{mysql_password},
 		{RaiseError => 1, AutoCommit => 1}
 	);
-	my $sth = $dbh_hits->prepare("SELECT * FROM sis WHERE id = ? OR sis_ref = ?");
-	$sth->execute($name, $name);
+
+	# XXX hits database, sis table.
+	my $sth = $dbh_hits->prepare("SELECT * FROM database WHERE id = ?");
+	$sth->execute($name);
 	die "$name already exists as a sis\n" if ($sth->fetchrow_hashref);
 	
-	$sth = $dbh_hits->prepare("SELECT * FROM app WHERE id = ?");
-	$sth->execute($name);
-	die "$name already exists as an app\n" if ($sth->fetchrow_hashref);
+	# XXX app
+	#$sth = $dbh_hits->prepare("SELECT * FROM app WHERE id = ?");
+	#$sth->execute($name);
+	#die "$name already exists as an app\n" if ($sth->fetchrow_hashref);
 };
 if ($@) {
 	if ($encode eq 'json') {
