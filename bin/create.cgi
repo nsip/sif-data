@@ -28,7 +28,7 @@ eval {
 	die "Must provide a name as a parameter\n" if ($name eq "");
 	die "Name must be a-z0-9\n" if ($name !~ /^[a-z0-9\-]+$/);
 	$name =~ s/\-//g;
-	my $config = YAML::LoadFile("../../../.nsip_sif_data");
+	my $config = YAML::LoadFile("/etc/nsip/nsip_sif_data");
 	my $dbh_hits = DBI->connect(
 		$config->{mysql_dsn_hits}, 
 		$config->{mysql_user}, 
@@ -63,18 +63,19 @@ if ($@) {
 eval {
 	unlink "/tmp/$$.log" if (-f "/tmp/$$.log");
 	if ($type eq 'timetable') {
-		system ("cd ~scottp/nsip/sif-data; ./bin/timetable.sh $name >> /tmp/$$.log 2>/tmp/$$.err");
+		system ("cd /var/sif/sif-data; ./bin/timetable.sh $name >> /tmp/$$.log 2>/tmp/$$.err");
 	}
 	elsif ($type eq 'basic') {
-		system ("cd ~scottp/nsip/sif-data; ./bin/basic.sh $name >> /tmp/$$.log 2>/tmp/$$.err");
+		system ("cd /var/sif/sif-data; ./bin/basic.sh $name >> /tmp/$$.log 2>/tmp/$$.err");
 	}
 	elsif ($type eq 'empty') {
-		system ("cd ~scottp/nsip/sif-data; ./bin/empty.sh $name >> /tmp/$$.log 2>/tmp/$$.err");
+		system ("cd /var/sif/sif-data; ./bin/empty.sh $name >> /tmp/$$.log 2>/tmp/$$.err");
 	}
 	else {
 		die "Type must be 'basic' or 'timetable' or 'empty'\n";
 	}
 
+# XXX Suck in new code here !
 	system ("cd ~scottp/nsip/HITS-API; ./create_app.pl $name >> /tmp/$$.log 2>/tmp/$$.err");
 	system ("cd ~scottp/nsip/HITS-API; ./create_entry.pl $name >> /tmp/$$.log 2>/tmp/$$.err");
 };
