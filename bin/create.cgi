@@ -109,6 +109,7 @@ if ($encode eq 'json') {
 
 eval {
 	unlink "/tmp/$$.log" if (-f "/tmp/$$.log");
+	system ("echo 'Starting: $name' >> /tmp/$$.log 2>/tmp/$$.err");
 	my $sth = $dbh_hits->prepare("UPDATE `database` SET status = 'wip', message = ? WHERE id = ?");
 	$sth->execute("$type being started", $name);
 	if ($type eq 'timetable') {
@@ -117,11 +118,8 @@ eval {
 	elsif ($type eq 'basic') {
 		system ("cd /var/sif/sif-data; ./bin/basic.sh $name >> /tmp/$$.log 2>/tmp/$$.err");
 	}
-	elsif ($type eq 'empty') {
-		system ("cd /var/sif/sif-data; ./bin/empty.sh $name >> /tmp/$$.log 2>/tmp/$$.err");
-	}
 	else {
-		die "Type must be 'basic' or 'timetable' or 'empty'\n";
+		system ("cd /var/sif/sif-data; ./bin/empty.sh $name >> /tmp/$$.log 2>/tmp/$$.err");
 	}
 
 	my $sth = $dbh_hits->prepare("UPDATE `database` SET status = 'wip', message = ? WHERE id = ?");
