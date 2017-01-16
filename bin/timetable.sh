@@ -1,6 +1,7 @@
 #!/bin/sh
 export PERL5LIB=lib
 
+# XXX /var/sif/sif-data
 #cd /home/scottp/nsip/sif-data
 #export HOME=/home/scottp
 
