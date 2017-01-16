@@ -36,11 +36,21 @@ eval {
 		{RaiseError => 1, AutoCommit => 1}
 	);
 
-	# XXX hits database, sis table.
-	#my $sth = $dbh_hits->prepare("SELECT * FROM database WHERE id = ?");
-	#$sth->execute($name);
-	#die "$name already exists as a sis\n" if ($sth->fetchrow_hashref);
+#	"INSERT INTO `database` (account_id, id, name, status, options, `when`) VALUES (?,?,?,'building', ?, NOW())",
 
+
+	my $sth = $dbh_hits->prepare("SELECT status FROM `database` WHERE id = ?");
+	$sth->execute($name);
+	my $d = $sth->fetchrow_hashref;
+	if (!$d) {
+		die "$name does not exist\n";
+	}
+	if ($d->{status} != 'building') {
+		die "$name is not ready for building\n";
+	}
+
+	my $sth = $dbh_hits->prepare("UPDATE `database` SET status = 'preparing' WHERE id = ?");
+	$sth->execute($name);
 	# XXX app
 	#$sth = $dbh_hits->prepare("SELECT * FROM app WHERE id = ?");
 	#$sth->execute($name);
@@ -57,6 +67,29 @@ if ($@) {
 	else {
 		die $@;
 		print "</body></html>";
+	}
+}
+
+# Fork now and work in background
+if ($encode eq 'json') {
+	my  $pid = fork();
+	if ($pid) {
+		print to_json({
+			success => 1,
+			pid => $pid,
+			error => "Started background create",
+		});
+		exit 0;
+	}
+	elsif ($pid == 0) {
+		# Continues below
+	}
+	else {
+		print to_json({
+			success => 0,
+			error => " Unable to fork process - $!",
+		});
+		exit 0;
 	}
 }
 
@@ -83,16 +116,15 @@ eval {
 };
 if ($@) {
 	if ($encode eq 'json') {
+		# XXX Just update DB and exit
 		open (my $IN, "/tmp/$$.log");
 		my $buffer = "";
 		while (<$IN>) {
 			$buffer .= $_;
 		}
 
-		print to_json({
-			success => 0,
-			error => encode_entities($@, "\200-\377") . "\n" . $buffer,
-		});
+		my $sth = $dbh_hits->prepare("UPDATE `database` SET status = 'error', message = ? WHERE id = ?");
+		$sth->execute(encode_entities($@ . $buffer, "\200-\377"), $name);
 		exit 0;
 	}
 	else {
@@ -114,18 +146,12 @@ while (<$IN>) {
 }
 
 if ($encode eq 'json') {
-	print to_json({
-		success => 1,
-		error => "",
-		data => encode_entities($buffer, "\200-\377"),
-		token => $token,
-		href => "http://hits.dev.nsip.edu.au/devdash/index.html?token=$token",
-	});
+	my $sth = $dbh_hits->prepare("UPDATE `database` SET status = 'complete', message = ?, token = ? WHERE id = ?");
+	$sth->execute(encode_entities($@ . $buffer, "\200-\377"), $token, $name);
+	exit 0;
 }
 else {
-
 	print "<p>TYPE = $type</p>\n";
-
 	print "<h2>Created.</h2>";
 	print qq{<a
 		href="http://hits.dev.nsip.edu.au/devdash/index.html?token=$token"
