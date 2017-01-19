@@ -34,6 +34,12 @@ my $dbh_hits = DBI->connect(
 	$config->{mysql_password},
 	{RaiseError => 1, AutoCommit => 1}
 );
+my $dbh_sif = DBI->connect(
+	$config->{mysql_dsn_sif},
+	$config->{mysql_user},
+	$config->{mysql_password},
+	{RaiseError => 1, AutoCommit => 1}
+);
 
 eval {
 	die "Must provide a name as a parameter\n" if ($name eq "");
@@ -100,6 +106,12 @@ if ($encode eq 'json') {
 			$config->{mysql_password},
 			{RaiseError => 1, AutoCommit => 1}
 		);
+		$dbh_sif = DBI->connect(
+			$config->{mysql_dsn_sif},
+			$config->{mysql_user},
+			$config->{mysql_password},
+			{RaiseError => 1, AutoCommit => 1}
+		);
 	}
 }
 
@@ -122,11 +134,19 @@ eval {
 		system ("cd /var/sif/sif-data; ./bin/empty.sh $name >> /tmp/$$.log 2>/tmp/$$.err");
 	}
 
-	my $sth = $dbh_hits->prepare("UPDATE `database` SET status = 'wip', message = ? WHERE id = ?");
+	$sth = $dbh_hits->prepare("UPDATE `database` SET status = 'wip', message = ? WHERE id = ?");
 	$sth->execute("$type being finished, starting permissions", $name);
-	system ("cd /var/sif/sif-data; ./bin/create_app.pl $name >> /tmp/$$.log 2>/tmp/$$.err");
-	# XXX Still required system ("cd /var/sif/sif-data; ./bin/create_entry.pl $name >> /tmp/$$.log 2>/tmp/$$.err");
-	my $sth = $dbh_hits->prepare("UPDATE `database` SET status = 'wip', message = ? WHERE id = ?");
+
+	# Create SIF Authentication Entry
+	$sth = $dbh_sif->prepare("INSERT INTO SIF3_APP_TEMPLATE (SOLUTION_ID, APPLICATION_KEY, PASSWORD, USER_TOKEN, AUTH_METHOD, ENV_TEMPLATE_ID) VALUES ('HITS', ?, ?, ?, 'Basic', 'HITS')");
+	$sth->execute($name, $name, $name);
+
+	$sth = $dbh_sif->prepare("INSERT INTO APPKEY_DB_URL_MAPPER (applicationKey, databaseUrl) VALUES (?, ?)");
+	$sth->execute($name, $name);
+	$dbh_sif->commit();
+
+	
+	$sth = $dbh_hits->prepare("UPDATE `database` SET status = 'wip', message = ? WHERE id = ?");
 	$sth->execute("finsihed permissions", $name);
 	print STDERR "Complete Build $name\n";
 };
@@ -150,18 +170,16 @@ if ($@) {
 		print "<pre>";
 		print encode_entities($@, "\200-\377");
 		print "</pre>";
+		exit 0;
 	}
 }
 
 open (my $IN, "/tmp/$$.log");
 my $buffer = "";
-my $token;
 while (<$IN>) {
 	$buffer .= $_;
-	if (/User Token = (.+)$/) {
-		$token = $1;
-	}
 }
+my $token = $name;
 print STDERR "Found token = $token\n";
 
 if ($encode eq 'json') {
@@ -184,4 +202,5 @@ else {
 	print "LOG END</pre>\n";
 
 	print "</body></html>\n";
+	exit 0;
 }
