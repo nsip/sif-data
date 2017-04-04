@@ -130,8 +130,12 @@ eval {
 	elsif ($type eq 'basic') {
 		system ("cd /var/sif/sif-data; ./bin/basic.sh $name >> /tmp/$$.log 2>/tmp/$$.err");
 	}
+	elsif ($type eq 'custom') {
+		system ("cd /var/sif/sif-data; ./bin/basic.sh $name >> /tmp/$$.log 2>/tmp/$$.err");
+	}
 	else {
-		system ("cd /var/sif/sif-data; ./bin/empty.sh $name >> /tmp/$$.log 2>/tmp/$$.err");
+		system ("cd /var/sif/sif-data; ./bin/timetable.sh $name >> /tmp/$$.log 2>/tmp/$$.err");
+		# system ("cd /var/sif/sif-data; ./bin/empty.sh $name >> /tmp/$$.log 2>/tmp/$$.err");
 	}
 
 	$sth = $dbh_hits->prepare("UPDATE `database` SET status = 'wip', message = ? WHERE id = ?");
