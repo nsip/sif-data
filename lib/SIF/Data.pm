@@ -14,6 +14,7 @@ use DBI;
 my $randomperson = Data::RandomPerson->new();
 my $randomperson_female = Data::RandomPerson::Names::Female->new();
 my $randomperson_male = Data::RandomPerson::Names::Male->new();
+my (@postcodes) = create_postcodes();
 
 =head1 NAME
 
@@ -671,7 +672,6 @@ sub random_codeset_key {
 sub create_address{
 	my ($self) = @_;
 
-	my (@postcodes) = create_postcodes();
 
 	my $address = ();
 	my $p = $randomperson->create();
