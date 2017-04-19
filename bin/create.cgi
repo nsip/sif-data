@@ -10,6 +10,9 @@ use JSON;
 $ENV{HOME} = "/var/sif/";
 
 param('form_field');
+$0 = "create.cgi - Start up";
+
+$| = 1;
 
 my $name = param('name') || shift;
 my $type = param('type') || 'timetable';
@@ -31,20 +34,26 @@ my $dbh_hits = DBI->connect(
 	$config->{mysql_password},
 	{RaiseError => 1, AutoCommit => 1}
 );
+my $dbh_sif = DBI->connect(
+	$config->{mysql_dsn_sif},
+	$config->{mysql_user},
+	$config->{mysql_password},
+	{RaiseError => 1, AutoCommit => 1}
+);
 
 eval {
 	die "Must provide a name as a parameter\n" if ($name eq "");
 	die "Name must be a-z0-9\n" if ($name !~ /^[a-z0-9\-]+$/);
 
-#	"INSERT INTO `database` (account_id, id, name, status, options, `when`) VALUES (?,?,?,'building', ?, NOW())",
+#	"INSERT INTO `database` (account_id, id, name, status, options, `when`) VALUES (?,?,?,'wip', ?, NOW())",
 
 	my $sth = $dbh_hits->prepare("SELECT status FROM `database` WHERE id = ?");
 	$sth->execute($name);
 	my $d = $sth->fetchrow_hashref;
 	if (!$d) {
-		die "$name does not exist\n";
+		die "$name does not exist\n" . "SELECT status FROM `database` WHERE id = ?" . "\n";
 	}
-	if ($d->{status} ne 'building') {
+	if ($d->{status} ne 'waiting') {
 		die "$name is not ready for building\n";
 	}
 
@@ -71,49 +80,78 @@ if ($@) {
 
 # Fork now and work in background
 if ($encode eq 'json') {
+	print STDERR "JSON - Create fork\n";
 	my  $pid = fork();
+	print STDERR "JSON - Create fork - PID = $pid\n";
 	if ($pid) {
+		$SIG{CHLD} = 'IGNORE';
 		print to_json({
 			success => 1,
 			pid => $pid,
-			error => "Started background create",
+			message => "Started background create",
 		});
+		print STDERR "Exit\n";
 		exit 0;
 	}
 	elsif ($pid == 0) {
+		$0 = "create.cgi: Background process - $name";
 		# Continues below
-	}
-	else {
-		print to_json({
-			success => 0,
-			error => " Unable to fork process - $!",
-		});
-		exit 0;
+		open STDIN, "</dev/null";
+		open STDOUT, ">/dev/null";
+		# open STDERR, ">/dev/null";
+		# Recommenct in case of fork
+		$dbh_hits = DBI->connect(
+			$config->{mysql_dsn_hits},
+			$config->{mysql_user},
+			$config->{mysql_password},
+			{RaiseError => 1, AutoCommit => 1}
+		);
+		$dbh_sif = DBI->connect(
+			$config->{mysql_dsn_sif},
+			$config->{mysql_user},
+			$config->{mysql_password},
+			{RaiseError => 1, AutoCommit => 1}
+		);
 	}
 }
+
 
 # XXX check name doesn't exist anywhere !
 # XXX Otherwise ask for a name !
 
 eval {
 	unlink "/tmp/$$.log" if (-f "/tmp/$$.log");
+	system ("echo 'Starting: $name' >> /tmp/$$.log 2>/tmp/$$.err");
+	my $sth = $dbh_hits->prepare("UPDATE `database` SET status = 'wip', message = ? WHERE id = ?");
+	$sth->execute("$type being started", $name);
 	if ($type eq 'timetable') {
 		system ("cd /var/sif/sif-data; ./bin/timetable.sh $name >> /tmp/$$.log 2>/tmp/$$.err");
 	}
 	elsif ($type eq 'basic') {
 		system ("cd /var/sif/sif-data; ./bin/basic.sh $name >> /tmp/$$.log 2>/tmp/$$.err");
 	}
-	elsif ($type eq 'empty') {
+	else {
 		system ("cd /var/sif/sif-data; ./bin/empty.sh $name >> /tmp/$$.log 2>/tmp/$$.err");
 	}
-	else {
-		die "Type must be 'basic' or 'timetable' or 'empty'\n";
-	}
 
-	system ("cd /var/sif/sif-data; ./bin/create_app.pl $name >> /tmp/$$.log 2>/tmp/$$.err");
-	system ("cd /var/sif/sif-data; ./bin/create_entry.pl $name >> /tmp/$$.log 2>/tmp/$$.err");
+	$sth = $dbh_hits->prepare("UPDATE `database` SET status = 'wip', message = ? WHERE id = ?");
+	$sth->execute("$type being finished, starting permissions", $name);
+
+	# Create SIF Authentication Entry
+	$sth = $dbh_sif->prepare("INSERT INTO SIF3_APP_TEMPLATE (SOLUTION_ID, APPLICATION_KEY, PASSWORD, USER_TOKEN, AUTH_METHOD, ENV_TEMPLATE_ID) VALUES ('HITS', ?, ?, ?, 'Basic', 'HITS')");
+	$sth->execute($name, $name, $name);
+
+	$sth = $dbh_sif->prepare("INSERT INTO APPKEY_DB_URL_MAPPER (applicationKey, databaseUrl) VALUES (?, ?)");
+	$sth->execute($name, $name);
+	$dbh_sif->commit();
+
+	
+	$sth = $dbh_hits->prepare("UPDATE `database` SET status = 'wip', message = ? WHERE id = ?");
+	$sth->execute("finsihed permissions", $name);
+	print STDERR "Complete Build $name\n";
 };
 if ($@) {
+	print STDERR "FAILED Build for $name = $@\n";
 	if ($encode eq 'json') {
 		# XXX Just update DB and exit
 		open (my $IN, "/tmp/$$.log");
@@ -124,6 +162,7 @@ if ($@) {
 
 		my $sth = $dbh_hits->prepare("UPDATE `database` SET status = 'error', message = ? WHERE id = ?");
 		$sth->execute(encode_entities($@ . $buffer, "\200-\377"), $name);
+		$dbh_hits->commit();
 		exit 0;
 	}
 	else {
@@ -131,22 +170,23 @@ if ($@) {
 		print "<pre>";
 		print encode_entities($@, "\200-\377");
 		print "</pre>";
+		exit 0;
 	}
 }
 
 open (my $IN, "/tmp/$$.log");
 my $buffer = "";
-my $token;
 while (<$IN>) {
 	$buffer .= $_;
-	if (/User Token = (.+)$/) {
-		$token = $1;
-	}
 }
+my $token = $name;
+print STDERR "Found token = $token\n";
 
 if ($encode eq 'json') {
+	print STDERR "Updating DB for $name to complete\n";
 	my $sth = $dbh_hits->prepare("UPDATE `database` SET status = 'complete', message = ?, token = ? WHERE id = ?");
 	$sth->execute(encode_entities($@ . $buffer, "\200-\377"), $token, $name);
+	$dbh_hits->commit();
 	exit 0;
 }
 else {
@@ -162,4 +202,5 @@ else {
 	print "LOG END</pre>\n";
 
 	print "</body></html>\n";
+	exit 0;
 }
