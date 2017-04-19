@@ -10,6 +10,12 @@ use Data::Random qw/:all/;
 use YAML;
 use DBI;
 
+# Global person createors etc
+my $randomperson = Data::RandomPerson->new();
+my $randomperson_female = Data::RandomPerson::Names::Female->new();
+my $randomperson_male = Data::RandomPerson::Names::Male->new();
+my (@postcodes) = create_postcodes();
+
 =head1 NAME
 
 SIF::Data - Create school info (Students, Staff, Schools, Timetables, etc)
@@ -40,15 +46,15 @@ Create National Schools Interoperability Program schema data (Students, Staff, S
 
 sub new {
 	my ($class, %opts) = @_;
- 
+
 	my $self = bless {}, ref($class) || $class;
- 
+
 #	$self->{template_path} = $opts{template_path} // $INCLUDE_PATH;
- 
+
 	return $self;
 }
 
-=head2 Connect to database 
+=head2 Connect to database
 
 =cut
 
@@ -94,8 +100,8 @@ sub create_database {
 	$dsn .= ';port='    . $config->{mysql_port} if (defined $config->{mysql_port});
 
 	my $dbh = DBI->connect(
-		$dsn, 
-		$config->{mysql_user}, 
+		$dsn,
+		$config->{mysql_user},
 		$config->{mysql_password},
 	 	{RaiseError => 1}
 	);
@@ -112,7 +118,7 @@ sub create_database {
 		$raw .= $_;
 	}
 	close $SQL;
-	
+
 	foreach my $row (split(/;/, $raw)) {
 		$row =~ s/^\s+//gs;	 $row =~ s/\s+$//gs;
 		next if (!$row);
@@ -160,15 +166,14 @@ sub make_new_id {
 sub create_school_name {
 	my ($self) = @_;
 
-	my $r = Data::RandomPerson->new();
-	my $p = $r->create();
+	my $p = $randomperson->create();
 	my @school_types = ("Academy", "Grammar", "College");
 	my $school_type = $school_types[rand @school_types];
 	my $school_name = "$p->{lastname} $school_type";
 	return $school_name
 }
 
-=head2 Create Local Id    
+=head2 Create Local Id
 
 =cut
 
@@ -178,7 +183,7 @@ sub create_localid {
 	return (int(rand(99999)) + 1000);
 }
 
-=head2 Create Student     
+=head2 Create Student
 
 =cut
 
@@ -205,21 +210,18 @@ sub create_StudentPersonal {
 	my @non_school_ed = ( 0,5,6,7,8 );
 	my @empl_type     = ( 1,2,3,4,8,9 );
 
-	my $r = Data::RandomPerson->new();
 	my @p;
 
-	$p[0] = $r->create();
+	$p[0] = $randomperson->create();
 	$data->{FamilyName} = $p[0]->{lastname};
-	$data->{GivenName}  = $p[0]->{firstname}; 
+	$data->{GivenName}  = $p[0]->{firstname};
 
 	if ($p[0]->{gender} eq 'f') {
 		$sex = 'Female';
-		$p[1] = Data::RandomPerson::Names::Female->new();
-		$data->{MiddleName} = $p[1]->get();
+		$data->{MiddleName} = $randomperson_female->get();
 	} else {
 		$sex = 'Male';
-		$p[1] = Data::RandomPerson::Names::Male->new();
-		$data->{MiddleName} = $p[1]->get();
+		$data->{MiddleName} = $randomperson_male->get();
 	}
 	if (int rand(10) == 1) {
 		$sex = 'Not Stated/Inadequately Described';
@@ -234,7 +236,7 @@ sub create_StudentPersonal {
 	$data->{StateProvinceId}             		  = int(rand(99999999)) + 1;		# TODO Unique to each Student
 	$data->{Sex}                = $self->map_codeset_value('Sex Code', $sex);
 	$data->{BirthDate}                            = create_birthdate($data->{yearlevel});
-	$data->{IndigenousStatus}                     = $self->map_codeset_value('Indigenous Status', $indigenous[int rand($#indigenous + 1)]); 
+	$data->{IndigenousStatus}                     = $self->map_codeset_value('Indigenous Status', $indigenous[int rand($#indigenous + 1)]);
 	$data->{CountryofBirth}                       = '1101';
 	$data->{MostRecent_YearLevel}                 = $data->{yearlevel};
 	$data->{MostRecent_Parent1Language}           = '1201';
@@ -246,8 +248,8 @@ sub create_StudentPersonal {
 	$data->{MostRecent_Parent1EmploymentType}     = $empl_type[int rand($#empl_type + 1)];
 	$data->{MostRecent_Parent2EmploymentType}     = $empl_type[int rand($#empl_type + 1)];
 	$data->{Email}                                = create_email(
-		$data->{GivenName}, 
-		$data->{MiddleName}, 
+		$data->{GivenName},
+		$data->{MiddleName},
 		$data->{FamilyName}
 	);
 
@@ -275,23 +277,20 @@ sub create_StaffPersonal {
 
 	my $sex;
 
-	my $r = Data::RandomPerson->new();
 	my @p;
 
-	$p[0] = $r->create();
+	$p[0] = $randomperson->create();
 	$data->{FamilyName} = $p[0]->{lastname};
-	$data->{GivenName}  = $p[0]->{firstname}; 
+	$data->{GivenName}  = $p[0]->{firstname};
 
 	if ($p[0]->{gender} eq 'f') {
 		$sex = 'Female';
-		$p[1] = Data::RandomPerson::Names::Female->new();
-		$data->{MiddleName} = $p[1]->get();
+		$data->{MiddleName} = $randomperson_female->get();
 		$data->{Salutation} = create_salutation($sex);
 
 	} else {
 		$sex = 'Male';
-		$p[1] = Data::RandomPerson::Names::Male->new();
-		$data->{MiddleName} = $p[1]->get();
+		$data->{MiddleName} = $randomperson_male->get();
 		$data->{Salutation} = create_salutation($sex);
 	}
 
@@ -305,8 +304,8 @@ sub create_StaffPersonal {
 	$data->{EmploymentStatus}   = 'A';
 	$data->{PhoneNumber}        = '';
 	$data->{Email}              = create_email(
-		$data->{GivenName}, 
-		$data->{MiddleName}, 
+		$data->{GivenName},
+		$data->{MiddleName},
 		$data->{FamilyName}
 	);
 
@@ -345,11 +344,11 @@ sub create_salutation {
 	my @salutation;
 
 	if ($sex eq 'Male') {
-		@salutation = qw( Mr Dr Mr );		
+		@salutation = qw( Mr Dr Mr );
 	}
 
 	if ($sex eq 'Female') {
-		@salutation = qw( Mrs Dr Ms Miss );		
+		@salutation = qw( Mrs Dr Ms Miss );
 	}
 
 	return ($salutation[int rand($#salutation + 1)]);
@@ -370,7 +369,7 @@ sub create_email {
 		. $domain[int rand($#domain + 1)]
 }
 
-=head2 Create Postcodes   
+=head2 Create Postcodes
 
 =cut
 
@@ -454,8 +453,8 @@ sub create_financial_class {
 	$data->{description} = undef;
 
 	my @types = (
-		"Asset", 
-		"Liability", 
+		"Asset",
+		"Liability",
 		"Revenue",
 		"Expense",
 	);
@@ -502,7 +501,7 @@ sub create_locations {
 	return $data;
 }
 
-=head2 Create Vendor   
+=head2 Create Vendor
 
 =cut
 
@@ -511,29 +510,26 @@ sub create_vendor {
 
 	$data->{refid} = $self->make_new_id;
 
-	my $r = Data::RandomPerson->new();
-	my $p = $r->create();
+	my $p = $randomperson->create();
 	my @types = ("Company", "Pty Ltd", "Ltd", "Pty", "Inc");
 	my $vendor_type = $types[rand @types];
 	my $vendor_name = "$p->{lastname} $vendor_type";
 	$data->{name} = $vendor_name;
 
 	my @p;
-	$p[0] = $r->create();
+	$p[0] = $randomperson->create();
 	$data->{familyname} = $p[0]->{lastname};
-	$data->{givenname}  = $p[0]->{firstname}; 
+	$data->{givenname}  = $p[0]->{firstname};
 
 	if ($p[0]->{gender} eq 'f') {
-		$p[1] = Data::RandomPerson::Names::Female->new();
-		$data->{middlename} = $p[1]->get();
+		$data->{middlename} = $randomperson_female->get();
 	} else {
-		$p[1] = Data::RandomPerson::Names::Male->new();
-		$data->{middlename} = $p[1]->get();
+		$data->{middlename} = $randomperson_male->get();
 	}
 
 	$data->{position}      = 'Sales';
 	$data->{role}          = 'Sales';
-	
+
 	my @domain = qw/com.au com com.au org.au/;
 
 	my $email =  ''
@@ -569,23 +565,20 @@ sub create_studen_contact {
 
 	my $sex;
 
-	my $r = Data::RandomPerson->new();
 	my @p;
 
-	$p[0] = $r->create();
+	$p[0] = $randomperson->create();
 	$data->{familyname} = $p[0]->{lastname};
-	$data->{givenname}  = $p[0]->{firstname}; 
+	$data->{givenname}  = $p[0]->{firstname};
 
 	if ($p[0]->{gender} eq 'f') {
 		$sex = 'Female';
-		$p[1] = Data::RandomPerson::Names::Female->new();
-		$data->{middlename} = $p[1]->get();
+		$data->{middlename} = $randomperson_female->get();
 		$data->{title} = create_salutation($sex);
 
 	} else {
 		$sex = 'Male';
-		$p[1] = Data::RandomPerson::Names::Male->new();
-		$data->{middlename} = $p[1]->get();
+		$data->{middlename} = $randomperson_male->get();
 		$data->{title} = create_salutation($sex);
 	}
 
@@ -594,10 +587,10 @@ sub create_studen_contact {
 	$data->{sex} = $self->map_codeset_value('Sex Code', $sex);
 	$data->{phonenumbertype} = '0096';
 	$data->{phonenumber} = $self->create_phone_number();
-	
+
 	$data->{email}  = create_email(
-		$data->{givenname}, 
-		$data->{middlename}, 
+		$data->{givenname},
+		$data->{middlename},
 		$data->{familyname}
 	);
 	$data->{emailtype} = '01';
@@ -672,21 +665,19 @@ sub random_codeset_key {
 	return $vals[rand @vals];
 }
 
-=head2 Create Address     
+=head2 Create Address
 
 =cut
 
 sub create_address{
 	my ($self) = @_;
 
-	my (@postcodes) = create_postcodes();
 
 	my $address = ();
-	my $r = Data::RandomPerson->new();
-	my $p = $r->create();
+	my $p = $randomperson->create();
 	my @road_types = (
-		"Avenue", 
-		"Boulevard", 
+		"Avenue",
+		"Boulevard",
 		"Cove", "Court", "Crescent",
 		"Drive",
 		"Esplanade",
@@ -725,7 +716,7 @@ sub make_room_size {
 sub make_room_type {
 	my ($self) = @_;
 
-	my @types = ("Classroom", "Classroom", "Classroom", "Classroom", 
+	my @types = ("Classroom", "Classroom", "Classroom", "Classroom",
 	"Classroom", "Classroom", "Art", "Basketball court");
 	return $types[rand @types];
 }
@@ -872,7 +863,7 @@ sub create_OtherCode {
 	my ($self) = @_;
 
 	my @othercodes;
-	my $csv = Text::CSV->new ( { binary => 1 } ) 
+	my $csv = Text::CSV->new ( { binary => 1 } )
 	  or die "Cannot use CSV: ".Text::CSV->error_diag ();
 
 	my $data_dir  = './data';
@@ -930,7 +921,7 @@ sub create_calendar {
 					PointsPossible, CreateDate, DueDate, Weight,
 					MaxAttemptsAllowed, DetailedDescriptionURL
 				)
-			VALUES 
+			VALUES
 				(
 					?, ?, ?, ?, ?, ?, ?, ?, ?, ?
 				)
@@ -957,7 +948,7 @@ sub create_grading_assignment {
 
 	my @GradingCategory = qw/quiz essay project/;
 
-	return ( 
+	return (
 		make_new_id(),
 		$tgId,
 		$GradingCategory[int(rand(3))],
@@ -979,7 +970,7 @@ sub create_grading_assignment {
   			RefId, StudentPersonal_RefId, TeachingGroup_RefId, GradingAssignment_RefId,
   			ScorePoints, ScorePercent, ScoreLetter, ScoreDescription
   		)
-  	VALUES 
+  	VALUES
   		(
   			?, ?, ?, ?, ?, ?, ?, ?
   		)
@@ -996,7 +987,7 @@ sub create_grading_assignment {
 sub create_grading_assignment_score {
 	my ($self, $stId, $tgId, $gaId) = @_;
 
-	return ( 
+	return (
 		make_new_id(),
 		$stId,
 		$tgId,
@@ -1016,16 +1007,16 @@ Generate a random Australian phone number
   my $sd = SIF::Data->new();
 
   # Generate a number with no area code
-  
+
   my $phone_number = $sd->create_phone_number();
 
   # Generate a number with an area code
-  
+
   $phone_number = $sd->create_phone_number(1);
 
 =cut
 
-sub create_phone_number { 
+sub create_phone_number {
 	my ($self, $area_code_flag) = @_;
 
 	my @area_codes = (
@@ -1033,7 +1024,7 @@ sub create_phone_number {
 		'03', # 	South East        - Victoria & Tasmania
 		'04', # 	Mobile Telephones - Australia-wide
 		'07', # 	North East        - Queensland
-		'08', # 	Central & West    - Western Australia, South Australia & Northern Territory 
+		'08', # 	Central & West    - Western Australia, South Australia & Northern Territory
 	);
 
 	my $area_code = '';
@@ -1061,7 +1052,7 @@ From: http://www.perlmonks.org/?node_id=233028
 
 =cut
 
-sub _rndStr { 
+sub _rndStr {
 	join'', @_[ map{ rand @_ } 1 .. shift ];
 }
 
