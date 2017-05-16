@@ -40,7 +40,7 @@ if (defined $create_db) {
 }
 
 my ($config, $dbh, $dsn) = $sd->db_connect($db_name);
-print "DSN = $dsn\n" unless ($silent);
+# print "DSN = $dsn\n" unless ($silent);
 
 if ((defined $ttable) && ($ttable eq 'first')) {
 	$school_id = first_school();
