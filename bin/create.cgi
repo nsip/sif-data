@@ -143,6 +143,11 @@ eval {
 	my $teachers = ($optiondata->{teachers}[0] || 0) . ".." . ($optiondata->{teachers}[1] || 0);
 	my $rooms = ($optiondata->{classrooms}[0] || 0) . ".." . ($optiondata->{classrooms}[1] || 0);
 
+    my $teachinggroups = "";
+	if ($optiondata->{teachinggroups}) {
+        $teachinggroups = "--create-teaching-groups ";
+    }
+
 	# XXX Check all the values above so I can throw sensible errors !
 
     chdir $root;
@@ -159,32 +164,64 @@ eval {
 		. "--create-students=$students "
 		. "--create-staff=$teachers "
 		. "--create-rooms=$rooms "
-		. "--create-teaching-groups "
+		. $teachinggroups
 		. ">> /tmp/$$.log 2>>/tmp/$$.err"
 	);
-	# =7..20
-	#echo "CREATE TIME TABLE"
-	#perl $root/bin/create_sif_data.pl --database="$1" --create-time-table=first
-	#echo "CREATE GRADING"
-	#perl $root/bin/create_sif_data.pl --database="$1" --create-grading
-	#echo "CREATE CONTACTS"
-	#perl $root/bin/create_sif_data.pl --database="$1" --create-student-contacts
-	#echo "CREATE ACCOUNTS"
-	#perl $root/bin/create_sif_data.pl --database="$1" --create-accounts=8..16 --create-vendors=8..16 --create-debtors=8..16
 
-	#if ($type eq 'timetable') {
-	#	system ("cd /var/sif/sif-data; ./bin/timetable.sh $name >> /tmp/$$.log 2>/tmp/$$.err");
-	#}
-	#elsif ($type eq 'basic') {
-	#	system ("cd /var/sif/sif-data; ./bin/basic.sh $name >> /tmp/$$.log 2>/tmp/$$.err");
-	#}
-	#elsif ($type eq 'custom') {
-	#	system ("cd /var/sif/sif-data; ./bin/basic.sh $name >> /tmp/$$.log 2>/tmp/$$.err");
-	#}
-	#else {
-	#	system ("cd /var/sif/sif-data; ./bin/timetable.sh $name >> /tmp/$$.log 2>/tmp/$$.err");
-	#	# system ("cd /var/sif/sif-data; ./bin/empty.sh $name >> /tmp/$$.log 2>/tmp/$$.err");
-	#}
+	if ($optiondata->{timetable}) {
+        #perl $root/bin/create_sif_data.pl --database="$1" --create-time-table=first
+        system ("echo 'CREATE TIMETABLE' >> /tmp/$$.log 2>>/tmp/$$.err");
+        system (
+            "perl bin/create_sif_data.pl "
+            . "--database='$name' "
+            . "--create-time-table=first "
+            . ">> /tmp/$$.log 2>>/tmp/$$.err"
+        );
+    }
+
+	if ($optiondata->{grading}) {
+        #perl $root/bin/create_sif_data.pl --database="$1" --create-grading
+        system ("echo 'CREATE GRADING' >> /tmp/$$.log 2>>/tmp/$$.err");
+        system (
+            "perl bin/create_sif_data.pl "
+            . "--database='$name' "
+            . "--create-grading "
+            . ">> /tmp/$$.log 2>>/tmp/$$.err"
+        );
+    }
+
+	if ($optiondata->{contacts}) {
+        #perl $root/bin/create_sif_data.pl --database="$1" --create-student-contacts
+        system ("echo 'CREATE STUDENT CONTACTS' >> /tmp/$$.log 2>>/tmp/$$.err");
+        system (
+            "perl bin/create_sif_data.pl "
+            . "--database='$name' "
+            . "--create-student-contacts "
+            . ">> /tmp/$$.log 2>>/tmp/$$.err"
+        );
+    }
+
+	if ($optiondata->{accounts}) {
+        #perl $root/bin/create_sif_data.pl --database="$1" --create-accounts=8..16 --create-vendors=8..16 --create-debtors=8..16
+        system ("echo 'CREATE ACCOUNTS' >> /tmp/$$.log 2>>/tmp/$$.err");
+        system (
+            "perl bin/create_sif_data.pl "
+            . "--database='$name' "
+            . "--create-student-contacts "
+            . "--create-accounts=8..16 "
+            . "--create-vendors=8..16 "
+            . "--create-debtors=8..16 "
+            . ">> /tmp/$$.log 2>>/tmp/$$.err"
+        );
+    }
+
+	if ($optiondata->{naplan}) {
+        # TODO nothing to do here yet? NAPLAN is extenal XML input?
+    }
+
+	if ($optiondata->{hmac}) {
+        # XXX Not done yet
+    }
 
 	system ("echo 'Update status = wip - starting permissions' >> /tmp/$$.log 2>>/tmp/$$.err");
 	$sth = $dbh_hits->prepare("UPDATE `database` SET status = 'wip', message = ? WHERE id = ?");
