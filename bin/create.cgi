@@ -8,6 +8,8 @@ use YAML;
 use JSON;
 
 $ENV{HOME} = "/var/sif/";
+# TODO export PERL5LIB=lib
+# $ENV{PERL5LIB} = "lib";
 
 param('form_field');
 $0 = "create.cgi - Start up";
@@ -15,7 +17,6 @@ $0 = "create.cgi - Start up";
 $| = 1;
 
 my $name = param('name') || shift;
-my $type = param('type') || 'timetable';
 my $encode = param('encode') || 'html';
 
 if ($encode eq 'json') {
@@ -41,13 +42,16 @@ my $dbh_sif = DBI->connect(
 	{RaiseError => 1, AutoCommit => 1}
 );
 
+my $options = "";
+my $optiondata = {};
+
 eval {
 	die "Must provide a name as a parameter\n" if ($name eq "");
 	die "Name must be a-z0-9\n" if ($name !~ /^[a-z0-9\-]+$/);
 
 #	"INSERT INTO `database` (account_id, id, name, status, options, `when`) VALUES (?,?,?,'wip', ?, NOW())",
 
-	my $sth = $dbh_hits->prepare("SELECT status FROM `database` WHERE id = ?");
+	my $sth = $dbh_hits->prepare("SELECT status, options, optiondata FROM `database` WHERE id = ?");
 	$sth->execute($name);
 	my $d = $sth->fetchrow_hashref;
 	if (!$d) {
@@ -63,6 +67,12 @@ eval {
 	#$sth = $dbh_hits->prepare("SELECT * FROM app WHERE id = ?");
 	#$sth->execute($name);
 	#die "$name already exists as an app\n" if ($sth->fetchrow_hashref);
+
+	# Keep otpions and optiondata - decoded for use below
+	$options = $d->{options};
+	if ($d->{optiondata}) {
+		$optiondata = from_json($d->{optiondata});
+	}
 };
 if ($@) {
 	if ($encode eq 'json') {
@@ -124,19 +134,53 @@ eval {
 	system ("echo 'Starting: $name' >> /tmp/$$.log 2>/tmp/$$.err");
 	my $sth = $dbh_hits->prepare("UPDATE `database` SET status = 'wip', message = ? WHERE id = ?");
 	$sth->execute("$type being started", $name);
-	if ($type eq 'timetable') {
-		system ("cd /var/sif/sif-data; ./bin/timetable.sh $name >> /tmp/$$.log 2>/tmp/$$.err");
-	}
-	elsif ($type eq 'basic') {
-		system ("cd /var/sif/sif-data; ./bin/basic.sh $name >> /tmp/$$.log 2>/tmp/$$.err");
-	}
-	elsif ($type eq 'custom') {
-		system ("cd /var/sif/sif-data; ./bin/basic.sh $name >> /tmp/$$.log 2>/tmp/$$.err");
-	}
-	else {
-		system ("cd /var/sif/sif-data; ./bin/timetable.sh $name >> /tmp/$$.log 2>/tmp/$$.err");
-		# system ("cd /var/sif/sif-data; ./bin/empty.sh $name >> /tmp/$$.log 2>/tmp/$$.err");
-	}
+
+	# TODO export PERL5LIB=lib
+
+	my $schools = $options->{schools} || 0;
+	my $students = ($options->{students}[0] || 0). ".." . ($options->{students}[1] || 0);
+	my $teachers = ($options->{teachers}[0] || 0) . ".." . ($options->{teachers}[1] || 0);
+	my $rooms = ($options->{classrooms}[0] || 0) . ".." . ($options->{classrooms}[1] || 0);
+
+	# XXX Check all the values above so I can throw sensible errors !
+
+	# XXX Rather than redirect to file - just capture here !
+	system ("echo 'CREATE DB $name' >> /tmp/$$.log 2>/tmp/$$.err");
+	system ("perl bin/create_sif_data.pl --create-database='$name'");
+	system ("echo 'CREATE SCHOOLS, STUDENTS, STAFF, ROOMS >> /tmp/$$.log 2>/tmp/$$.err");
+	system (
+		"perl bin/create_sif_data.pl "
+		. "--database='$name' "
+		. "--create-schools=$schools "
+		. "--create-students=$students "
+		. "--create-staff=$staff "
+		. "--create-rooms=$rooms "
+		. "--create-teaching-groups "
+		. ">> /tmp/$$.log 2>/tmp/$$.err"
+	);
+	# =7..20
+	#echo "CREATE TIME TABLE"
+	#perl bin/create_sif_data.pl --database="$1" --create-time-table=first
+	#echo "CREATE GRADING"
+	#perl bin/create_sif_data.pl --database="$1" --create-grading
+	#echo "CREATE CONTACTS"
+	#perl bin/create_sif_data.pl --database="$1" --create-student-contacts
+	#echo "CREATE ACCOUNTS"
+	#perl bin/create_sif_data.pl --database="$1" --create-accounts=8..16 --create-vendors=8..16 --create-debtors=8..16
+
+	#if ($type eq 'timetable') {
+	#	system ("cd /var/sif/sif-data; ./bin/timetable.sh $name >> /tmp/$$.log 2>/tmp/$$.err");
+	#}
+	#elsif ($type eq 'basic') {
+	#	system ("cd /var/sif/sif-data; ./bin/basic.sh $name >> /tmp/$$.log 2>/tmp/$$.err");
+	#}
+	#elsif ($type eq 'custom') {
+	#	system ("cd /var/sif/sif-data; ./bin/basic.sh $name >> /tmp/$$.log 2>/tmp/$$.err");
+	#}
+	#else {
+	#	system ("cd /var/sif/sif-data; ./bin/timetable.sh $name >> /tmp/$$.log 2>/tmp/$$.err");
+	#	# system ("cd /var/sif/sif-data; ./bin/empty.sh $name >> /tmp/$$.log 2>/tmp/$$.err");
+	#}
 
 	$sth = $dbh_hits->prepare("UPDATE `database` SET status = 'wip', message = ? WHERE id = ?");
 	$sth->execute("$type being finished, starting permissions", $name);
@@ -149,7 +193,7 @@ eval {
 	$sth->execute($name, $name);
 	$dbh_sif->commit();
 
-	
+
 	$sth = $dbh_hits->prepare("UPDATE `database` SET status = 'wip', message = ? WHERE id = ?");
 	$sth->execute("finsihed permissions", $name);
 	print STDERR "Complete Build $name\n";

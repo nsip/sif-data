@@ -1,6 +1,9 @@
 #!/bin/sh
 export PERL5LIB=lib
 
+echo "DEPRECATED timetable"
+exit 1;
+
 # XXX /var/sif/sif-data
 #cd /home/scottp/nsip/sif-data
 #export HOME=/home/scottp
@@ -18,4 +21,3 @@ echo "CREATE CONTACTS"
 perl bin/create_sif_data.pl --database="$1" --create-student-contacts
 echo "CREATE ACCOUNTS"
 perl bin/create_sif_data.pl --database="$1" --create-accounts=8..16 --create-vendors=8..16 --create-debtors=8..16
-

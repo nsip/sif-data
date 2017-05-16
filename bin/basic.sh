@@ -1,6 +1,9 @@
 #!/bin/sh
 export PERL5LIB=lib
 
+echo "DEPRECATED basic"
+exit 1;
+
 #cd /home/scottp/nsip/sif-data
 #export HOME=/home/scottp
 
