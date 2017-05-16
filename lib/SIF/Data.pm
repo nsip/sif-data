@@ -10,6 +10,8 @@ use Data::Random qw/:all/;
 use YAML;
 use DBI;
 
+$ENV{TZ} = "UTC";
+
 # Global person createors etc
 my $randomperson = Data::RandomPerson->new();
 my $randomperson_female = Data::RandomPerson::Names::Female->new();
