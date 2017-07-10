@@ -155,11 +155,11 @@ eval {
 	# XXX Rather than redirect to file - just capture here !
 	system ("echo 'CREATE DB $name' >> /tmp/$$.log 2>>/tmp/$$.err");
 	# system ("echo 'perl bin/create_sif_data.pl --create-database=$name' >> /tmp/$$.log 2>>/tmp/$$.err");
-	system ("perl bin/create_sif_data.pl --create-database='$name' >> /tmp/$$.log 2>>/tmp/$$.err");
+	system ("perl bin/create_sif_data.pl --create-database=sif$name >> /tmp/$$.log 2>>/tmp/$$.err");
 	system ("echo 'CREATE SCHOOLS, STUDENTS, STAFF, ROOMS' >> /tmp/$$.log 2>>/tmp/$$.err");
 	system (
 		"perl bin/create_sif_data.pl "
-		. "--database='$name' "
+		. "--database=sif$name "
 		. "--create-schools=$schools "
 		. "--create-students=$students "
 		. "--create-staff=$teachers "
@@ -173,7 +173,7 @@ eval {
         system ("echo 'CREATE TIMETABLE' >> /tmp/$$.log 2>>/tmp/$$.err");
         system (
             "perl bin/create_sif_data.pl "
-            . "--database='$name' "
+            . "--database=sif$name "
             . "--create-time-table=first "
             . ">> /tmp/$$.log 2>>/tmp/$$.err"
         );
@@ -184,7 +184,7 @@ eval {
         system ("echo 'CREATE GRADING' >> /tmp/$$.log 2>>/tmp/$$.err");
         system (
             "perl bin/create_sif_data.pl "
-            . "--database='$name' "
+            . "--database=sif$name "
             . "--create-grading "
             . ">> /tmp/$$.log 2>>/tmp/$$.err"
         );
@@ -195,7 +195,7 @@ eval {
         system ("echo 'CREATE STUDENT CONTACTS' >> /tmp/$$.log 2>>/tmp/$$.err");
         system (
             "perl bin/create_sif_data.pl "
-            . "--database='$name' "
+            . "--database=sif$name "
             . "--create-student-contacts "
             . ">> /tmp/$$.log 2>>/tmp/$$.err"
         );
@@ -206,7 +206,7 @@ eval {
         system ("echo 'CREATE ACCOUNTS' >> /tmp/$$.log 2>>/tmp/$$.err");
         system (
             "perl bin/create_sif_data.pl "
-            . "--database='$name' "
+            . "--database=sif$name "
             . "--create-student-contacts "
             . "--create-accounts=8..16 "
             . "--create-vendors=8..16 "
@@ -238,7 +238,7 @@ eval {
 
 	system ("echo 'Inserting APPKEY_DB_URL_MAPPER' >> /tmp/$$.log 2>>/tmp/$$.err");
 	$sth = $dbh_sif->prepare("INSERT INTO APPKEY_DB_URL_MAPPER (applicationKey, databaseUrl) VALUES (?, ?)");
-	$sth->execute($name, $name);
+	$sth->execute($name, "sif$name");
 	$dbh_sif->commit();
 
 
