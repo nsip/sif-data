@@ -1444,11 +1444,13 @@ sub make_student_contacts {
 
 		# 20% extra record
 		if (rand(10) < 2) {
+            my @langs = ('0002', '7101', '2401', '2201', '5203', '4202');
 			$done_language++;
 			# print "Creating 2nd Language - $row->{RefId}\n";
+			my $loc = int(rand(scalar(@langs) - 1));
 			$insert_language->execute(
 				$row->{RefId},
-				int(rand(10000)),
+                $langs[$loc];
 				"2"
 			);
 		}
