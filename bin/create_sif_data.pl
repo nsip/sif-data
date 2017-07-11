@@ -1450,7 +1450,7 @@ sub make_student_contacts {
 			my $loc = int(rand(scalar(@langs) - 1));
 			$insert_language->execute(
 				$row->{RefId},
-                $langs[$loc];
+                $langs[$loc],
 				"2"
 			);
 		}
