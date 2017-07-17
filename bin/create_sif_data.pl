@@ -669,7 +669,7 @@ sub get_date_code {
 		}
 
 		#}
-
+	$code = 'INST' unless $code;
 	$value = '0.0' if ($towards eq 'No');
 
 	return ($code, $towards, $value);
