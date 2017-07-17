@@ -258,18 +258,23 @@ sub create_StudentPersonal {
 	return $data;
 }
 
+sub make_this_year() {
+	                my @a = localtime(time);
+	                return $a[5]+1900;
+}
+
+
 sub create_StudentSchoolEnrollment {
 	my ($self, $yearlevel) = @_;
 
-	# TODO: Replace fixed years with calculated year
 	my $data;
 	$data->{refid}          = $self->make_new_id;
 	$data->{MembershipType} = '01';
-	$data->{SchoolYear}     = '2014';
+	$data->{SchoolYear}     = make_this_year();
 	$data->{TimeFrame}      = 'C';
 	$data->{YearLevel}      = $yearlevel;
 	$data->{FTE}            = '1.0';
-	$data->{EntryDate}      = '2014-01-25';
+	$data->{EntryDate}      = $data->{SchoolYear} . '-01-25';
 
 	return $data;
 }
@@ -319,9 +324,9 @@ sub create_StaffAssignment {
 
 	# TODO: Replace fixed years with calculated year
 	$data->{refid} = $self->make_new_id;
-	$data->{SchoolYear}         = '2014';
+	$data->{SchoolYear}         = make_this_year();
 	$data->{Description}        = '';
-	$data->{PrimaryAssignment}  = 'U';
+	$data->{PrimaryAssignment}  = 'Y';
 	$data->{JobStartDate}       = '1990-01-01';
 	$data->{JobEndDate}         = '';
 	$data->{JobFunction}        = 'teacher';
@@ -786,7 +791,8 @@ sub make_cell_type{
 	my ($self) = @_;
 
 	my @celltypes = ("Teaching","Lunch");
-	my $i = rand @celltypes;
+	#my $i = rand @celltypes;
+	my $i = rand() < .9 ? 0 : 1;
 	return $celltypes[$i];
 }
 
@@ -843,8 +849,8 @@ sub create_SchoolInfo {
 	$data->{CampusSchoolCampusId}        = int(rand(4)) + 1;
 	$data->{CampusAdminStatus}           = rand(10) > 8 ? 'N' : 'Y';
 	$data->{CampusCampusType}            = $campus[int rand($#campus + 1)];
-	$data->{StateProvinceId}             = int(rand(4)) + 1;		# TODO Unique to each school
-	$data->{CommonwealthId}              = '8';
+	$data->{StateProvinceId}             = int(rand(1000)) + 1;		# TODO Unique to each school
+	$data->{CommonwealthId}              = int(rand(1000)) + 1;
 	$data->{SchoolSector}                = 'Gov';
 	$data->{OperationalStatus}           = 'O';
 	$data->{IndependentSchool}           = 'N';	# As per codeset
@@ -897,10 +903,10 @@ sub create_calendar {
 	my ($self, $data) = @_;
 
 	$data->{refid}          = $self->make_new_id();
-	$data->{schoolyear}     = '2014';
-	$data->{daysinsession}  = '67+67+68+75';
-	$data->{startdate}      = '2014-01-28';
-	$data->{enddate}        = '2014-12-19';
+	$data->{schoolyear}     = make_this_year();
+	$data->{daysinsession}  = 67+67+68+75;
+	$data->{startdate}      = $data->{schoolyear} . '-01-28';
+	$data->{enddate}        = $data->{schoolyear} . '-12-19';
 
 	return $data;
 }
