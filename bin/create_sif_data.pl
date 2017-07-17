@@ -604,6 +604,7 @@ sub get_date_code {
 	my $towards = 'Yes';
 	my $value = '1.0';
 
+=pod
 	if ($date eq '2014-01-28') {
 		$code = '0845';
 		$towards = 'No';
@@ -616,10 +617,26 @@ sub get_date_code {
 		$code = '0846';
 		$towards = 'No';
 	}
+=cut
+	#quick and dirty: no accounting for weekday/weekend
+	if $date =~ m/-01-26$/ {
+		$code = '0845';
+		$towards = 'No';
+	}
+	# arbitrary Easter: no accounting for movable feasts
+	if $date =~ m/-04-18$/ {
+		$code = '0845';
+		$towards = 'No';
+	}
+	if ($date =~ m/-04-25$/) {
+		$code = '0846';
+		$towards = 'No';
+	}
 
 	my ($syear, $smth, $sday) = split('-', $date);
 
-	if ($syear eq '2014') {
+	#if ($syear eq '2014') {
+		# generalise to all years; quick and dirty fix for now
 		if ($smth eq '04') {
 			if (($sday >= '05') && ($sday <= '21')) {
 				$code = '0846';
@@ -651,7 +668,7 @@ sub get_date_code {
 			}
 		}
 
-	}
+		#}
 
 	$value = '0.0' if ($towards eq 'No');
 
@@ -973,6 +990,9 @@ sub make_groups {
 					}
 
 					for my $i (1..6) {
+						# Do not create a teaching group with no students
+						next unless ((defined $populate[$s]) && ($i == $populate[$s]) and $studentg[$s]);
+
 						my $name = $year . chr(64 + $i) . " $longname";
 
 						# Insert TeachingGroupInfo
@@ -992,6 +1012,9 @@ sub make_groups {
 			}
 
 			for my $i (1..6) {
+				# Do not create a teaching group with no students
+				next unless ($assigned[$i]);
+
 				my $name = $year . chr(64 + $i);
 
 				# Insert TeachingGroupInfo
@@ -1403,11 +1426,14 @@ sub make_student_contacts {
 			$relationship = "0$relationship" if ($relationship < 10);
 			$insert_contact->execute(
 				$refid, int(rand(1000000)),
-				$mf ? "Mr" : "Ms", "First", "Last", "First", "Last",
+				$mf ? "Mr" : "Ms", 
+				"First", "Last", "First", "Last", # mpf
 				$mf ? 1 : 2,
-				"0096", int(rand(100000000)),
+				"0096", 
+				int(rand(90000000)) + 9999999, # make sure no initial zero in phone number
 				'email@somewhere.com', "01",
-				int(rand(5)), int(rand(4) + 4), int(rand(4)) # XXX Note wrong... see #133
+				int(rand(5)), int(rand(4) + 5), int(rand(4)+1) # corrected
+
 			);
 
 			$insert_relationship->execute(
@@ -1415,7 +1441,8 @@ sub make_student_contacts {
 				$refid2, $row->{RefId}, $refid,
 				$relationship,
 				# (see #XXX) $relationship == 1 ? ( $mf ? "Parent1" : "Parent2") : "",
-				['Y','N','U','X']->[int(rand(4))],
+				#['Y','N','U','X']->[int(rand(4))],
+				rand(10) < 8 ? 'Y' : 'N',
 				rand(10) < 9 ? 'Y' : 'N', rand(10) < 9 ? 'Y' : 'N', rand(10) < 9 ? 'Y' : 'N',
 				rand(10) < 9 ? 'Y' : 'N', rand(10) < 9 ? 'Y' : 'N', rand(10) < 9 ? 'Y' : 'N', rand(10) < 9 ? 'Y' : 'N',
 				rand(10) < 9 ? 'Y' : 'N', rand(10) < 9 ? 'Y' : 'N', rand(10) < 9 ? 'Y' : 'N',
@@ -1427,7 +1454,7 @@ sub make_student_contacts {
 		# print "Creating address - $row->{RefId}\n";
 		$insert_address->execute(
 			$row->{RefId},
-			"Line1",
+			"Line1",	# mpf
 			"City1",
 			"StatePrivince",
 			"PostalCode"
@@ -1971,7 +1998,7 @@ sub make_ttable {
 		my $schoolid = $row->{RefId};
 
 		my $refid = $sd->make_new_id();
-		my $schoolyear = "2014"; # make_new_year();
+		my $schoolyear = make_this_year();
 		my $localid = $sd->create_localid();
 		my $title = "Timetable" . $refid;
 		my $dayspercycle = $sd->make_days_per_cycle();
@@ -2106,7 +2133,7 @@ sub make_timetable_subject {
 	});
 	$sth->execute(
 		$refId, $subjectid, $acyear, "Faculty of $longname",
-		$shortname, $longname, $subjecttype, $school_id, '2014',
+		$shortname, $longname, $subjecttype, $school_id, make_this_year(),
 		$size, $size, int( rand(2) + 1)
 	);
 
@@ -2118,6 +2145,11 @@ sub make_timetable_subject {
 	$sth1->execute($refId, $other_code, $code_set);
 
 	return $refId;
+}
+
+sub make_this_year() {
+	        my @a = localtime(time);
+		return $a[5]+1900;
 }
 
 sub validate_school_id {
