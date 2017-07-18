@@ -604,27 +604,26 @@ sub get_date_code {
 	my $towards = 'Yes';
 	my $value = '1.0';
 
-=pod
-	if ($date eq '2014-01-28') {
-		$code = '0845';
-		$towards = 'No';
-	}
-	if ($date eq '2014-04-18') {
-		$code = '0846';
-		$towards = 'No';
-	}
-	if ($date eq '2014-04-25') {
-		$code = '0846';
-		$towards = 'No';
-	}
-=cut
+	#if ($date eq '2014-01-28') {
+	#	$code = '0845';
+	#	$towards = 'No';
+	#}
+	#if ($date eq '2014-04-18') {
+	#	$code = '0846';
+	#	$towards = 'No';
+	#}
+	#if ($date eq '2014-04-25') {
+	#	$code = '0846';
+	#	$towards = 'No';
+	#}
+
 	#quick and dirty: no accounting for weekday/weekend
-	if $date =~ m/-01-26$/ {
+	if ($date =~ m/-01-26$/) {
 		$code = '0845';
 		$towards = 'No';
 	}
 	# arbitrary Easter: no accounting for movable feasts
-	if $date =~ m/-04-18$/ {
+	if ($date =~ m/-04-18$/) {
 		$code = '0845';
 		$towards = 'No';
 	}
