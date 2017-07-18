@@ -1013,6 +1013,7 @@ sub make_groups {
 			for my $i (1..6) {
 				# Do not create a teaching group with no students
 				next unless ($assigned[$i]);
+                # print "XXX XXX XXX $schoolid - $i = " . Dumper($assigned[$i]) . "\n";
 
 				my $name = $year . chr(64 + $i);
 
