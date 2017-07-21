@@ -1697,8 +1697,8 @@ sub make_locations {
 			$location->{stateprov}, $location->{parent},
 			$schoolref, $location->{phone});
 
-		my $type = 'Location';
-		my $role = undef;
+		my $type = '0123';
+		my $role = '1075';
 		make_address($location->{refid}, $type, $role);
 
 		push @new_locations, $location->{refid};
@@ -1768,8 +1768,8 @@ sub make_vendors {
 
 		++$created;
 
-		my $type = 'Vendor';
-		my $role = undef;
+		my $type = '0123';
+		my $role = '1075';
 		make_address($vendor->{refid}, $type, $role);
 	}
 
