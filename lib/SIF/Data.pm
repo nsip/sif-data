@@ -18,6 +18,8 @@ my $randomperson_female = Data::RandomPerson::Names::Female->new();
 my $randomperson_male = Data::RandomPerson::Names::Male->new();
 my (@postcodes) = create_postcodes();
 
+my $start_local_id = (int(rand(99999)) + 1000);
+
 =head1 NAME
 
 SIF::Data - Create school info (Students, Staff, Schools, Timetables, etc)
@@ -179,10 +181,13 @@ sub create_school_name {
 
 =cut
 
+# XXX 
 sub create_localid {
 	my ($self) = @_;
-
-	return (int(rand(99999)) + 1000);
+	# NOTE: Local ID must be unique, random start and incremented during a
+	# session. Still could be an issue on multiple calls.
+	$start_local_id++;
+	return $start_local_id;
 }
 
 =head2 Create Student
