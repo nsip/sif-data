@@ -947,6 +947,8 @@ sub make_groups {
 			next if ($year > 12);
 
 			my ($students_ref, $num_students) = get_students($schoolid, $student_base, $year);
+			# if there are no students, don't bother creating teaching groups
+			next unless $num_students;
 
 			# assign students to TeachingGroups for years 1-9
 			my @assigned;
@@ -1107,6 +1109,22 @@ sub add_staff {
 	);
 
 	return();
+}
+
+sub add_given_staff_to_teaching_group ($$) {
+	my ($tgid, $staffid) = @_;
+        my $sth_tg_staff = $dbh->prepare(q{
+                INSERT INTO TeachingGroup_Teacher
+                (TeachingGroup_RefId, StaffPersonal_RefId,
+                TeacherAssociation, TeacherLocalId)
+                VALUES (?, ?, ?, ?)
+       });
+
+       $sth_tg_staff->execute(
+                $tgid, $staffid, '', ''
+       );
+
+       return();
 }
 
 sub get_subjects {
@@ -2075,8 +2093,10 @@ sub make_timetable_cell {
 		}
 	}
 
-	my $tgid = make_teaching_group($school, $rmid);;
-
+	my $yrlvl = int(rand(12)+1);
+	my $tgid = make_teaching_group($school, $rmid, $yrlvl . chr(65+int(rand(10))), $yrlvl);;
+	add_given_staff_to_teaching_group($tgid, $staffid);
+	add_random_students_to_teaching_group($tgid, $school, 20, $yrlvl);
 	my $celltype = $sd->make_cell_type();
 
 	# NOTE: Might need a SchoolInfo_RefId - TBC Ben/Scott
@@ -2090,11 +2110,23 @@ sub make_timetable_cell {
 	return $done;
 }
 
+sub add_random_students_to_teaching_group($$$$) {
+	my ($tgid, $schoolid, $studentnum, $yearlevel) = @_;
+	my ($students_input, $studentcount) = get_students($schoolid, $studentnum * 10, $yearlevel);
+	my @students = ();
+	my $i;
+	for($i = 0; $i < $studentnum; $i++) {
+		push @students, @$students_input[int(rand($studentcount))];
+	}
+	add_students($tgid, @students);
+}
+
 sub make_timetable_day {
 	my ($dayid, $ttid) = @_;
 
 	my @days = ("Monday","Tuesday","Wednesday","Thursday","Friday");
-	my $daytitle = $days[$dayid % @days];
+	my $daytitle ;
+	$daytitle = $days[$dayid % @days];
 	my $stmt = "INSERT INTO TimeTable_Day (
 		TimeTable_RefId, DayId, DayTitle) Values(?,?,?)";
 	my $sth0 = $dbh->prepare($stmt);
