@@ -2118,7 +2118,7 @@ sub add_random_students_to_teaching_group($$$$) {
 	for($i = 0; $i < $studentnum; $i++) {
 		push @students, @$students_input[int(rand($studentcount))];
 	}
-	add_students($tgid, @students);
+	add_students($tgid, \@students);
 }
 
 sub make_timetable_day {
