@@ -396,7 +396,7 @@ CREATE TABLE IF NOT EXISTS TimeTable_Period (
 
 -- ALTER TABLE `TimeTable_Period`
 -- DROP FOREIGN KEY `TimeTable_Period_ibfk_1`;
-ADD INDEX `TimeTable_Period_ibfk_1_idx` (`TimeTable_Day_Id` ASC);
+-- ADD INDEX `TimeTable_Period_ibfk_1_idx` (`TimeTable_Day_Id` ASC);
 
 CREATE TABLE IF NOT EXISTS TimeTableCell (
 	RefId varchar(36) UNIQUE,
