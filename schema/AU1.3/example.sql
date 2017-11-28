@@ -332,6 +332,7 @@ CREATE TABLE IF NOT EXISTS TimeTableSubject_OtherCodeList (
 CREATE TABLE IF NOT EXISTS TeachingGroup (
 	RefId varchar(36) UNIQUE,
 	-- ShortName, LongName etc?
+	TimeTableSubject_RefId VARCHAR(36) NULL,
 	ShortName varchar(200),
 	LongName varchar(200),
 	LocalId varchar(200),
@@ -340,6 +341,7 @@ CREATE TABLE IF NOT EXISTS TeachingGroup (
 	KLA varchar(100),
 	FOREIGN KEY (SchoolInfo_RefId) REFERENCES SchoolInfo(RefId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 
 CREATE TABLE IF NOT EXISTS TeachingGroup_Student (
 	TeachingGroup_RefId varchar(36),
@@ -372,6 +374,7 @@ CREATE TABLE IF NOT EXISTS TimeTable (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS TimeTable_Day (
+	id INT(11) NOT NULL AUTO_INCREMENT FIRST PRIMARY KEY,
 	TimeTable_RefId varchar(36) NOT NULL,
 	DayId varchar(200) NOT NULL,
 	DayTitle varchar(200) NOT NULL,
@@ -379,6 +382,8 @@ CREATE TABLE IF NOT EXISTS TimeTable_Day (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS TimeTable_Period (
+	id INT(11) NOT NULL AUTO_INCREMENT FIRST PRIMARY KEY,
+	TimeTable_Day_Id INT(11) NOT NULL,
 	TimeTable_RefId varchar(36) NOT NULL,
 	DayId varchar(200) NOT NULL,
 	PeriodId varchar(200) NOT NULL,
@@ -386,8 +391,12 @@ CREATE TABLE IF NOT EXISTS TimeTable_Period (
 	BellPeriod varchar(100),
 	StartTime varchar(100),
 	EndTime varchar(100),
-	FOREIGN KEY (TimeTable_RefId) REFERENCES TimeTable(RefId)
+	FOREIGN KEY (TimeTable_Day_Id) REFERENCES TimeTableDay(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ALTER TABLE `TimeTable_Period`
+-- DROP FOREIGN KEY `TimeTable_Period_ibfk_1`;
+ADD INDEX `TimeTable_Period_ibfk_1_idx` (`TimeTable_Day_Id` ASC);
 
 CREATE TABLE IF NOT EXISTS TimeTableCell (
 	RefId varchar(36) UNIQUE,
