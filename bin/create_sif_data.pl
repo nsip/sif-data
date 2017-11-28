@@ -2027,9 +2027,9 @@ sub make_ttable {
 		$sth->execute($refid, $schoolid, $schoolyear, $localid, $title,
 			$dayspercycle, $periodspercycle);
 		for (my $i = 0; $i < $dayspercycle; $i++){
-			make_timetable_day($i,$refid);
+			my $day_id = make_timetable_day($i,$refid);
 			for (my $j = 0; $j < $periodspercycle; $j++){
-				make_timetable_period($refid,$i,$j);
+				make_timetable_period($day_id, $refid,$i,$j);
 				my $subid = make_timetable_subject($schoolid);
 				my $done = make_timetable_cell($refid, $subid, $schoolid, $i, $j);
 				$cells += $done;
@@ -2131,16 +2131,17 @@ sub make_timetable_day {
 		TimeTable_RefId, DayId, DayTitle) Values(?,?,?)";
 	my $sth0 = $dbh->prepare($stmt);
 	$sth0->execute($ttid, $dayid, $daytitle);
+	return $dbh->last_insert_id( undef, undef, undef, undef );
 }
 
 sub make_timetable_period {
-	my ($ttid, $dayid, $periodid,) = @_;
+	my ($day_id, $ttid, $dayid, $periodid,) = @_;
 
 	my @times = ("9AM","10AM","11AM","12PM","1PM","2PM","3PM");
 	my $periodtitle =
-	my $sth = $dbh->prepare("INSERT INTO TimeTable_Period (TimeTable_RefId,
-		DayId, PeriodId, PeriodTitle) Values(?,?,?,?)");
-	$sth->execute($ttid,$dayid,$periodid,$times[$periodid % @times]);
+	my $sth = $dbh->prepare("INSERT INTO TimeTable_Period (TimeTable_Day_Id, TimeTable_RefId,
+		DayId, PeriodId, PeriodTitle) Values(?, ?,?,?,?)");
+	$sth->execute($day_id, $ttid,$dayid,$periodid,$times[$periodid % @times]);
 }
 
 sub make_timetable_subject {
