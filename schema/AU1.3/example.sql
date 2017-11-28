@@ -391,7 +391,7 @@ CREATE TABLE IF NOT EXISTS TimeTable_Period (
 	BellPeriod varchar(100),
 	StartTime varchar(100),
 	EndTime varchar(100),
-	FOREIGN KEY (TimeTable_Day_Id) REFERENCES TimeTableDay(id)
+	FOREIGN KEY (TimeTable_Day_Id) REFERENCES TimeTable_Day(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ALTER TABLE `TimeTable_Period`
