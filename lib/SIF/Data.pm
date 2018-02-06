@@ -97,7 +97,7 @@ sub create_database {
 
 	die "Bad db name" if ($db_name =~ m/[\/|\.|;|\s]+/);
 
-	my $config = YAML::LoadFile("/etc/nsip/nsip_sif_data");
+	my $config = YAML::LoadFile($ENV{NSIP_SIF_DATA} || "/etc/nsip/nsip_sif_data");
 
 	my $dsn = $config->{mysql_driver} . ':';
 	$dsn .= ';host='    . $config->{mysql_host} if (defined $config->{mysql_host});
