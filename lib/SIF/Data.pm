@@ -65,7 +65,7 @@ sub new {
 sub db_connect {
 	my ($self, $db_name) = @_;
 
-	my $config = YAML::LoadFile("/etc/nsip/nsip_sif_data");
+	my $config = YAML::LoadFile($ENV{NSIP_SIF_DATA} || "/etc/nsip/nsip_sif_data");
 
 	if (! defined $db_name) {
 		$db_name = $config->{mysql_database};
