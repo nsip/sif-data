@@ -13,6 +13,11 @@ Database Rules
 
 Basic Usage
 
+By default, configuration is read from /etc/nsip/nsip_sif_data; to override:
+````
+setenv NSIP_SIF_DATA "./nsip_sif_data"
+````
+
  Create a new database containing students etc
  * bin/create_sif_data.pl --create-database=MyNewDemo
  * bin/create_sif_data.pl --database=MyNewDemo --create-schools=1 --create-students=50..150
