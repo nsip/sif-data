@@ -7,7 +7,7 @@ use Data::UUID;
 
 my $app_id = shift || die("Must provide an APP ID to create for");
 
-my $config = YAML::LoadFile("/etc/nsip/nsip_sif_data");
+my $config = YAML::LoadFile(NSIP_SIF_DATA} || /etc/nsip/nsip_sif_data");
 
 # DATABASE
 my $dbh_hits = DBI->connect(

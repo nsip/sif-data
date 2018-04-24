@@ -2102,6 +2102,67 @@ sub make_address {
 	return;
 }
 
+sub get_or_make_subjects {
+  my ($school) = @_;
+                 my @subjects = ();
+                my $subj_sth = $dbh->prepare("SELECT * from TimeTableSubject WHERE SchoolInfo_RefId = \"$school\"");
+                $subj_sth->execute();
+                while (my $subjrow = $subj_sth->fetchrow_hashref) {
+                  push @subjects, $subjrow->{RefId};
+                }
+                unless (@subjects) {
+                  my ($ii, $subid);
+                  for ($ii=0; $ii<10;$ii++) {
+                  $subid = make_timetable_subject($school);
+                  push @subjects, $subid;
+                }
+              }
+        return @subjects;
+}
+
+sub get_or_make_groups {
+my ($school, $rooms) = @_;
+
+                 my @groups = ();
+                                 my $group_sth = $dbh->prepare("SELECT * from TeachingGroup WHERE SchoolInfo_RefId = \"$school\"");
+                $group_sth->execute();
+                while (my $row = $group_sth->fetchrow_hashref) {
+                  # there are no room IDs stored for teaching groups in the database! Forced to pick one at random
+                  push @groups, { refid => $row->{RefId}, yrlvl => $row->{SchoolYear}, rmid => $$rooms[int(rand(scalar @$rooms))] };
+                }
+                unless (@groups) {
+                  my ($ii, $subid);
+                  for ($ii=0; $ii<50;$ii++) {
+        my $yrlvl = int(rand(12)+1);
+        my $rmid = $$rooms[int(scalar @$rooms)];
+        my $tgid = make_teaching_group($school, $rmid, $yrlvl . chr(65+int(rand(10))), $yrlvl);;
+        # add_given_staff_to_teaching_group($tgid, $staffid);
+        add_random_students_to_teaching_group($tgid, $school, 20, $yrlvl);
+                  push @groups, { refid => $tgid, yrlvl => $yrlvl, rmid => $rmid };
+                }
+              }
+        return @groups;
+}
+
+sub get_or_make_rooms {
+  my ($school) = @_;
+
+  my @rooms = ();
+        my $select = "SELECT * FROM RoomInfo WHERE SchoolInfo_RefId = \"$school\"";
+        my $room_sth = $dbh->prepare($select);
+        $room_sth->execute();
+        my $rooms = 0;
+
+        while (my $row = $room_sth->fetchrow_hashref) {
+                push @rooms, $row->{RefId};
+        }
+        my $rmid;
+        unless (@rooms) {
+                my ($xxx, $roomid) = make_rooms(20, $school);
+        }
+        return @rooms;
+}
+
 sub make_ttable {
 	my ($school) = @_;
 
@@ -2122,6 +2183,10 @@ sub make_ttable {
 		my $title = "Timetable" . $refid;
 		my $dayspercycle = $sd->make_days_per_cycle();
 		my $periodspercycle = $sd->make_periods_per_cycle();
+                my @subjects = get_or_make_subjects($school);
+                my @rooms = get_or_make_rooms($school);
+                my @groups = get_or_make_groups($school, \@rooms);
+
 		my $sth = $dbh->prepare("INSERT INTO TimeTable(RefId,
 			SchoolInfo_RefId, SchoolYear, LocalId, Title,
 			DaysPerCycle,PeriodsPerCycle) Values (?,?,?,?,?,?,?)");
@@ -2131,8 +2196,11 @@ sub make_ttable {
 			my $day_id = make_timetable_day($i,$refid);
 			for (my $j = 0; $j < $periodspercycle; $j++){
 				make_timetable_period($day_id, $refid,$i,$j);
-				my $subid = make_timetable_subject($schoolid);
-				my $done = make_timetable_cell($refid, $subid, $schoolid, $i, $j);
+                                # my $subid = make_timetable_subject($schoolid);
+                                my $subid = $subjects[int(rand(scalar @subjects))];
+                                my $tgid = $groups[int(rand(scalar @groups))];
+                                my $rmid = $rooms[int(rand(scalar @rooms))];
+				my $done = make_timetable_cell($refid, $subid, $schoolid, $i, $j, $tgid, $$tgid{"rmid"});
 				$cells += $done;
 			}
 		}
@@ -2142,10 +2210,11 @@ sub make_ttable {
 }
 
 sub make_timetable_cell {
-	my ($ttid, $ttsid, $school, $dayid, $periodid) = @_;
+	my ($ttid, $ttsid, $school, $dayid, $periodid, $groupid, $rmid) = @_;
 
 	my $refid = $sd->make_new_id();
 
+=pod=
 	# Get or make room
 	my $select = "SELECT * FROM RoomInfo WHERE SchoolInfo_RefId = \"$school\"";
 	my $room_sth = $dbh->prepare($select);
@@ -2168,9 +2237,10 @@ sub make_timetable_cell {
 			++$c;
 		}
 	}
+=cut=
 
 	# Get or make staff
-	$select = "SELECT * FROM StaffPersonal WHERE SchoolInfo_RefId = \"$school\"";
+	my $select = "SELECT * FROM StaffPersonal WHERE SchoolInfo_RefId = \"$school\"";
 
 	my $staff_sth = $dbh->prepare($select);
 	$staff_sth->execute();
@@ -2194,10 +2264,13 @@ sub make_timetable_cell {
 		}
 	}
 
-	my $yrlvl = int(rand(12)+1);
-	my $tgid = make_teaching_group($school, $rmid, $yrlvl . chr(65+int(rand(10))), $yrlvl);;
-	add_given_staff_to_teaching_group($tgid, $staffid);
-	add_random_students_to_teaching_group($tgid, $school, 20, $yrlvl);
+        #my $yrlvl = int(rand(12)+1);
+        #my $tgid = make_teaching_group($school, $rmid, $yrlvl . chr(65+int(rand(10))), $yrlvl);;
+        #add_given_staff_to_teaching_group($tgid, $staffid);
+        #add_random_students_to_teaching_group($tgid, $school, 20, $yrlvl);
+        my $yrlvl = $$groupid{"yrlvl"};
+        my $tgid = $$groupid{"refid"};
+        add_given_staff_to_teaching_group($tgid, $staffid);
 	my $celltype = $sd->make_cell_type();
 
 	# NOTE: Might need a SchoolInfo_RefId - TBC Ben/Scott

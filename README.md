@@ -13,6 +13,11 @@ Database Rules
 
 Basic Usage
 
+By default, configuration is read from /etc/nsip/nsip_sif_data; to override:
+````
+setenv NSIP_SIF_DATA "./nsip_sif_data"
+````
+
  Create a new database containing students etc
  * bin/create_sif_data.pl --create-database=MyNewDemo
  * bin/create_sif_data.pl --database=MyNewDemo --create-schools=1 --create-students=50..150
@@ -41,3 +46,20 @@ XML Version
 		. Test it works directly with SIF
 	- Queue
 		. Choose the
+
+
+Config Example
+
+mysql_dsn: dbi:mysqlPP:database=test_js1;host=xxx
+mysql_database: xxx
+mysql_server: xxx
+mysql_user: xxx
+mysql_password: xxx
+mysql_dsn_hits: dbi:mysqlPP:database=xxx;host=xxx
+mysql_dsn_sif: dbi:mysqlPP:database=xxx;host=xxx
+mysql_dsn_template: dbi:mysqlPP:database=TEMPLATE;host=xxx
+
+mysql_driver: dbi:mysqlPP
+mysql_host: xxx
+mysql_user:  xxx
+mysql_password:  xxx

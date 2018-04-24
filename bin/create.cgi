@@ -29,7 +29,7 @@ else {
 	print "<h1>Creating/Checking = $name</h1>";
 }
 
-my $config = YAML::LoadFile("/etc/nsip/nsip_sif_data");
+my $config = YAML::LoadFile($ENV{NSIP_SIF_DATA}||"/etc/nsip/nsip_sif_data");
 my $dbh_hits = DBI->connect(
 	$config->{mysql_dsn_hits},
 	$config->{mysql_user},
