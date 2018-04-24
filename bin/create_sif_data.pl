@@ -1056,6 +1056,7 @@ sub make_scheduled_activities {
         my ($students, $school) = @_;
 
         my $cnt = 0;
+        my $activities_cnt = 0;
 
         # Get School Info
         my $school_sth;
@@ -1066,20 +1067,28 @@ sub make_scheduled_activities {
         }
         $school_sth->execute();
 
+        # presupposes there is a populated timetable for each school
         while (my $row = $school_sth->fetchrow_hashref) {
                 my $schoolid = $row->{RefId};
+                my $num_students = get_range($students);
+                my ($students_ref, $num_students1) = get_students($schoolid, $num_students, undef);
+                my (@staff) = get_staff($schoolid, 1, $num_students1/10 + 1);
+                for(my $i=0; $i<$num_students; $i++) {
                 # Get the timetable
-                my @ttable = get_cells($schoolid, -1);
-                my $i = int(rand(scalar @ttable));
+                my ($ttable, $cellcount) = get_cells($schoolid, -1);
+                my $i = int(rand(scalar @$ttable));
                 # RefId, TimeTable_RefId, TimeTableSubject_RefId, DayId, PeriodId 
-                make_scheduled_activity($schoolid, ${$ttable[$i]}[0], ${$ttable[$i]}[1], ${$ttable[$i]}[2], ${$ttable[$i]}[3], ${$ttable[$i]}[4]);
+                make_scheduled_activity($schoolid, $students_ref->[int(rand( $num_students1))], $staff[int(rand(scalar @staff))],
+                  $$ttable[$i][0], $$ttable[$i][1], $$ttable[$i][2], $$ttable[$i][3], $$ttable[$i][4]);
+                $activities_cnt++;
+              }
                 $cnt++;
         }
-        return ($cnt);
+        return ($cnt, $activities_cnt);
 }
 
 sub make_scheduled_activity {
-        my ($schoolid, $cellid, $timetableid, $subjectid, $dayid, $periodid) = @_;
+        my ($schoolid, $studentid, $staffid, $cellid, $timetableid, $subjectid, $dayid, $periodid) = @_;
 
         my $data = $sd->create_ScheduledActivity({
                 schoolid => $schoolid,
@@ -1096,7 +1105,7 @@ sub make_scheduled_activity {
                         Date, StartTime, FinishTime, CellType, Location, Type, Name
                 )
                 values (
-                        ?,?,?,?,?,?,?
+                        ?,?,?,?,?,?,?,?,?,?,?,?,?,?
                 )
         ");
         $sth->execute(
@@ -1108,6 +1117,40 @@ sub make_scheduled_activity {
                         $data->{location}, $data->{type}, 
                         $data->{name}
         );
+        $sth = $dbh->prepare("
+                INSERT INTO ScheduledActivity_Student (
+                        ScheduledActivity_RefId, StudentPersonal_RefId
+                )
+                values (
+                        ?,?
+                )
+        ");
+        $sth->execute(
+                $data->{refid}, $studentid
+        );
+        $sth = $dbh->prepare("
+                INSERT INTO ScheduledActivity_Teacher (
+                        ScheduledActivity_RefId, StaffPersonal_RefId, StartTime, FinishTime,
+                        Credit, Supervision, Weighting
+                )
+                values (
+                        ?,?,?,?,?,?,?
+                )
+        ");
+        my $credit = rand();
+        my $supervision = rand();
+        $sth->execute(
+                $data->{refid}, $staffid, $data->{start_time},
+                        $data->{finish_time}, 
+                        $credit > 0.9 ? "Casual" :
+                        $credit > 0.8 ? "Extra" :
+                        $credit > 0.7 ? "In-Lieu" :
+                        $credit > 0.6 ? "Underload" : "",
+                        $supervision > 0.9 ? "MergedClass" :
+                        $supervision > 0.8 ? "MinimalSupervision" : "Normal",
+                        "1.0"
+        );
+
 
         return $data->{refid};
 }
@@ -1243,7 +1286,11 @@ sub get_cells {
         my ($schoolid, $n) = @_;
 
         my @subject_list;
-        my $select = "SELECT RefId, TimeTable_RefId, TimeTableSubject_RefId, DayId, PeriodId from TimeTableCell WHERE SchoolInfo_RefId = \"$schoolid\" LIMIT $n";
+        my $limit = "";
+        if ($n > 0) {
+          $limit = " LIMIT $n";
+        }
+        my $select = "SELECT c.RefId, c.TimeTable_RefId, c.TimeTableSubject_RefId, c.DayId, c.PeriodId from TimeTableCell c, TimeTable t WHERE c.TimeTable_RefId = t.RefId AND t.SchoolInfo_RefId = \"$schoolid\" $limit";
         my $sth;
         $sth = $dbh->prepare($select);
         $sth->execute();
