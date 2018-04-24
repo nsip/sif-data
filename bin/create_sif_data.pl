@@ -32,7 +32,7 @@ my $sd = SIF::Data->new();
 
 my ($schools, $students, $student_contacts, $staff, $rooms, $groups,
 	$grading, $account, $vendors, $debtors, $fix, $codeset, $create_db,
-	$db_name, $ttable, $school_id, $elements, $fobjects,
+	$db_name, $ttable, $school_id, $elements, $fobjects, $scheduled_activities,
 	$silent) = get_args();
 
 if (defined $create_db) {
@@ -102,6 +102,8 @@ if ($ttable) {
 
 	create_financial_objects($fobjects);
 
+        create_scheduled_activities($scheduled_activities, $school_id);
+
 	fix_data($fix);
 
 	code_set($codeset);
@@ -131,6 +133,7 @@ sub get_args {
 	my $ttable           = undef;
 	my $student_contacts = undef;
 	my $fobjects         = undef;
+	my $scheduled_activites         = undef;
 	my $silent           = 0;
 
 	my $result = GetOptions (
@@ -141,6 +144,7 @@ sub get_args {
 		"create-staff=s"           => \$staff,
 		"create-rooms=s"           => \$rooms,
 		"create-teaching-groups"   => \$groups,
+		"create-scheduled-activities=s"   => \$scheduled_activities,
 		"create-grading"           => \$grading,
 		"create-accounts=s"        => \$account,
 		"create-vendors=s"         => \$vendors,
@@ -206,7 +210,7 @@ sub get_args {
 
 	return ($schools, $students, $student_contacts, $staff, $rooms,
 	$groups, $grading, $account, $vendors, $debtors, $fix, $codeset,
-	$create_db, $db_name, $ttable,  $school_id, $elements, $fobjects,
+	$create_db, $db_name, $ttable,  $school_id, $elements, $fobjects, $scheduled_activities,
 	$silent);
 }
 
@@ -237,6 +241,8 @@ Sample usage is:
   ./create_sif_data.pl --create-teaching-groups # Create groups for all years and students
 
   ./create_sif_data.pl --create-debtors=8..16   # Create random 8-16 Debtors
+
+  ./create_sif_data.pl --create-scheduled-activities=8..16   # Create random 8-16 scheduled activities
 
   ./create_sif_data.pl --create-grading         # Populate grading assignment tables
 
@@ -337,6 +343,18 @@ sub create_groups {
 		print "\n$schools schools processed - $rooms groups created \n" unless ($silent);
 	}
 	return ($students);
+}
+
+sub create_scheduled_activities {
+        my ($students, $school) = @_;
+
+        if (defined $scheduled_activities) {
+
+                my ($schools, $scheduled_activities) = make_scheduled_activities($students, $school);
+
+                print "\n$schools schools processed - $scheduled_activities schdled activities created \n" unless ($silent);
+        }
+        return ($scheduled_activities);
 }
 
 sub create_grading {
@@ -1034,6 +1052,67 @@ sub make_groups {
 	return ($cnt, $room_cnt);
 }
 
+sub make_scheduled_activities {
+        my ($students, $school) = @_;
+
+        my $cnt = 0;
+
+        # Get School Info
+        my $school_sth;
+        if (defined $school) {
+                $school_sth = $dbh->prepare("SELECT * from SchoolInfo WHERE RefId = \"$school\"");
+        } else {
+                $school_sth = $dbh->prepare("SELECT * FROM SchoolInfo");
+        }
+        $school_sth->execute();
+
+        while (my $row = $school_sth->fetchrow_hashref) {
+                my $schoolid = $row->{RefId};
+                # Get the timetable
+                my @ttable = get_cells($schoolid, -1);
+                my $i = int(rand(scalar @ttable));
+                # RefId, TimeTable_RefId, TimeTableSubject_RefId, DayId, PeriodId 
+                make_scheduled_activity($schoolid, ${$ttable[$i]}[0], ${$ttable[$i]}[1], ${$ttable[$i]}[2], ${$ttable[$i]}[3], ${$ttable[$i]}[4]);
+                $cnt++;
+        }
+        return ($cnt);
+}
+
+sub make_scheduled_activity {
+        my ($schoolid, $cellid, $timetableid, $subjectid, $dayid, $periodid) = @_;
+
+        my $data = $sd->create_ScheduledActivity({
+                schoolid => $schoolid,
+                cellid   => $cellid,
+                timetableid   => $timetableid,
+                subjectid   => $subjectid,
+                dayid   => $dayid,
+                periodid   => $periodid,
+        });
+
+        my $sth = $dbh->prepare("
+                INSERT INTO ScheduledActivity (
+                        RefId, SchoolInfo_RefId, TimeTableCell_RefId, TimeTable_RefId, TimeTableSubject_RefId, DayId, PeriodId,
+                        Date, StartTime, FinishTime, CellType, Location, Type, Name
+                )
+                values (
+                        ?,?,?,?,?,?,?
+                )
+        ");
+        $sth->execute(
+                $data->{refid}, $data->{schoolid}, $data->{cellid},
+                        $data->{timetableid}, $data->{subjectid},
+                        $data->{dayid}, $data->{periodid},
+                        $data->{date}, $data->{start_time},
+                        $data->{finish_time}, $data->{cell_type},
+                        $data->{location}, $data->{type}, 
+                        $data->{name}
+        );
+
+        return $data->{refid};
+}
+
+
 sub make_teaching_group {
 	my ($schoolid, $roomid, $name, $year) = @_;
 
@@ -1158,6 +1237,28 @@ sub get_subjects {
 
 	return (\@subject_list, $subjects);
 }
+
+# if $n less than total number of cells in db, return total number of cells in db
+sub get_cells {
+        my ($schoolid, $n) = @_;
+
+        my @subject_list;
+        my $select = "SELECT RefId, TimeTable_RefId, TimeTableSubject_RefId, DayId, PeriodId from TimeTableCell WHERE SchoolInfo_RefId = \"$schoolid\" LIMIT $n";
+        my $sth;
+        $sth = $dbh->prepare($select);
+        $sth->execute();
+
+        my $cells = 0;
+        while (my $subject_row = $sth->fetchrow_hashref) {
+                push @subject_list, [$subject_row->{RefId}, $subject_row->{TimeTable_RefId}, $subject_row->{TimeTableSubject_RefId}, 
+                $subject_row->{DayId}, $subject_row->{PeriodId}];
+                ++$cells;
+        }
+
+        return (\@subject_list, $cells);
+}
+
+
 
 sub get_students {
 	my ($school, $number, $year)= @_;

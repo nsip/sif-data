@@ -832,6 +832,24 @@ sub create_TeachingGroup {
 	return $data;
 }
 
+sub create_ScheduledActivity {
+        my ($self, $data) = @_;
+
+        my $min =  '2016-01-01';
+        my $max =  '2017-12-31';
+        $data->{date} = rand_date( min => $min, max => $max );
+        $data->{refid}      = $self->make_new_id();
+        $data->{start_time}  = rand_time();
+        $data->{finish_time}    = rand_time();
+        $data->{cell_type}  = "Excursion";
+        $data->{location}        = "Zoo";
+        $data->{type}        = "Excursion";
+        $data->{name}        = "Zoo Excursion";
+
+        return $data;
+}
+
+
 sub create_SchoolInfo {
 	my ($self, $data) = @_;
 
