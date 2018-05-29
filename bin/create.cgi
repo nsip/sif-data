@@ -142,6 +142,7 @@ eval {
 	my $students = ($optiondata->{students}[0] || 0). ".." . ($optiondata->{students}[1] || 0);
 	my $teachers = ($optiondata->{teachers}[0] || 0) . ".." . ($optiondata->{teachers}[1] || 0);
 	my $rooms = ($optiondata->{classrooms}[0] || 0) . ".." . ($optiondata->{classrooms}[1] || 0);
+	my $scheduledactivities = ($optiondata->{scheduledactivities}[0] || 0) . ".." . ($optiondata->{scheduledactivities}[1] || 0);
 
     my $teachinggroups = "";
 	if ($optiondata->{teachinggroups}) {
@@ -164,6 +165,7 @@ eval {
 		. "--create-students=$students "
 		. "--create-staff=$teachers "
 		. "--create-rooms=$rooms "
+		. "--create-scheduled-activities=$scheduledactivities "
 		. $teachinggroups
 		. ">> /tmp/$$.log 2>>/tmp/$$.err"
 	);
