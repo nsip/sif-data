@@ -318,6 +318,8 @@ CREATE TABLE IF NOT EXISTS TimeTableSubject (
 	ProposedMaxClassSize varchar(100),
 	Semester varchar(100),
 	SchoolYear varchar(100),
+	academicYearStart VARCHAR(200),
+	academicYearEnd varchar(200),
 	FOREIGN KEY (SchoolInfo_RefId) REFERENCES SchoolInfo(RefId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -408,6 +410,7 @@ CREATE TABLE IF NOT EXISTS TimeTableCell (
 	PeriodId varchar(200),
 	DayId varchar(200),
 	StaffPersonal_RefId varchar(36),
+	SchoolInfo_LocalId VARCHAR(200),
 	FOREIGN KEY (TimeTable_RefId) REFERENCES TimeTable(RefId),
 	FOREIGN KEY (TimeTableSubject_RefId) REFERENCES TimeTableSubject(RefId),
 	FOREIGN KEY (TeachingGroup_RefId) REFERENCES TeachingGroup(RefId),
@@ -725,6 +728,7 @@ CREATE TABLE IF NOT EXISTS Invoice (
 	AccountingPeriod  VARCHAR(200),
 	Related_PurchaseOrder_RefId  VARCHAR(36), -- joins to PurchaseOrder/RefId?,
 	Voluntary VARCHAR(200),
+	FormNumber VARCHAR(200),
 	FOREIGN KEY (LocationInfo_RefId) REFERENCES LocationInfo(RefId),
 	FOREIGN KEY (Related_PurchaseOrder_RefId) REFERENCES PurchaseOrder(RefId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -746,6 +750,7 @@ CREATE TABLE IF NOT EXISTS FinancialAccount (
 	FinancialClass_RefId  VARCHAR(36), -- joins to FinancialClass/RefId?,
 	CreationDate  VARCHAR(200),
 	CreationTime  VARCHAR(200),
+	ClassType VARCHAR(200),
 	FOREIGN KEY (LocationInfo_RefId) REFERENCES LocationInfo(RefId),
 	FOREIGN KEY (SubAccount_RefId) REFERENCES FinancialAccount(RefId),
 	FOREIGN KEY (FinancialClass_RefId) REFERENCES FinancialClass(RefId)
@@ -1533,7 +1538,7 @@ StudentAttendanceTimeList_PeriodAttendance_id MEDIUMINT NOT NULL,
 RoomInfo_RefId varchar(36) DEFAULT NULL,
 FOREIGN KEY StudentAttendanceTimeList_PeriodAttendance_id REFERENCES StudentAttendanceTimeList_PeriodAttendance(id),
 FOREIGN KEY RoomInfo_RefId REFERENCES RoomInfo(RefId)
-)
+);
 
 create table StudentAttendanceTimeList_PeriodAttendance_TeacherCover (
 id MEDIUMINT NOT NULL AUTO_INCREMENT,
@@ -1547,4 +1552,4 @@ Supervision varchar(200) DEFAULT NULL,
 Weighting varchar(200) DEFAULT NULL,
 FOREIGN KEY StudentAttendanceTimeList_PeriodAttendance_id REFERENCES StudentAttendanceTimeList_PeriodAttendance(id),
 FOREIGN KEY StaffPersonal_RefId REFERENCES StaffPersonal(RefId)
-)
+);
