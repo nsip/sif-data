@@ -1279,7 +1279,6 @@ OtherWellbeingResponseContainer_OtherResponseType  varchar(200) DEFAULT NULL,
 OtherWellbeingResponseContainer_OtherResponseDescription  varchar(200) DEFAULT NULL,
 OtherWellbeingResponseContainer_OtherResponseNotes  varchar(1000) DEFAULT NULL,
 OtherWellbeingResponseContainer_Status  varchar(200) DEFAULT NULL,
-OtherWellbeingResponseContainer_OtherResponseDate  varchar(200) DEFAULT NULL,
 PRIMARY KEY (RefId)
 );
 
@@ -1381,9 +1380,9 @@ Id int(11) NOT NULL AUTO_INCREMENT,
 EventCategory varchar(200) DEFAULT NULL,
 PRIMARY KEY (id),
 KEY WellbeingEvent_Subcategory_IX (WellbeingEvent_RefId),
-KEY WellbeingEvent_Subcategory_Category_IX (WellbeingEvent_CategoryId),
-CONSTRAINT WellbeingEvent_Subcategory_Category_IX FOREIGN KEY WellbeingEvent_CategoryId REFERENCES WellbeingEvent_Category
+KEY WellbeingEvent_Subcategory_Category_IX (WellbeingEvent_CategoryId)
 );
+-- CONSTRAINT WellbeingEvent_Subcategory_Category_IX FOREIGN KEY WellbeingEvent_CategoryId REFERENCES WellbeingEvent_Category
 
 create table WellbeingEvent_PersonInvolvement (
 WellbeingEvent_RefId varchar(36) NOT NULL,
@@ -1444,8 +1443,8 @@ URL varchar(200) DEFAULT NULL,
 DocumentType varchar(200) DEFAULT NULL,
 DocumentReviewDate varchar(200) DEFAULT NULL,
 DocumentDescription varchar(200) DEFAULT NULL,
-PRIMARY KEY (id),
-KEY WellbeingCharacteristic_Document_IX (WellbeingEvent_RefId)
+PRIMARY KEY (id)
+-- KEY WellbeingCharacteristic_Document_IX (WellbeingEvent_RefId)
 );
 
 create table WellbeingCharacteristic_Medication (
@@ -1455,8 +1454,8 @@ Dosage varchar(200) DEFAULT NULL,
 Frequency varchar(200) DEFAULT NULL,
 AdministrationInformation varchar(200) DEFAULT NULL,
 Method varchar(200) DEFAULT NULL,
-PRIMARY KEY (id),
-KEY WellbeingCharacteristic_Medication_IX (WellbeingEvent_RefId)
+PRIMARY KEY (id)
+-- KEY WellbeingCharacteristic_Medication_IX (WellbeingEvent_RefId)
 );
 
 
@@ -1484,8 +1483,8 @@ URL varchar(200) DEFAULT NULL,
 DocumentType varchar(200) DEFAULT NULL,
 DocumentReviewDate varchar(200) DEFAULT NULL,
 DocumentDescription varchar(200) DEFAULT NULL,
-PRIMARY KEY (id),
-KEY WellbeingAppeal_Document_IX (WellbeingEvent_RefId)
+PRIMARY KEY (id)
+-- KEY WellbeingAppeal_Document_IX (WellbeingEvent_RefId)
 );
 
 
@@ -1525,19 +1524,20 @@ TimeOut varchar(200) DEFAULT NULL,
 TimeTableCell_RefId varchar(36) DEFAULT NULL,
 TimeTableSubject_RefId varchar(36) DEFAULT NULL,
 AttendanceNote varchar(200) DEFAULT NULL,
-PRIMARY KEY (id),
-FOREIGN KEY StudentAttendanceTimeList_RefId REFERENCES StudentAttendanceTimeList(RefId),
-FOREIGN KEY ScheduledActivity_RefId REFERENCES ScheduledActivity(RefId)
-FOREIGN KEY TimeTableCell_RefId REFERENCES TimeTableCell(RefId)
-FOREIGN KEY TimeTableSubject_RefId REFERENCES TimeTableSubject(RefId)
+PRIMARY KEY (id)
+-- FOREIGN KEY StudentAttendanceTimeList_RefId REFERENCES StudentAttendanceTimeList(RefId),
+-- FOREIGN KEY ScheduledActivity_RefId REFERENCES ScheduledActivity(RefId),
+-- FOREIGN KEY TimeTableCell_RefId REFERENCES TimeTableCell(RefId),
+-- FOREIGN KEY TimeTableSubject_RefId REFERENCES TimeTableSubject(RefId)
 );
 
 create table StudentAttendanceTimeList_PeriodAttendance_RoomInfo (
 id MEDIUMINT NOT NULL AUTO_INCREMENT,
 StudentAttendanceTimeList_PeriodAttendance_id MEDIUMINT NOT NULL,
 RoomInfo_RefId varchar(36) DEFAULT NULL,
-FOREIGN KEY StudentAttendanceTimeList_PeriodAttendance_id REFERENCES StudentAttendanceTimeList_PeriodAttendance(id),
-FOREIGN KEY RoomInfo_RefId REFERENCES RoomInfo(RefId)
+PRIMARY KEY (id)
+-- FOREIGN KEY StudentAttendanceTimeList_PeriodAttendance_id REFERENCES StudentAttendanceTimeList_PeriodAttendance(id),
+-- FOREIGN KEY RoomInfo_RefId REFERENCES RoomInfo(RefId)
 );
 
 create table StudentAttendanceTimeList_PeriodAttendance_TeacherCover (
@@ -1550,6 +1550,7 @@ FinishTime varchar(200) DEFAULT NULL,
 Credit varchar(200) DEFAULT NULL,
 Supervision varchar(200) DEFAULT NULL,
 Weighting varchar(200) DEFAULT NULL,
-FOREIGN KEY StudentAttendanceTimeList_PeriodAttendance_id REFERENCES StudentAttendanceTimeList_PeriodAttendance(id),
-FOREIGN KEY StaffPersonal_RefId REFERENCES StaffPersonal(RefId)
+PRIMARY KEY (id)
+-- FOREIGN KEY StudentAttendanceTimeList_PeriodAttendance_id REFERENCES StudentAttendanceTimeList_PeriodAttendance(id),
+-- FOREIGN KEY StaffPersonal_RefId REFERENCES StaffPersonal(RefId)
 );
