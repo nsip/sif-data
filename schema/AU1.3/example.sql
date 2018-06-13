@@ -651,13 +651,10 @@ CREATE TABLE IF NOT EXISTS StudentAttendanceTimeList (
 CREATE TABLE IF NOT EXISTS StudentAttendanceTimeList_AttendanceTime (
 	id MEDIUMINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	StudentAttendanceTimeList_RefId varchar(36) DEFAULT '',
-	Code varchar(100),
 	AttendanceStatus varchar(100),
 	StartTime varchar(100),
 	EndTime varchar(100),
-	AbsenceValue varchar(100),
 	AttendanceNote varchar(100),
-
 	AttendanceType varchar(200) DEFAULT NULL,
 	DurationValue varchar(200) DEFAULT NULL,
 	TimeTableSubject_RefId varchar(36) DEFAULT NULL,
@@ -1450,6 +1447,7 @@ PRIMARY KEY (id)
 create table WellbeingCharacteristic_Medication (
 WellbeingCharacteristic_RefId varchar(36) NOT NULL,
 Id int(11) NOT NULL AUTO_INCREMENT,
+MedicationName varchar(200) DEFAULT NULL,
 Dosage varchar(200) DEFAULT NULL,
 Frequency varchar(200) DEFAULT NULL,
 AdministrationInformation varchar(200) DEFAULT NULL,
@@ -1487,12 +1485,11 @@ PRIMARY KEY (id)
 -- KEY WellbeingAppeal_Document_IX (WellbeingEvent_RefId)
 );
 
-
-
-create table WellbeingAppeal_Alert (
+create table WellbeingAlert (
 RefId varchar(36) NOT NULL,
 StudentPersonal_RefId varchar(36) DEFAULT NULL,
 SchoolInfo_RefId varchar(36) DEFAULT NULL,
+Date  varchar(200) DEFAULT NULL,
 WellbeingAlertStartDate varchar(200) DEFAULT NULL,
 WellbeingAlertEndDate varchar(200) DEFAULT NULL,
 WellbeingAlertCategory varchar(200) DEFAULT NULL,
@@ -1503,7 +1500,6 @@ AlertSeverity varchar(200) DEFAULT NULL,
 AlertKeyContact varchar(200) DEFAULT NULL,
 PRIMARY KEY (RefId)
 );
-
 
 create table StudentAttendanceTimeList_PeriodAttendance (
 id MEDIUMINT NOT NULL AUTO_INCREMENT,
