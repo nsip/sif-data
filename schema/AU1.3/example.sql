@@ -1550,3 +1550,11 @@ PRIMARY KEY (id)
 -- FOREIGN KEY StudentAttendanceTimeList_PeriodAttendance_id REFERENCES StudentAttendanceTimeList_PeriodAttendance(id),
 -- FOREIGN KEY StaffPersonal_RefId REFERENCES StaffPersonal(RefId)
 );
+
+CREATE TABLE `StudentAttendanceTimeList_PeriodAttendance_OtherCode` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `StudentAttendanceTimeList_PeriodAttendance_Id` int(11) NOT NULL,
+  `OtherCode` varchar(200) DEFAULT NULL,
+  `CodeSet` varchar(200) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+);
