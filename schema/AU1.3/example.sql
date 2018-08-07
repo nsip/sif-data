@@ -944,7 +944,7 @@ CREATE TABLE `NAPTest` (
   `DomainBands_Band10Lower` varchar(45) DEFAULT NULL,
   `DomainBands_Band10Upper` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`RefId`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `NAPEventStudentLink` (
   `RefId` varchar(36) NOT NULL,
@@ -969,7 +969,7 @@ CREATE TABLE `NAPEventStudentLink` (
   KEY `NAPEventStudentLink_NAPTest_FK_idx` (`NAPTest_RefId`),
   KEY `NAPEventStudentLink_StudentPersonal_FK_idx` (`StudentPersonal_RefId`),
   CONSTRAINT `NAPEventStudentLink_NAPTest_FK` FOREIGN KEY (`NAPTest_RefId`) REFERENCES `NAPTest` (`RefId`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `NAPEventStudentLink_TestDisruption` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -979,7 +979,7 @@ CREATE TABLE `NAPEventStudentLink_TestDisruption` (
   PRIMARY KEY (`id`),
   KEY `NAPEventStudentLink_TestDisruption_IX` (`NAPEventStudentLink_RefId`),
   CONSTRAINT `NAPEventStudentLink_TestDisruption_FK` FOREIGN KEY (`NAPEventStudentLink_RefId`) REFERENCES `NAPEventStudentLink` (`RefId`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 CREATE TABLE `NAPEventStudentLink_Adjustment` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -988,7 +988,7 @@ CREATE TABLE `NAPEventStudentLink_Adjustment` (
   PRIMARY KEY (`id`),
   KEY `NAPEventStudentLink_Adjustment_FK_idx` (`NAPEventStudentLink_RefId`),
   CONSTRAINT `NAPEventStudentLink_Adjustment_FK` FOREIGN KEY (`NAPEventStudentLink_RefId`) REFERENCES `NAPEventStudentLink` (`RefId`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 CREATE TABLE `NAPEventStudentLink_Adjustment_PNPCode` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -997,7 +997,7 @@ CREATE TABLE `NAPEventStudentLink_Adjustment_PNPCode` (
   PRIMARY KEY (`id`),
   KEY `Adjustment_PNPCode_FK_idx` (`Adjustment_Id`),
   CONSTRAINT `Adjustment_PNPCode_FK` FOREIGN KEY (`Adjustment_Id`) REFERENCES `NAPEventStudentLink_Adjustment` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 CREATE TABLE `NAPTestScoreSummary` (
   `RefId` varchar(36) NOT NULL,
@@ -1012,7 +1012,7 @@ CREATE TABLE `NAPTestScoreSummary` (
   KEY `TestScoreSummary_Test_FK_idx` (`NAPTest_RefId`),
   KEY `TestScoreSummary_School_FK_idx` (`SchoolInfo_RefId`),
   CONSTRAINT `TestScoreSummary_Test_FK` FOREIGN KEY (`NAPTest_RefId`) REFERENCES `NAPTest` (`RefId`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `NAPTestlet` (
   `RefId` varchar(36) NOT NULL,
@@ -1025,7 +1025,7 @@ CREATE TABLE `NAPTestlet` (
   PRIMARY KEY (`RefId`),
   KEY `NAPTestlet_NAPTest_FK_idx` (`NAPTest_RefId`),
   CONSTRAINT `NAPTestlet_NAPTest_FK` FOREIGN KEY (`NAPTest_RefId`) REFERENCES `NAPTest` (`RefId`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `NAPTestItem` (
   `RefId` varchar(36) NOT NULL,
@@ -1048,7 +1048,7 @@ CREATE TABLE `NAPTestItem` (
   `Subdomain` varchar(200) DEFAULT NULL,
   `WritingGenre` varchar(200) DEFAULT NULL,
   PRIMARY KEY (`RefId`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `NAPTestItem_ContentDescription` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
@@ -1057,7 +1057,7 @@ CREATE TABLE `NAPTestItem_ContentDescription` (
   PRIMARY KEY (`Id`),
   KEY `ContentDescription_TestItem_FK_idx` (`NAPTestItem_RefId`),
   CONSTRAINT `ContentDescription_TestItem_FK` FOREIGN KEY (`NAPTestItem_RefId`) REFERENCES `NAPTestItem` (`RefId`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 CREATE TABLE `NAPTestItem_Stimulus` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
@@ -1073,7 +1073,7 @@ CREATE TABLE `NAPTestItem_Stimulus` (
   PRIMARY KEY (`Id`),
   KEY `Stimulus_TestItem_FK_idx` (`NAPTestItem_RefId`),
   CONSTRAINT `Stimulus_TestItem_FK` FOREIGN KEY (`NAPTestItem_RefId`) REFERENCES `NAPTestItem` (`RefId`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 CREATE TABLE `NAPTestItem_SubstituteItem` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
@@ -1084,7 +1084,7 @@ CREATE TABLE `NAPTestItem_SubstituteItem` (
   KEY `SubstituteItem_FK_idx` (`SubstituteItem_RefId`),
   CONSTRAINT `SubstituteItem_FK` FOREIGN KEY (`SubstituteItem_RefId`) REFERENCES `NAPTestItem` (`RefId`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `TestItem_FK` FOREIGN KEY (`NAPTestItem_RefId`) REFERENCES `NAPTestItem` (`RefId`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `ItemSubstitutedFor_PNPCode` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
@@ -1093,7 +1093,7 @@ CREATE TABLE `ItemSubstitutedFor_PNPCode` (
   PRIMARY KEY (`Id`),
   KEY `ItemSubstitutedFor_FK_idx` (`ItemSubstitutedFor_Id`),
   CONSTRAINT `ItemSubstitutedFor_FK` FOREIGN KEY (`ItemSubstitutedFor_Id`) REFERENCES `NAPTestItem_SubstituteItem` (`Id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `NAPTestItem_NAPWritingRubric` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
@@ -1105,7 +1105,7 @@ CREATE TABLE `NAPTestItem_NAPWritingRubric` (
   PRIMARY KEY (`Id`),
   KEY `WritingRubric_TestItem_FK_idx` (`NAPTestItem_RefId`),
   CONSTRAINT `WritingRubric_TestItem_FK` FOREIGN KEY (`NAPTestItem_RefId`) REFERENCES `NAPTestItem` (`RefId`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 CREATE TABLE `NAPTestItem_NAPWritingRubric_Score` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
@@ -1114,7 +1114,7 @@ CREATE TABLE `NAPTestItem_NAPWritingRubric_Score` (
   PRIMARY KEY (`Id`),
   KEY `Score_WritingRubric_FK_idx` (`NAPWritingRubric_Id`),
   CONSTRAINT `Score_WritingRubric_FK` FOREIGN KEY (`NAPWritingRubric_Id`) REFERENCES `NAPTestItem_NAPWritingRubric` (`Id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 CREATE TABLE `NAPTestItem_NAPWritingRubric_Score_ScoreDescription` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
@@ -1125,7 +1125,7 @@ CREATE TABLE `NAPTestItem_NAPWritingRubric_Score_ScoreDescription` (
   PRIMARY KEY (`Id`),
   KEY `ScoreDescription_Score_FK_idx` (`Score_Id`),
   CONSTRAINT `ScoreDescription_Score_FK` FOREIGN KEY (`Score_Id`) REFERENCES `NAPTestItem_NAPWritingRubric_Score` (`Id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 CREATE TABLE `NAPTestlet_TestItem` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -1138,7 +1138,7 @@ CREATE TABLE `NAPTestlet_TestItem` (
   KEY `TestletTestItem_TestItem_FK_idx` (`NAPTestItem_RefId`),
   CONSTRAINT `TestletTestItem_TestItem_FK` FOREIGN KEY (`NAPTestItem_RefId`) REFERENCES `NAPTestItem` (`RefId`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `TestletTestItem_Testlet_FK` FOREIGN KEY (`NAPTestlet_RefId`) REFERENCES `NAPTestlet` (`RefId`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 CREATE TABLE `NAPStudentResponseSet` (
   `RefId` varchar(36) NOT NULL,
@@ -1152,7 +1152,7 @@ CREATE TABLE `NAPStudentResponseSet` (
   PRIMARY KEY (`RefId`),
   KEY `NAPStudentResponseSet_NAPTest_FK_idx` (`NAPTest_RefId`),
   CONSTRAINT `NAPStudentResponseSet_NAPTest_FK` FOREIGN KEY (`NAPTest_RefId`) REFERENCES `NAPTest` (`RefId`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `NAPStudentResponseSet_DomainScore` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
@@ -1165,7 +1165,7 @@ CREATE TABLE `NAPStudentResponseSet_DomainScore` (
   PRIMARY KEY (`Id`),
   KEY `DomainScore_NAPStudentResponseSet_FK_idx` (`NAPStudentResponseSet_RefId`),
   CONSTRAINT `DomainScore_NAPStudentResponseSet_FK` FOREIGN KEY (`NAPStudentResponseSet_RefId`) REFERENCES `NAPStudentResponseSet` (`RefId`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 CREATE TABLE `NAPStudentResponseSet_Testlet` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
@@ -1177,7 +1177,7 @@ CREATE TABLE `NAPStudentResponseSet_Testlet` (
   KEY `TestletResponse_NAPTestlet_FK_idx` (`NAPTestlet_RefId`),
   CONSTRAINT `TestletResponse_NAPStudentResponseSet_FK` FOREIGN KEY (`NAPStudentResponseSet_RefId`) REFERENCES `NAPStudentResponseSet` (`RefId`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `TestletResponse_NAPTestlet_FK` FOREIGN KEY (`NAPTestlet_RefId`) REFERENCES `NAPTestlet` (`RefId`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 CREATE TABLE `NAPStudentResponseSet_Testlet_TestItem` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
@@ -1194,7 +1194,7 @@ CREATE TABLE `NAPStudentResponseSet_Testlet_TestItem` (
   KEY `ResponseTestItem_NAPTestItem_FK_idx` (`NAPTestItem_RefId`),
   CONSTRAINT `ResponseTestItem_NAPTestItem_FK` FOREIGN KEY (`NAPTestItem_RefId`) REFERENCES `NAPTestItem` (`RefId`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `ResponseTestItem_ResponseTestlet_FK` FOREIGN KEY (`ResponseTestlet_Id`) REFERENCES `NAPStudentResponseSet_Testlet` (`Id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 CREATE TABLE `NAPStudentResponseSet_Testlet_TestItem_Subscore` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
@@ -1204,7 +1204,7 @@ CREATE TABLE `NAPStudentResponseSet_Testlet_TestItem_Subscore` (
   PRIMARY KEY (`Id`),
   KEY `Subscore_ResponseTestItem_FK_idx` (`ResponseTestItem_Id`),
   CONSTRAINT `Subscore_ResponseTestItem_FK` FOREIGN KEY (`ResponseTestItem_Id`) REFERENCES `NAPStudentResponseSet_Testlet_TestItem` (`Id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 CREATE TABLE `NAPCodeFrame` (
   `RefId` varchar(36) NOT NULL,
@@ -1212,7 +1212,7 @@ CREATE TABLE `NAPCodeFrame` (
   PRIMARY KEY (`RefId`),
   KEY `NAPCodeFrame_NAPTest_FK_idx` (`NAPTest_RefId`),
   CONSTRAINT `NAPCodeFrame_NAPTest_FK` FOREIGN KEY (`NAPTest_RefId`) REFERENCES `NAPTest` (`RefId`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 create table PersonalisedPlan (
 RefId varchar(36) NOT NULL,
@@ -1225,7 +1225,7 @@ PersonalisedPlanReviewDate varchar(200) DEFAULT NULL,
 PersonalisedPlanNotes varchar(1000) DEFAULT NULL,
 AssociatedAttachment varchar(200) DEFAULT NULL,
 PRIMARY KEY (RefId)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 create table PersonalisedPlan_Document (
 PersonalisedPlan_RefId varchar(36) NOT NULL,
@@ -1238,7 +1238,7 @@ DocumentReviewDate varchar(200) DEFAULT NULL,
 DocumentDescription varchar(200) DEFAULT NULL,
 PRIMARY KEY (id),
 KEY PersonalisedPlan_Document_IX (PersonalisedPlan_RefId)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
@@ -1277,7 +1277,7 @@ OtherWellbeingResponseContainer_OtherResponseDescription  varchar(200) DEFAULT N
 OtherWellbeingResponseContainer_OtherResponseNotes  varchar(1000) DEFAULT NULL,
 OtherWellbeingResponseContainer_Status  varchar(200) DEFAULT NULL,
 PRIMARY KEY (RefId)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 create table WellbeingResponse_SuspensionContainer_WithdrawalTime (
 WellbeingResponse_RefId varchar(36) NOT NULL,
@@ -1290,7 +1290,7 @@ ScheduledActivity_RefId  varchar(36) DEFAULT NULL,
 TimeTableCell_RefId  varchar(36) DEFAULT NULL,
 PRIMARY KEY (id),
 KEY WellbeingResponse_Document_IX (WellbeingResponse_RefId)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 create table WellbeingResponse_PlanRequiredContainer_PlanRequired (
 WellbeingResponse_RefId varchar(36) NOT NULL,
@@ -1299,7 +1299,7 @@ PersonalisedPlan_RefId  varchar(36) DEFAULT NULL,
 PlanNotes  varchar(1000) DEFAULT NULL,
 PRIMARY KEY (id),
 KEY WellbeingResponse_Document_IX (WellbeingResponse_RefId)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 create table WellbeingResponse_PersonInvolvement (
 WellbeingResponse_RefId varchar(36) NOT NULL,
@@ -1310,7 +1310,7 @@ ShortName varchar(200) DEFAULT NULL,
 HowInvolved varchar(200) DEFAULT NULL,
 PRIMARY KEY (id),
 KEY WellbeingResponse_Document_IX (WellbeingResponse_RefId)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 create table WellbeingResponse_Document (
 WellbeingResponse_RefId varchar(36) NOT NULL,
@@ -1323,7 +1323,7 @@ DocumentReviewDate varchar(200) DEFAULT NULL,
 DocumentDescription varchar(200) DEFAULT NULL,
 PRIMARY KEY (id),
 KEY WellbeingResponse_Document_IX (WellbeingResponse_RefId)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
@@ -1347,7 +1347,7 @@ WellbeingEventLocationDetails_FurtherLocationNotes varchar(1000) DEFAULT NULL,
 ConfidentialFlag  varchar(200) DEFAULT NULL,
 Status  varchar(200) DEFAULT NULL,
 PRIMARY KEY (RefId)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 create table WellbeingEvent_Document (
 WellbeingEvent_RefId varchar(36) NOT NULL,
@@ -1360,7 +1360,7 @@ DocumentReviewDate varchar(200) DEFAULT NULL,
 DocumentDescription varchar(200) DEFAULT NULL,
 PRIMARY KEY (id),
 KEY WellbeingEvent_Document_IX (WellbeingEvent_RefId)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 create table WellbeingEvent_Category (
 WellbeingEvent_RefId varchar(36) NOT NULL,
@@ -1368,7 +1368,7 @@ Id int(11) NOT NULL AUTO_INCREMENT,
 EventCategory varchar(200) DEFAULT NULL,
 PRIMARY KEY (id),
 KEY WellbeingEvent_Category_IX (WellbeingEvent_RefId)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 create table WellbeingEvent_Subcategory (
 WellbeingEvent_RefId varchar(36) NOT NULL,
@@ -1378,7 +1378,7 @@ EventCategory varchar(200) DEFAULT NULL,
 PRIMARY KEY (id),
 KEY WellbeingEvent_Subcategory_IX (WellbeingEvent_RefId),
 KEY WellbeingEvent_Subcategory_Category_IX (WellbeingEvent_CategoryId)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 -- CONSTRAINT WellbeingEvent_Subcategory_Category_IX FOREIGN KEY WellbeingEvent_CategoryId REFERENCES WellbeingEvent_Category
 
 create table WellbeingEvent_PersonInvolvement (
@@ -1390,7 +1390,7 @@ ShortName varchar(200) DEFAULT NULL,
 HowInvolved varchar(200) DEFAULT NULL,
 PRIMARY KEY (id),
 KEY WellbeingEvent_PersonInvolvement_IX (WellbeingEvent_RefId)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 create table WellbeingEvent_FollowupAction (
 WellbeingEvent_RefId varchar(36) NOT NULL,
@@ -1400,7 +1400,7 @@ FollowUpDetails varchar(1000) DEFAULT NULL,
 FollowUpActionCategory varchar(200) DEFAULT NULL,
 PRIMARY KEY (id),
 KEY WellbeingEvent_FollowupAction_IX (WellbeingEvent_RefId)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
@@ -1429,7 +1429,7 @@ WellbeingCharacteristicTrigger varchar(200) DEFAULT NULL,
 WellbeingCharacteristicConfidentialFlag varchar(200) DEFAULT NULL,
 WellbeingCharacteristicAlert varchar(200) DEFAULT NULL,
 PRIMARY KEY (RefId)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 create table WellbeingCharacteristic_Document (
 WellbeingCharacteristic_RefId varchar(36) NOT NULL,
@@ -1442,7 +1442,7 @@ DocumentReviewDate varchar(200) DEFAULT NULL,
 DocumentDescription varchar(200) DEFAULT NULL,
 PRIMARY KEY (id)
 -- KEY WellbeingCharacteristic_Document_IX (WellbeingEvent_RefId)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 create table WellbeingCharacteristic_Medication (
 WellbeingCharacteristic_RefId varchar(36) NOT NULL,
@@ -1454,7 +1454,7 @@ AdministrationInformation varchar(200) DEFAULT NULL,
 Method varchar(200) DEFAULT NULL,
 PRIMARY KEY (id)
 -- KEY WellbeingCharacteristic_Medication_IX (WellbeingEvent_RefId)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
@@ -1470,7 +1470,7 @@ Date  varchar(200) DEFAULT NULL,
 AppealNotes  varchar(1000) DEFAULT NULL,
 AppealOutcome  varchar(200) DEFAULT NULL,
 PRIMARY KEY (RefId)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 create table WellbeingAppeal_Document (
 WellbeingAppeal_RefId varchar(36) NOT NULL,
@@ -1483,7 +1483,7 @@ DocumentReviewDate varchar(200) DEFAULT NULL,
 DocumentDescription varchar(200) DEFAULT NULL,
 PRIMARY KEY (id)
 -- KEY WellbeingAppeal_Document_IX (WellbeingEvent_RefId)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 create table WellbeingAlert (
 RefId varchar(36) NOT NULL,
@@ -1499,7 +1499,7 @@ AlertAudience varchar(200) DEFAULT NULL,
 AlertSeverity varchar(200) DEFAULT NULL,
 AlertKeyContact varchar(200) DEFAULT NULL,
 PRIMARY KEY (RefId)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 create table StudentAttendanceTimeList_PeriodAttendance (
 id MEDIUMINT NOT NULL AUTO_INCREMENT,
@@ -1525,7 +1525,7 @@ PRIMARY KEY (id)
 -- FOREIGN KEY ScheduledActivity_RefId REFERENCES ScheduledActivity(RefId),
 -- FOREIGN KEY TimeTableCell_RefId REFERENCES TimeTableCell(RefId),
 -- FOREIGN KEY TimeTableSubject_RefId REFERENCES TimeTableSubject(RefId)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 create table StudentAttendanceTimeList_PeriodAttendance_RoomInfo (
 id MEDIUMINT NOT NULL AUTO_INCREMENT,
@@ -1534,7 +1534,7 @@ RoomInfo_RefId varchar(36) DEFAULT NULL,
 PRIMARY KEY (id)
 -- FOREIGN KEY StudentAttendanceTimeList_PeriodAttendance_id REFERENCES StudentAttendanceTimeList_PeriodAttendance(id),
 -- FOREIGN KEY RoomInfo_RefId REFERENCES RoomInfo(RefId)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 create table StudentAttendanceTimeList_PeriodAttendance_TeacherCover (
 id MEDIUMINT NOT NULL AUTO_INCREMENT,
@@ -1549,7 +1549,7 @@ Weighting varchar(200) DEFAULT NULL,
 PRIMARY KEY (id)
 -- FOREIGN KEY StudentAttendanceTimeList_PeriodAttendance_id REFERENCES StudentAttendanceTimeList_PeriodAttendance(id),
 -- FOREIGN KEY StaffPersonal_RefId REFERENCES StaffPersonal(RefId)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `StudentAttendanceTimeList_PeriodAttendance_OtherCode` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -1557,4 +1557,4 @@ CREATE TABLE `StudentAttendanceTimeList_PeriodAttendance_OtherCode` (
   `OtherCode` varchar(200) DEFAULT NULL,
   `CodeSet` varchar(200) DEFAULT NULL,
   PRIMARY KEY (`id`)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
