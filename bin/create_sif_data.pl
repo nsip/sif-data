@@ -1590,14 +1590,17 @@ sub make_student_contacts {
 			my $refid2 = $sd->make_new_id();
 			my $relationship = rand(10) <= 8 ? "1" : int(rand(12) + 2);
 			$relationship = "0$relationship" if ($relationship < 10);
+                        my $data = $sd->create_StaffPersonal({});
 			$insert_contact->execute(
 				$refid, int(rand(1000000)),
-				$mf ? "Mr" : "Ms", 
-				"First", "Last", "First", "Last", # mpf
-				$mf ? 1 : 2,
+                                $data->{Salutation},
+                                $data->{GivenName}, $data->{FamilyName},
+                                $data->{GivenName}, $data->{FamilyName},
+				$data->{Sex},
 				"0096", 
 				int(rand(90000000)) + 9999999, # make sure no initial zero in phone number
-				'email@somewhere.com', "01",
+                                $data->{Email},
+				"01",
 				int(rand(5)), int(rand(4) + 5), int(rand(4)+1) # corrected
 
 			);
