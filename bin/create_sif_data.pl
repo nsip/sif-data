@@ -2341,7 +2341,7 @@ sub make_timetable_cell {
           $extra ? "Extra" : "",
           rand() > 0.9 ? "Minimal" : "Normal",
           $extra ? "1.2" : "1.0"
-        ;
+        );
 
 	my $done = 1;
 	return $done;
