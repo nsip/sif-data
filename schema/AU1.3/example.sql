@@ -1558,3 +1558,15 @@ CREATE TABLE `StudentAttendanceTimeList_PeriodAttendance_OtherCode` (
   `CodeSet` varchar(200) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE TimeTableCell_TeacherCover (
+    id MEDIUMINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    TimeTableCell_RefId VARCHAR(36) NOT NULL,
+    StaffPersonal_RefId VARCHAR(36) NOT NULL,
+    StaffLocalId VARCHAR(200),
+    StartTime VARCHAR(200),
+    FinishTime VARCHAR(200),
+    Credit VARCHAR(200),
+    Supervision VARCHAR(200),
+    Weighting VARCHAR(200)
+)  ENGINE=InnoDB DEFAULT CHARSET=utf8;
