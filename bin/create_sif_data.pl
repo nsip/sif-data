@@ -2339,7 +2339,7 @@ sub make_timetable_cell {
           sprintf("%02d:05:00", $periodid+9), 
           sprintf("%02d:55:00", $periodid+9),
           $extra ? "Extra" : "",
-          rand() > 0.9 ? "Minimal" : "Normal",
+          rand() > 0.9 ? "MinimalSupervision" : "Normal",
           $extra ? "1.2" : "1.0"
         );
 
