@@ -2332,7 +2332,7 @@ sub make_timetable_cell {
 		$periodid, $dayid, $staffid);
 
         my $sth2 = $dbh->prepare("INSERT INTO TimeTableCell_TeacherCover(TimeTableCell_RefId, StaffPersonal_RefId,
-          StaffLocalId, StartTime, FinishTime, Credit, Supervision, Weighthing)
+          StaffLocalId, StartTime, FinishTime, Credit, Supervision, Weighting)
           Values(?,?,?,?,?,?,?,?)");
         my $extra = rand() > 0.9;
         $sth2->execute($refid, $staffid, $staffid,
