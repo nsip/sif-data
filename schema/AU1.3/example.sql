@@ -1570,3 +1570,56 @@ CREATE TABLE TimeTableCell_TeacherCover (
     Supervision VARCHAR(200),
     Weighting VARCHAR(200)
 )  ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+create table FQReporting (
+  RefId varchar(36) NOT NULL,
+  FQYear varchar(200) DEFAULT NULL,
+  ReportingAuthority varchar(200) DEFAULT NULL,
+  ReportingAuthoritySystem varchar(200) DEFAULT NULL,
+  ReportingAuthorityCommonwealthId varchar(200) DEFAULT NULL,
+  SystemSubmission varchar(200) DEFAULT NULL,
+  SoftwareVendorInfo_SoftwareProduct varchar(200) DEFAULT NULL,
+  SoftwareVendorInfo_SoftwareVersion varchar(200) DEFAULT NULL,
+  EntityLevel varchar(200) DEFAULT NULL,
+  SchoolInfo_RefId varchar(36) DEFAULT NULL,
+  LocalId varchar(200) DEFAULT NULL,
+  StateProvinceId varchar(200) DEFAULT NULL,
+  CommonwealthId varchar(200) DEFAULT NULL,
+  AcaraId varchar(200) DEFAULT NULL,
+  EntityName varchar(200) DEFAULT NULL,
+  EntityContact_Name varchar(200) DEFAULT NULL,
+  EntityContact_PositionTitle varchar(200) DEFAULT NULL,
+  EntityContact_Role varchar(200) DEFAULT NULL,
+  EntityContact_RegistrationDetails varchar(200) DEFAULT NULL,
+  EntityContact_Qualifications varchar(200) DEFAULT NULL,
+  EntityContact_Address varchar(200) DEFAULT NULL,
+  EntityContact_Email varchar(200) DEFAULT NULL,
+  EntityContact_PhoneNumber varchar(200) DEFAULT NULL,
+PRIMARY KEY (RefId)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+create table FQReporting_ContextualQuestion (
+  id MEDIUMINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  FQReporting_RefId varchar(36) NOT NULL,
+  Context varchar(200) DEFAULT NULL,
+  Answer varchar(200) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+create table FQReporting_FQItem (
+  id MEDIUMINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  FQReporting_RefId varchar(36) NOT NULL,
+  FQItemCode varchar(200) DEFAULT NULL,
+  TuitionAmount varchar(200) DEFAULT NULL,
+  BoardingAmount varchar(200) DEFAULT NULL,
+  SystemAmount varchar(200) DEFAULT NULL,
+  DioceseAmount varchar(200) DEFAULT NULL,
+  FQComment varchar(200) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+create table FQReporting_FQRule (
+  id MEDIUMINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  FQReporting_RefId varchar(36) NOT NULL,
+  FQRuleCode varchar(200) DEFAULT NULL,
+  FQRuleComment varchar(200) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
