@@ -1593,17 +1593,17 @@ PRIMARY KEY (RefId)
 create table FQReporting_EntityContact (
   id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
   FQReporting_RefId varchar(36) NOT NULL,
-  EntityContact_PositionTitle varchar(200) DEFAULT NULL,
-  EntityContact_Role varchar(200) DEFAULT NULL,
-  EntityContact_RegistrationDetails varchar(200) DEFAULT NULL,
-  EntityContact_Qualifications varchar(200) DEFAULT NULL,
-  EntityContact_Email_Type varchar(200) DEFAULT NULL,
-  EntityContact_Email_Value varchar(200) DEFAULT NULL,
-  EntityContact_PhoneNumber_Type varchar(200) DEFAULT NULL,
-  EntityContact_PhoneNumber_Number varchar(200) DEFAULT NULL,
-  EntityContact_PhoneNumber_Extension varchar(200) DEFAULT NULL,
-  EntityContact_PhoneNumber_ListedStatus varchar(200) DEFAULT NULL,
-  EntityContact_PhoneNumber_Preference varchar(200) DEFAULT NULL
+  PositionTitle varchar(200) DEFAULT NULL,
+  Role varchar(200) DEFAULT NULL,
+  RegistrationDetails varchar(200) DEFAULT NULL,
+  Qualifications varchar(200) DEFAULT NULL,
+  Email_Type varchar(200) DEFAULT NULL,
+  Email_Value varchar(200) DEFAULT NULL,
+  PhoneNumber_Type varchar(200) DEFAULT NULL,
+  PhoneNumber_Number varchar(200) DEFAULT NULL,
+  PhoneNumber_Extension varchar(200) DEFAULT NULL,
+  PhoneNumber_ListedStatus varchar(200) DEFAULT NULL,
+  PhoneNumber_Preference varchar(200) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 create table FQReporting_EntityContact_Name (
