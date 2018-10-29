@@ -1625,6 +1625,8 @@ create table FQReporting_EntityContact_Name (
 create table FQReporting_EntityContact_Address (
   id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
   FQReporting_EntityContact_Id MEDIUMINT NOT NULL,
+  AddressType varchar(200) DEFAULT NULL,
+  AddressRole varchar(200) DEFAULT NULL,
   EffectiveFromDate varchar(200) DEFAULT NULL,
   EffectiveToDate varchar(200) DEFAULT NULL,
   Street_Line1 varchar(200) DEFAULT NULL,
@@ -1643,6 +1645,7 @@ create table FQReporting_EntityContact_Address (
   City varchar(200) DEFAULT NULL,
   StateProvince varchar(200) DEFAULT NULL,
   Country varchar(200) DEFAULT NULL,
+  PostalCode varchar(200) DEFAULT NULL,
   GridLocation_Latitude varchar(200) DEFAULT NULL,
   GridLocation_Longitude varchar(200) DEFAULT NULL,
   MapReference_Type varchar(200) DEFAULT NULL,
