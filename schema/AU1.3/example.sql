@@ -1645,6 +1645,7 @@ create table FQReporting_EntityContact_Address (
   Country varchar(200) DEFAULT NULL,
   GridLocation_Latitude varchar(200) DEFAULT NULL,
   GridLocation_Longitude varchar(200) DEFAULT NULL,
+  MapReference_Type varchar(200) DEFAULT NULL,
   MapReference_XCoordinate varchar(200) DEFAULT NULL,
   MapReference_YCoordinate varchar(200) DEFAULT NULL,
   RadioContact varchar(200) DEFAULT NULL,
@@ -1657,7 +1658,7 @@ create table FQReporting_EntityContact_Address_StatisticalArea (
   id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
   FQReporting_EntityContact_Address_Id MEDIUMINT NOT NULL,
   spatialUnitType varchar(200) DEFAULT NULL,
-  statisicalArea varchar(200) DEFAULT NULL
+  statisticalArea varchar(200) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 create table FQReporting_ContextualQuestion (
