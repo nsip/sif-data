@@ -30,6 +30,8 @@ CREATE UNIQUE INDEX StudentSchoolEnrollment_RefId_IX ON StudentSchoolEnrollment 
 CREATE INDEX StudentSchoolEnrollment_StudentPersonal_RefId_IX ON StudentSchoolEnrollment (StudentPersonal_RefId);
 CREATE INDEX StudentSchoolEnrollment_SchoolInfo_RefId_IX ON StudentSchoolEnrollment (SchoolInfo_RefId);
 
+ALTER TABLE StudentPersonal_OtherId ADD id INT PRIMARY KEY NOT NULL AUTO_INCREMENT FIRST;
+
 CREATE TABLE StudentSchoolEnrollment_PublishingPermission (
    ID INT(11) NOT NULL AUTO_INCREMENT,
    StudentSchoolEnrollment_RefId VARCHAR(36) NOT NULL,
@@ -56,7 +58,7 @@ CREATE TABLE StudentSchoolEnrollment_StudentGroup (
 CREATE TABLE StudentSchoolEnrollment_StudentSubjectChoice (
    ID INT(11) NOT NULL AUTO_INCREMENT,
    StudentSchoolEnrollment_RefId VARCHAR(36) NOT NULL,
-   PerferenceNumber VARCHAR(200),
+   PreferenceNumber VARCHAR(200),
    SubjectLocalId VARCHAR(200),
    StudyDescription VARCHAR(200),
    OtherSchoolLocalId VARCHAR(200),
