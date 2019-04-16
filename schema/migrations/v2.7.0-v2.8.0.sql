@@ -29,6 +29,9 @@ ALTER TABLE StudentSchoolEnrollment DROP INDEX StudentPersonal_RefId;
 CREATE UNIQUE INDEX StudentSchoolEnrollment_RefId_IX ON StudentSchoolEnrollment (RefId);
 CREATE INDEX StudentSchoolEnrollment_StudentPersonal_RefId_IX ON StudentSchoolEnrollment (StudentPersonal_RefId);
 CREATE INDEX StudentSchoolEnrollment_SchoolInfo_RefId_IX ON StudentSchoolEnrollment (SchoolInfo_RefId);
+ALTER TABLE PersonPicture MODIFY COLUMN RefId varchar(36) NOT NULL;
+ALTER TABLE PersonPicture ADD CONSTRAINT PersonPicture_PK PRIMARY KEY (RefId);
+CREATE UNIQUE INDEX PersonPicture_RefId_IX ON PersonPicture (RefId);
 
 ALTER TABLE StudentPersonal_OtherId ADD id INT PRIMARY KEY NOT NULL AUTO_INCREMENT FIRST;
 
@@ -66,4 +69,15 @@ CREATE TABLE StudentSchoolEnrollment_StudentSubjectChoice (
    UNIQUE INDEX SSE_StudentSubjectChoice_PKX (ID),
    INDEX SSE_StudentSubjectChoice_IX (StudentSchoolEnrollment_RefId),
    CONSTRAINT SSE_StudentSubjectChoice_FK FOREIGN KEY (StudentSchoolEnrollment_RefId) REFERENCES StudentSchoolEnrollment (RefId)
+) Engine=InnoDB DEFAULT Charset=utf8;
+
+CREATE TABLE PersonPicture_PublishingPermission (
+   ID INT(11) NOT NULL AUTO_INCREMENT,
+   PersonPicture_RefId VARCHAR(36) NOT NULL,
+   PermissionCategory VARCHAR(200),
+   PermissionValue VARCHAR(200),
+   PRIMARY KEY (id),
+   UNIQUE INDEX PP_PublishingPermission_PKX (ID),
+   INDEX PP_PublishingPermission_IX (PersonPicture_RefId),
+   CONSTRAINT PP_PublishingPermission_FK FOREIGN KEY (PersonPicture_RefId) REFERENCES PersonPicture (RefId)
 ) Engine=InnoDB DEFAULT Charset=utf8;
