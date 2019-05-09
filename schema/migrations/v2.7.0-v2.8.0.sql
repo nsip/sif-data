@@ -158,7 +158,7 @@ CREATE TABLE AGStatusReport (
    SubmissionTimestamp VARCHAR(200),
    AGCollection VARCHAR(200),
    CollectionYear VARCHAR(200)
-); 
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE AGStatusReport_ReportingObjectResponse (
    Id MEDIUMINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -172,7 +172,7 @@ CREATE TABLE AGStatusReport_ReportingObjectResponse (
    AGSubmissionStatusCode VARCHAR(200),
    INDEX `ReportingObjectResponse_AGStatusReport_IX` (`AGStatusReport_RefId`),
    CONSTRAINT `ReportingObjectResponse_AGStatusReport_FK` FOREIGN KEY (`AGStatusReport_RefId`) REFERENCES `AGStatusReport` (`RefId`)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE AGStatusReport_AGRule (
    Id MEDIUMINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -183,5 +183,229 @@ CREATE TABLE AGStatusReport_AGRule (
    AGRuleStatus VARCHAR(200),
    INDEX `Rule_ReportingObjectResponse_IX` (`ReportingObjectResponse_Id`),
    CONSTRAINT `Rule_ReportingObjectResponse_FK` FOREIGN KEY (`ReportingObjectResponse_Id`) REFERENCES `AGStatusReport_ReportingObjectResponse` (`Id`)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+create table FinancialQuestionnaireSubmission (
+  RefId varchar(36) NOT NULL,
+  FQYear varchar(200) DEFAULT NULL,
+  ReportingAuthority varchar(200) DEFAULT NULL,
+  ReportingAuthoritySystem varchar(200) DEFAULT NULL,
+  ReportingAuthorityCommonwealthId varchar(200) DEFAULT NULL,
+  SystemSubmission varchar(200) DEFAULT NULL,
+  SoftwareVendorInfo_SoftwareProduct varchar(200) DEFAULT NULL,
+  SoftwareVendorInfo_SoftwareVersion varchar(200) DEFAULT NULL,
+  FQReportComments varchar(200) DEFAULT NULL,
+  PRIMARY KEY (RefId)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+create table FQSubmission_EntityContact (
+  id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
+  FQSubmission_RefId varchar(36) NOT NULL,
+  PositionTitle varchar(200) DEFAULT NULL,
+  Role varchar(200) DEFAULT NULL,
+  RegistrationDetails varchar(200) DEFAULT NULL,
+  Qualifications varchar(200) DEFAULT NULL,
+  Email_Type varchar(200) DEFAULT NULL,
+  Email_Value varchar(200) DEFAULT NULL,
+  PhoneNumber_Type varchar(200) DEFAULT NULL,
+  PhoneNumber_Number varchar(200) DEFAULT NULL,
+  PhoneNumber_Extension varchar(200) DEFAULT NULL,
+  PhoneNumber_ListedStatus varchar(200) DEFAULT NULL,
+  PhoneNumber_Preference varchar(200) DEFAULT NULL,
+  INDEX `EntityContact_FQSubmission_IX` (`FQSubmission_RefId`),
+  CONSTRAINT `EntityContact_FQSubmission_FK` FOREIGN KEY (`FQSubmission_RefId`) REFERENCES `FinancialQuestionnaireSubmission` (`RefId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+create table FQSubmission_EntityContact_Name (
+  id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
+  FQSubmission_EntityContact_Id MEDIUMINT NOT NULL,
+  NameType varchar(200) DEFAULT NULL,
+  Title varchar(200) DEFAULT NULL,
+  FamilyName varchar(200) DEFAULT NULL,
+  GivenName varchar(200) DEFAULT NULL,
+  MiddleName varchar(200) DEFAULT NULL,
+  FamilyNameFirst varchar(200) DEFAULT NULL,
+  PreferredFamilyName varchar(200) DEFAULT NULL,
+  PreferredFamilyNameFirst varchar(200) DEFAULT NULL,
+  PreferredGivenName varchar(200) DEFAULT NULL,
+  Suffix varchar(200) DEFAULT NULL,
+  FullName varchar(200) DEFAULT NULL,
+  INDEX `Name_FQSubmissionEntityContact_IX` (`FQSubmission_EntityContact_Id`),
+  CONSTRAINT `Name_FQSubmissionEntityContact_FK` FOREIGN KEY (`FQSubmission_EntityContact_Id`) REFERENCES `FQSubmission_EntityContact` (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+create table FQSubmission_EntityContact_Address (
+  id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
+  FQSubmission_EntityContact_Id MEDIUMINT NOT NULL,
+  AddressType varchar(200) DEFAULT NULL,
+  AddressRole varchar(200) DEFAULT NULL,
+  EffectiveFromDate varchar(200) DEFAULT NULL,
+  EffectiveToDate varchar(200) DEFAULT NULL,
+  Street_Line1 varchar(200) DEFAULT NULL,
+  Street_Line2 varchar(200) DEFAULT NULL,
+  Street_Line3 varchar(200) DEFAULT NULL,
+  Street_Complex varchar(200) DEFAULT NULL,
+  Street_StreetNumber varchar(200) DEFAULT NULL,
+  Street_StreetPrefix varchar(200) DEFAULT NULL,
+  Street_StreetName varchar(200) DEFAULT NULL,
+  Street_StreetType varchar(200) DEFAULT NULL,
+  Street_StreetSuffix varchar(200) DEFAULT NULL,
+  Street_ApartmentType varchar(200) DEFAULT NULL,
+  Street_ApartmentNumberPrefix varchar(200) DEFAULT NULL,
+  Street_ApartmentNumber varchar(200) DEFAULT NULL,
+  Street_ApartmentNumberSuffix varchar(200) DEFAULT NULL,
+  City varchar(200) DEFAULT NULL,
+  StateProvince varchar(200) DEFAULT NULL,
+  Country varchar(200) DEFAULT NULL,
+  PostalCode varchar(200) DEFAULT NULL,
+  GridLocation_Latitude varchar(200) DEFAULT NULL,
+  GridLocation_Longitude varchar(200) DEFAULT NULL,
+  MapReference_Type varchar(200) DEFAULT NULL,
+  MapReference_XCoordinate varchar(200) DEFAULT NULL,
+  MapReference_YCoordinate varchar(200) DEFAULT NULL,
+  RadioContact varchar(200) DEFAULT NULL,
+  Community varchar(200) DEFAULT NULL,
+  LocalId varchar(200) DEFAULT NULL,
+  AddressGlobalUID varchar(200) DEFAULT NULL,
+  INDEX `Address_FQSubmissionEntityContact_IX` (`FQSubmission_EntityContact_Id`),
+  CONSTRAINT `Address_FQSubmissionEntityContact_FK` FOREIGN KEY (`FQSubmission_EntityContact_Id`) REFERENCES `FQSubmission_EntityContact` (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  
+create table FQSubmission_EntityContact_Address_StatisticalArea (
+  id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
+  FQSubmission_EntityContact_Address_Id MEDIUMINT NOT NULL,
+  spatialUnitType varchar(200) DEFAULT NULL,
+  statisticalArea varchar(200) DEFAULT NULL,
+  INDEX `StatArea_FQSubmissionEntityContactAddress_IX` (`FQSubmission_EntityContact_Address_Id`),
+  CONSTRAINT `StatArea_FQSubmissionEntityContactAddress_FK` FOREIGN KEY (`FQSubmission_EntityContact_Address_Id`) REFERENCES `FQSubmission_EntityContact_Address` (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+create table FQReporting (
+  id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
+  FQSubmission_RefId varchar(36) NOT NULL,
+  FQRefId varchar(36) DEFAULT NULL,
+  EntityLevel varchar(200) DEFAULT NULL,
+  SchoolInfo_RefId varchar(36) DEFAULT NULL,
+  LocalId varchar(200) DEFAULT NULL,
+  StateProvinceId varchar(200) DEFAULT NULL,
+  CommonwealthId varchar(200) DEFAULT NULL,
+  AcaraId varchar(200) DEFAULT NULL,
+  EntityName varchar(200) DEFAULT NULL,
+  INDEX `FQReporting_FQSubmission_IX` (`FQSubmission_RefId`),
+  CONSTRAINT `FQReporting_FQSubmission_FK` FOREIGN KEY (`FQSubmission_RefId`) REFERENCES `FinancialQuestionnaireSubmission` (`RefId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+create table FQReporting_EntityContact (
+  id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
+  FQReporting_Id MEDIUMINT NOT NULL,
+  PositionTitle varchar(200) DEFAULT NULL,
+  Role varchar(200) DEFAULT NULL,
+  RegistrationDetails varchar(200) DEFAULT NULL,
+  Qualifications varchar(200) DEFAULT NULL,
+  Email_Type varchar(200) DEFAULT NULL,
+  Email_Value varchar(200) DEFAULT NULL,
+  PhoneNumber_Type varchar(200) DEFAULT NULL,
+  PhoneNumber_Number varchar(200) DEFAULT NULL,
+  PhoneNumber_Extension varchar(200) DEFAULT NULL,
+  PhoneNumber_ListedStatus varchar(200) DEFAULT NULL,
+  PhoneNumber_Preference varchar(200) DEFAULT NULL,
+  INDEX `EntityContact_FQReporting_IX` (`FQReporting_Id`),
+  CONSTRAINT `EntityContact_FQReporting_FK` FOREIGN KEY (`FQReporting_Id`) REFERENCES `FQReporting` (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+create table FQReporting_EntityContact_Name (
+  id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
+  FQReporting_EntityContact_Id MEDIUMINT NOT NULL,
+  NameType varchar(200) DEFAULT NULL,
+  Title varchar(200) DEFAULT NULL,
+  FamilyName varchar(200) DEFAULT NULL,
+  GivenName varchar(200) DEFAULT NULL,
+  MiddleName varchar(200) DEFAULT NULL,
+  FamilyNameFirst varchar(200) DEFAULT NULL,
+  PreferredFamilyName varchar(200) DEFAULT NULL,
+  PreferredFamilyNameFirst varchar(200) DEFAULT NULL,
+  PreferredGivenName varchar(200) DEFAULT NULL,
+  Suffix varchar(200) DEFAULT NULL,
+  FullName varchar(200) DEFAULT NULL,
+  INDEX `Name_FQReportingEntityContact_IX` (`FQReporting_EntityContact_Id`),
+  CONSTRAINT `Name_FQReportingEntityContact_FK` FOREIGN KEY (`FQReporting_EntityContact_Id`) REFERENCES `FQReporting_EntityContact` (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+create table FQReporting_EntityContact_Address (
+  id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
+  FQReporting_EntityContact_Id MEDIUMINT NOT NULL,
+  AddressType varchar(200) DEFAULT NULL,
+  AddressRole varchar(200) DEFAULT NULL,
+  EffectiveFromDate varchar(200) DEFAULT NULL,
+  EffectiveToDate varchar(200) DEFAULT NULL,
+  Street_Line1 varchar(200) DEFAULT NULL,
+  Street_Line2 varchar(200) DEFAULT NULL,
+  Street_Line3 varchar(200) DEFAULT NULL,
+  Street_Complex varchar(200) DEFAULT NULL,
+  Street_StreetNumber varchar(200) DEFAULT NULL,
+  Street_StreetPrefix varchar(200) DEFAULT NULL,
+  Street_StreetName varchar(200) DEFAULT NULL,
+  Street_StreetType varchar(200) DEFAULT NULL,
+  Street_StreetSuffix varchar(200) DEFAULT NULL,
+  Street_ApartmentType varchar(200) DEFAULT NULL,
+  Street_ApartmentNumberPrefix varchar(200) DEFAULT NULL,
+  Street_ApartmentNumber varchar(200) DEFAULT NULL,
+  Street_ApartmentNumberSuffix varchar(200) DEFAULT NULL,
+  City varchar(200) DEFAULT NULL,
+  StateProvince varchar(200) DEFAULT NULL,
+  Country varchar(200) DEFAULT NULL,
+  PostalCode varchar(200) DEFAULT NULL,
+  GridLocation_Latitude varchar(200) DEFAULT NULL,
+  GridLocation_Longitude varchar(200) DEFAULT NULL,
+  MapReference_Type varchar(200) DEFAULT NULL,
+  MapReference_XCoordinate varchar(200) DEFAULT NULL,
+  MapReference_YCoordinate varchar(200) DEFAULT NULL,
+  RadioContact varchar(200) DEFAULT NULL,
+  Community varchar(200) DEFAULT NULL,
+  LocalId varchar(200) DEFAULT NULL,
+  AddressGlobalUID varchar(200) DEFAULT NULL,
+  INDEX `Address_FQReportingEntityContact_IX` (`FQReporting_EntityContact_Id`),
+  CONSTRAINT `Address_FQReportingEntityContact_FK` FOREIGN KEY (`FQReporting_EntityContact_Id`) REFERENCES `FQReporting_EntityContact` (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  
+create table FQReporting_EntityContact_Address_StatisticalArea (
+  id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
+  FQReporting_EntityContact_Address_Id MEDIUMINT NOT NULL,
+  spatialUnitType varchar(200) DEFAULT NULL,
+  statisticalArea varchar(200) DEFAULT NULL,
+  INDEX `StatArea_FQReportingEntityContactAddress_IX` (`FQReporting_EntityContact_Address_Id`),
+  CONSTRAINT `StatArea_FQReportingEntityContactAddress_FK` FOREIGN KEY (`FQReporting_EntityContact_Address_Id`) REFERENCES `FQReporting_EntityContact_Address` (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+create table FQReporting_ContextualQuestion (
+  id MEDIUMINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  FQReporting_Id MEDIUMINT NOT NULL,
+  Context varchar(200) DEFAULT NULL,
+  Answer varchar(200) DEFAULT NULL,
+  INDEX `ContextualQuestion_FQReporting_IX` (`FQReporting_Id`),
+  CONSTRAINT `ContextualQuestion_FQReporting_FK` FOREIGN KEY (`FQReporting_Id`) REFERENCES `FQReporting` (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+create table FQReporting_FQItem (
+  id MEDIUMINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  FQReporting_Id MEDIUMINT NOT NULL,
+  FQItemCode varchar(200) DEFAULT NULL,
+  TuitionAmount varchar(200) DEFAULT NULL,
+  BoardingAmount varchar(200) DEFAULT NULL,
+  SystemAmount varchar(200) DEFAULT NULL,
+  DioceseAmount varchar(200) DEFAULT NULL,
+  FQComments varchar(200) DEFAULT NULL,
+  INDEX `FQItem_FQReporting_IX` (`FQReporting_Id`),
+  CONSTRAINT `FQItem_FQReporting_FK` FOREIGN KEY (`FQReporting_Id`) REFERENCES `FQReporting` (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE FQReporting_AGRule (
+   Id MEDIUMINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+   FQReporting_Id MEDIUMINT NOT NULL,
+   AGRuleCode VARCHAR(200),
+   AGRuleComment VARCHAR(200),
+   AGRuleResponse VARCHAR(200),
+   AGRuleStatus VARCHAR(200),
+   INDEX `Rule_FQReporting_IX` (`FQReporting_Id`),
+   CONSTRAINT `Rule_FQReporting_FK` FOREIGN KEY (`FQReporting_Id`) REFERENCES `FQReporting` (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
