@@ -409,3 +409,10 @@ CREATE TABLE FQReporting_AGRule (
    INDEX `Rule_FQReporting_IX` (`FQReporting_Id`),
    CONSTRAINT `Rule_FQReporting_FK` FOREIGN KEY (`FQReporting_Id`) REFERENCES `FQReporting` (`Id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+/**
+ * ContactInfo changes
+ */
+ALTER TABLE VendorInfo add ContactInfo_Qualifications VARCHAR(200) NULL;
+ALTER TABLE VendorInfo add ContactInfo_RegistrationDetails VARCHAR(200) NULL;
+
