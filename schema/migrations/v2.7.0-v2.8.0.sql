@@ -416,3 +416,10 @@ CREATE TABLE FQReporting_AGRule (
 ALTER TABLE VendorInfo add ContactInfo_Qualifications VARCHAR(200) NULL;
 ALTER TABLE VendorInfo add ContactInfo_RegistrationDetails VARCHAR(200) NULL;
 
+/**
+ * Demographics changes
+ */
+ALTER TABLE StudentPersonal add InterpreterRequired VARCHAR(20) null;
+ALTER TABLE StaffPersonal add InterpreterRequired VARCHAR(20) null;
+ALTER TABLE StudentContactPersonal add InterpreterRequired VARCHAR(20) null;
+
