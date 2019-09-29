@@ -200,6 +200,11 @@ CREATE TABLE `StudentSchoolEnrollment` (
   `DestinationSchoolName` varchar(200) DEFAULT NULL,
   `StartedAtSchoolDate` varchar(25) DEFAULT NULL,
   InternationalStudent VARCHAR(20) NULL,
+  DisabilityLevelOfAdjustment VARCHAR(20) NULL,
+  DisabilityCategory VARCHAR(20) NULL,
+  CensusAge VARCHAR(20) NULL,
+  DistanceEducationStudent VARCHAR(20) NULL,
+  BoardingStatus VARCHAR(20) NULL,
   PRIMARY KEY (`RefId`),
   KEY `StudentSchoolEnrollment_StudentPersonal_RefId_IX` (`StudentPersonal_RefId`),
   KEY `StudentSchoolEnrollment_SchoolInfo_RefId_IX` (`SchoolInfo_RefId`)

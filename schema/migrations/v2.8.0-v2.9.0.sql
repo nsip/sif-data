@@ -49,3 +49,10 @@ ALTER TABLE StudentPersonal ADD MostRecent_DisabilityCategory VARCHAR(200) NULL 
 ALTER TABLE StudentPersonal ADD MostRecent_CensusAge VARCHAR(200) NULL AFTER MostRecent_DisabilityCategory;
 ALTER TABLE StudentPersonal ADD MostRecent_DistanceEducationStudent VARCHAR(200) NULL AFTER MostRecent_CensusAge;
 ALTER TABLE StudentPersonal ADD MostRecent_BoardingStatus VARCHAR(200) NULL AFTER MostRecent_DistanceEducationStudent;
+
+ALTER TABLE StudentSchoolEnrollment ADD DisabilityLevelOfAdjustment VARCHAR(20) NULL AFTER InternationalStudent;
+ALTER TABLE StudentSchoolEnrollment ADD DisabilityCategory VARCHAR(20) NULL AFTER DisabilityLevelOfAdjustment;
+ALTER TABLE StudentSchoolEnrollment ADD CensusAge VARCHAR(20) NULL AFTER DisabilityCategory;
+ALTER TABLE StudentSchoolEnrollment ADD DistanceEducationStudent VARCHAR(20) NULL AFTER CensusAge;
+ALTER TABLE StudentSchoolEnrollment ADD BoardingStatus VARCHAR(20) NULL AFTER DistanceEducationStudent;
+
