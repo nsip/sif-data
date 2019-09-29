@@ -42,3 +42,10 @@ create table WellbeingPersonLink_FollowupAction (
     KEY WellbeingEvent_FollowupAction_IX (WellbeingEvent_RefId),
     CONSTRAINT `WellbeingEvent_FollowupAction_FK` FOREIGN KEY (`WellbeingPersonLink_RefId`) REFERENCES `WellbeingPersonLink` (`RefId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE StudentPersonal ADD MostRecent_OtherSchoolName VARCHAR(200) NULL AFTER MostRecent_ReportingSchool;
+ALTER TABLE StudentPersonal ADD MostRecent_DisabilityLevelOfAdjustment VARCHAR(200) NULL AFTER MostRecent_OtherSchoolName;
+ALTER TABLE StudentPersonal ADD MostRecent_DisabilityCategory VARCHAR(200) NULL AFTER MostRecent_DisabilityLevelOfAdjustment;
+ALTER TABLE StudentPersonal ADD MostRecent_CensusAge VARCHAR(200) NULL AFTER MostRecent_DisabilityCategory;
+ALTER TABLE StudentPersonal ADD MostRecent_DistanceEducationStudent VARCHAR(200) NULL AFTER MostRecent_CensusAge;
+ALTER TABLE StudentPersonal ADD MostRecent_BoardingStatus VARCHAR(200) NULL AFTER MostRecent_DistanceEducationStudent;
