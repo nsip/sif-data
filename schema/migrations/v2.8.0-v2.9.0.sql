@@ -56,3 +56,5 @@ ALTER TABLE StudentSchoolEnrollment ADD CensusAge VARCHAR(20) NULL AFTER Disabil
 ALTER TABLE StudentSchoolEnrollment ADD DistanceEducationStudent VARCHAR(20) NULL AFTER CensusAge;
 ALTER TABLE StudentSchoolEnrollment ADD BoardingStatus VARCHAR(20) NULL AFTER DistanceEducationStudent;
 
+ALTER TABLE WellbeingEvent ADD GroupIndicator VARCHAR(20) DEFAULT NULL;
+

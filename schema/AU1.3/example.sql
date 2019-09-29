@@ -1473,6 +1473,7 @@ WellbeingEventLocationDetails_Class varchar(200) DEFAULT NULL,
 WellbeingEventLocationDetails_FurtherLocationNotes varchar(1000) DEFAULT NULL,
 ConfidentialFlag  varchar(200) DEFAULT NULL,
 Status  varchar(200) DEFAULT NULL,
+GroupIndicator VARCHAR(20) DEFAULT NULL,
 PRIMARY KEY (RefId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
