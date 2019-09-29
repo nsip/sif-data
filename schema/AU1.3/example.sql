@@ -115,6 +115,8 @@ CREATE TABLE IF NOT EXISTS StudentPersonal (
 	PreferredFamilyName Varchar(2000),
 	ESLSupport VARCHAR(20) NULL,
 	InterpreterRequired VARCHAR(20) null,
+    PrePrimaryEducation VARCHAR(200) NULL,
+    PrePrimaryEducationHours VARCHAR(20) NULL,
 	FOREIGN KEY (SchoolInfo_RefId) REFERENCES SchoolInfo(RefId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -191,6 +193,7 @@ CREATE TABLE `StudentSchoolEnrollment` (
   `DestinationSchool` varchar(200) DEFAULT NULL,
   `DestinationSchoolName` varchar(200) DEFAULT NULL,
   `StartedAtSchoolDate` varchar(25) DEFAULT NULL,
+  InternationalStudent VARCHAR(20) NULL,
   PRIMARY KEY (`RefId`),
   KEY `StudentSchoolEnrollment_StudentPersonal_RefId_IX` (`StudentPersonal_RefId`),
   KEY `StudentSchoolEnrollment_SchoolInfo_RefId_IX` (`SchoolInfo_RefId`)
@@ -315,6 +318,7 @@ CREATE TABLE `StaffAssignment` (
   `Homegroup` varchar(200) DEFAULT NULL,
   `House` varchar(200) DEFAULT NULL,
   `PreviousSchoolName` varchar(200) DEFAULT NULL,
+  AvailableForTimetable VARCHAR(20) NULL,
   PRIMARY KEY (`RefId`),
   KEY `SchoolInfo_RefId_IX` (`SchoolInfo_RefId`),
   KEY `StaffPersonal_RefId_IX` (`StaffPersonal_RefId`),
@@ -398,6 +402,7 @@ CREATE TABLE IF NOT EXISTS RoomInfo (
 	RoomSize varchar(100),	-- NOTE: Size is a reserved word, using RoomSize
 	RoomType varchar(100),
 	LocalId varchar(200),
+	AvailableForTimetable VARCHAR(20) NULL,
 	FOREIGN KEY (SchoolInfo_RefId) REFERENCES SchoolInfo(RefId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -1370,6 +1375,7 @@ SuspensionContainer_ResolutionMeetingTime varchar(200) DEFAULT NULL,
 SuspensionContainer_ResolutionNotes varchar(1000) DEFAULT NULL,
 SuspensionContainer_EarlyReturnDate varchar(200) DEFAULT NULL,
 SuspensionContainer_Status varchar(200) DEFAULT NULL,
+SuspensionContainer_SuspensionNotes(1000) DEFAULT NULL,
 DetentionContainer_DetentionCategory varchar(200) DEFAULT NULL,
 DetentionContainer_DetentionDate varchar(200) DEFAULT NULL,
 DetentionContainer_DetentionLocation varchar(200) DEFAULT NULL,
@@ -1565,6 +1571,14 @@ Method varchar(200) DEFAULT NULL,
 PRIMARY KEY (id)
 -- KEY WellbeingCharacteristic_Medication_IX (WellbeingEvent_RefId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE WellbeingCharacteristic_Symptom (
+   WellbeingCharacteristic_RefId VARCHAR(36) NOT NULL,
+   Symptom VARCHAR(200) NOT NULL,
+   PRIMARY KEY (WellbeingCharacteristic_RefId, Symptom),
+   INDEX WC_Symptom_FKX (WellbeingCharacteristic_RefId),
+   CONSTRAINT WC_Symptom_FK FOREIGN KEY (WellbeingCharacteristic_RefId) REFERENCES WellbeingCharacteristic (RefId)
+) Engine=InnoDB DEFAULT Charset=utf8;
 
 
 
@@ -1795,6 +1809,7 @@ create table FQSubmission_EntityContact_Address (
   MapReference_Type varchar(200) DEFAULT NULL,
   MapReference_XCoordinate varchar(200) DEFAULT NULL,
   MapReference_YCoordinate varchar(200) DEFAULT NULL,
+  MapReference_MapNumber varchar(200) DEFAULT NULL
   RadioContact varchar(200) DEFAULT NULL,
   Community varchar(200) DEFAULT NULL,
   LocalId varchar(200) DEFAULT NULL,
@@ -1892,6 +1907,7 @@ create table FQReporting_EntityContact_Address (
   MapReference_Type varchar(200) DEFAULT NULL,
   MapReference_XCoordinate varchar(200) DEFAULT NULL,
   MapReference_YCoordinate varchar(200) DEFAULT NULL,
+  MapReference_MapNumber varchar(200) DEFAULT NULL
   RadioContact varchar(200) DEFAULT NULL,
   Community varchar(200) DEFAULT NULL,
   LocalId varchar(200) DEFAULT NULL,
