@@ -1527,13 +1527,6 @@ PRIMARY KEY (id),
 KEY WellbeingEvent_FollowupAction_IX (WellbeingEvent_RefId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
-
-
-
-
-
-
 create table WellbeingCharacteristic (
 RefId varchar(36) NOT NULL,
 StudentPersonal_RefId varchar(36) DEFAULT NULL,
@@ -1967,11 +1960,10 @@ CREATE TABLE FQReporting_AGRule (
    CONSTRAINT `Rule_FQReporting_FK` FOREIGN KEY (`FQReporting_Id`) REFERENCES `FQReporting` (`Id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
 create table WellbeingPersonLink (
     RefId VARCHAR(36) NOT NULL PRIMARY KEY,
     WellbeingEvent_RefId VARCHAR(36) NULL,
-    WellbeingRespons_RefId VARCHAR(36) NULL,
+    WellbeingResponse_RefId VARCHAR(36) NULL,
     GroupId VARCHAR(200) NULL,
     Person_RefId VARCHAR(36) NULL,
     Person_RefId_SIF_RefObject VARCHAR(200) NULL,
