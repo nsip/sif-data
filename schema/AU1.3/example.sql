@@ -98,6 +98,12 @@ CREATE TABLE IF NOT EXISTS StudentPersonal (
 	MostRecent_OtherEnrollmentSchoolACARAId varchar(200),
 	MostRecent_FFPOS varchar(200),
 	MostRecent_ReportingSchool varchar(200),
+	MostRecent_OtherSchoolName VARCHAR(200) NULL,
+	MostRecent_DisabilityLevelOfAdjustment VARCHAR(200) NULL,
+	MostRecent_DisabilityCategory VARCHAR(200) NULL,
+	MostRecent_CensusAge VARCHAR(200) NULL,
+	MostRecent_DistanceEducationStudent VARCHAR(200) NULL,
+	MostRecent_BoardingStatus VARCHAR(200) NULL,
 	EducationSupport varchar(200),
 	HomeSchooledStudent varchar(200),
 	SensitiveData varchar(200),
@@ -115,6 +121,8 @@ CREATE TABLE IF NOT EXISTS StudentPersonal (
 	PreferredFamilyName Varchar(2000),
 	ESLSupport VARCHAR(20) NULL,
 	InterpreterRequired VARCHAR(20) null,
+    PrePrimaryEducation VARCHAR(200) NULL,
+    PrePrimaryEducationHours VARCHAR(20) NULL,
 	FOREIGN KEY (SchoolInfo_RefId) REFERENCES SchoolInfo(RefId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -191,6 +199,12 @@ CREATE TABLE `StudentSchoolEnrollment` (
   `DestinationSchool` varchar(200) DEFAULT NULL,
   `DestinationSchoolName` varchar(200) DEFAULT NULL,
   `StartedAtSchoolDate` varchar(25) DEFAULT NULL,
+  InternationalStudent VARCHAR(20) NULL,
+  DisabilityLevelOfAdjustment VARCHAR(20) NULL,
+  DisabilityCategory VARCHAR(20) NULL,
+  CensusAge VARCHAR(20) NULL,
+  DistanceEducationStudent VARCHAR(20) NULL,
+  BoardingStatus VARCHAR(20) NULL,
   PRIMARY KEY (`RefId`),
   KEY `StudentSchoolEnrollment_StudentPersonal_RefId_IX` (`StudentPersonal_RefId`),
   KEY `StudentSchoolEnrollment_SchoolInfo_RefId_IX` (`SchoolInfo_RefId`)
@@ -315,6 +329,7 @@ CREATE TABLE `StaffAssignment` (
   `Homegroup` varchar(200) DEFAULT NULL,
   `House` varchar(200) DEFAULT NULL,
   `PreviousSchoolName` varchar(200) DEFAULT NULL,
+  AvailableForTimetable VARCHAR(20) NULL,
   PRIMARY KEY (`RefId`),
   KEY `SchoolInfo_RefId_IX` (`SchoolInfo_RefId`),
   KEY `StaffPersonal_RefId_IX` (`StaffPersonal_RefId`),
@@ -398,6 +413,7 @@ CREATE TABLE IF NOT EXISTS RoomInfo (
 	RoomSize varchar(100),	-- NOTE: Size is a reserved word, using RoomSize
 	RoomType varchar(100),
 	LocalId varchar(200),
+	AvailableForTimetable VARCHAR(20) NULL,
 	FOREIGN KEY (SchoolInfo_RefId) REFERENCES SchoolInfo(RefId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -1351,9 +1367,6 @@ KEY PersonalisedPlan_Document_IX (PersonalisedPlan_RefId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-
-
-
 create table WellbeingResponse (
 RefId varchar(36) NOT NULL,
 StudentPersonal_RefId varchar(36) DEFAULT NULL,
@@ -1370,6 +1383,7 @@ SuspensionContainer_ResolutionMeetingTime varchar(200) DEFAULT NULL,
 SuspensionContainer_ResolutionNotes varchar(1000) DEFAULT NULL,
 SuspensionContainer_EarlyReturnDate varchar(200) DEFAULT NULL,
 SuspensionContainer_Status varchar(200) DEFAULT NULL,
+SuspensionContainer_SuspensionNotes varchar(1000) DEFAULT NULL,
 DetentionContainer_DetentionCategory varchar(200) DEFAULT NULL,
 DetentionContainer_DetentionDate varchar(200) DEFAULT NULL,
 DetentionContainer_DetentionLocation varchar(200) DEFAULT NULL,
@@ -1456,6 +1470,7 @@ WellbeingEventLocationDetails_Class varchar(200) DEFAULT NULL,
 WellbeingEventLocationDetails_FurtherLocationNotes varchar(1000) DEFAULT NULL,
 ConfidentialFlag  varchar(200) DEFAULT NULL,
 Status  varchar(200) DEFAULT NULL,
+GroupIndicator VARCHAR(20) DEFAULT NULL,
 PRIMARY KEY (RefId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -1512,13 +1527,6 @@ PRIMARY KEY (id),
 KEY WellbeingEvent_FollowupAction_IX (WellbeingEvent_RefId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
-
-
-
-
-
-
 create table WellbeingCharacteristic (
 RefId varchar(36) NOT NULL,
 StudentPersonal_RefId varchar(36) DEFAULT NULL,
@@ -1565,6 +1573,14 @@ Method varchar(200) DEFAULT NULL,
 PRIMARY KEY (id)
 -- KEY WellbeingCharacteristic_Medication_IX (WellbeingEvent_RefId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE WellbeingCharacteristic_Symptom (
+   WellbeingCharacteristic_RefId VARCHAR(36) NOT NULL,
+   Symptom VARCHAR(200) NOT NULL,
+   PRIMARY KEY (WellbeingCharacteristic_RefId, Symptom),
+   INDEX WC_Symptom_FKX (WellbeingCharacteristic_RefId),
+   CONSTRAINT WC_Symptom_FK FOREIGN KEY (WellbeingCharacteristic_RefId) REFERENCES WellbeingCharacteristic (RefId)
+) Engine=InnoDB DEFAULT Charset=utf8;
 
 
 
@@ -1795,6 +1811,7 @@ create table FQSubmission_EntityContact_Address (
   MapReference_Type varchar(200) DEFAULT NULL,
   MapReference_XCoordinate varchar(200) DEFAULT NULL,
   MapReference_YCoordinate varchar(200) DEFAULT NULL,
+  MapReference_MapNumber varchar(200) DEFAULT NULL,
   RadioContact varchar(200) DEFAULT NULL,
   Community varchar(200) DEFAULT NULL,
   LocalId varchar(200) DEFAULT NULL,
@@ -1892,6 +1909,7 @@ create table FQReporting_EntityContact_Address (
   MapReference_Type varchar(200) DEFAULT NULL,
   MapReference_XCoordinate varchar(200) DEFAULT NULL,
   MapReference_YCoordinate varchar(200) DEFAULT NULL,
+  MapReference_MapNumber varchar(200) DEFAULT NULL,
   RadioContact varchar(200) DEFAULT NULL,
   Community varchar(200) DEFAULT NULL,
   LocalId varchar(200) DEFAULT NULL,
@@ -1940,4 +1958,350 @@ CREATE TABLE FQReporting_AGRule (
    AGRuleStatus VARCHAR(200),
    INDEX `Rule_FQReporting_IX` (`FQReporting_Id`),
    CONSTRAINT `Rule_FQReporting_FK` FOREIGN KEY (`FQReporting_Id`) REFERENCES `FQReporting` (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+create table WellbeingPersonLink (
+    RefId VARCHAR(36) NOT NULL PRIMARY KEY,
+    WellbeingEvent_RefId VARCHAR(36) NULL,
+    WellbeingResponse_RefId VARCHAR(36) NULL,
+    GroupId VARCHAR(200) NULL,
+    Person_RefId VARCHAR(36) NULL,
+    Person_RefId_SIF_RefObject VARCHAR(200) NULL,
+    ShortName VARCHAR(200) NULL,
+    HowInvolved VARCHAR(200) NULL,
+    OtherPersonId VARCHAR(200) NULL,
+    OtherPersonContactDetails VARCHAR(200) NULL,
+    PersonRole VARCHAR(200) NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+create table WellbeingPersonLink_FollowupAction (
+	Id int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	WellbeingPersonLink_RefId varchar(36) NOT NULL,
+	WellbeingResponse_RefId varchar(36) NULL,
+    FollowUpDetails varchar(1000) DEFAULT NULL,
+    FollowUpActionCategory varchar(200) DEFAULT NULL,
+    KEY WellbeingPersonLink_FollowupAction_IX (WellbeingPersonLink_RefId),
+    CONSTRAINT `WellbeingEvent_FollowupAction_FK` FOREIGN KEY (`WellbeingPersonLink_RefId`) REFERENCES `WellbeingPersonLink` (`RefId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+create table AGAddressCollectionSubmission (
+    RefId VARCHAR(36) NOT NULL PRIMARY KEY,
+    AddressCollectionYear VARCHAR(200) NULL,
+    ReportingAuthority VARCHAR(200) NULL,
+    ReportingAuthoritySystem VARCHAR(200) NULL,
+    ReportingAuthorityCommonwealthId VARCHAR(200) NULL,
+    SystemSubmission VARCHAR(20) NULL,
+    SoftwareVendorInfo_SoftwareProduct VARCHAR(200) NULL,
+    SoftwareVendorInfo_SoftwareVersion VARCHAR(200) NULL,
+    AddressCollectionComments VARCHAR(1000) NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+create table AGAddressCS_EntityContact (
+  id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
+  AGAddressCS_RefId varchar(36) NOT NULL,
+  PositionTitle varchar(200) DEFAULT NULL,
+  Role varchar(200) DEFAULT NULL,
+  RegistrationDetails varchar(200) DEFAULT NULL,
+  Qualifications varchar(200) DEFAULT NULL,
+  Email_Type varchar(200) DEFAULT NULL,
+  Email_Value varchar(200) DEFAULT NULL,
+  PhoneNumber_Type varchar(200) DEFAULT NULL,
+  PhoneNumber_Number varchar(200) DEFAULT NULL,
+  PhoneNumber_Extension varchar(200) DEFAULT NULL,
+  PhoneNumber_ListedStatus varchar(200) DEFAULT NULL,
+  PhoneNumber_Preference varchar(200) DEFAULT NULL,
+  INDEX `EntityContact_AGAddressCS_IX` (`AGAddressCS_RefId`),
+  CONSTRAINT `EntityContact_AGAddressCS_FK` FOREIGN KEY (`AGAddressCS_RefId`) REFERENCES `AGAddressCollectionSubmission` (`RefId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+create table AGAddressCS_EntityContact_Name (
+  id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
+  AGAddressCS_EntityContact_Id MEDIUMINT NOT NULL,
+  NameType varchar(200) DEFAULT NULL,
+  Title varchar(200) DEFAULT NULL,
+  FamilyName varchar(200) DEFAULT NULL,
+  GivenName varchar(200) DEFAULT NULL,
+  MiddleName varchar(200) DEFAULT NULL,
+  FamilyNameFirst varchar(200) DEFAULT NULL,
+  PreferredFamilyName varchar(200) DEFAULT NULL,
+  PreferredFamilyNameFirst varchar(200) DEFAULT NULL,
+  PreferredGivenName varchar(200) DEFAULT NULL,
+  Suffix varchar(200) DEFAULT NULL,
+  FullName varchar(200) DEFAULT NULL,
+  INDEX `Name_AGAddressCSEntityContact_IX` (`AGAddressCS_EntityContact_Id`),
+  CONSTRAINT `Name_AGAddressCSEntityContact_FK` FOREIGN KEY (`AGAddressCS_EntityContact_Id`) REFERENCES `AGAddressCS_EntityContact` (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+create table AGAddressCS_EntityContact_Address (
+  id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
+  AGAddressCS_EntityContact_Id MEDIUMINT NOT NULL,
+  AddressType varchar(200) DEFAULT NULL,
+  AddressRole varchar(200) DEFAULT NULL,
+  EffectiveFromDate varchar(200) DEFAULT NULL,
+  EffectiveToDate varchar(200) DEFAULT NULL,
+  Street_Line1 varchar(200) DEFAULT NULL,
+  Street_Line2 varchar(200) DEFAULT NULL,
+  Street_Line3 varchar(200) DEFAULT NULL,
+  Street_Complex varchar(200) DEFAULT NULL,
+  Street_StreetNumber varchar(200) DEFAULT NULL,
+  Street_StreetPrefix varchar(200) DEFAULT NULL,
+  Street_StreetName varchar(200) DEFAULT NULL,
+  Street_StreetType varchar(200) DEFAULT NULL,
+  Street_StreetSuffix varchar(200) DEFAULT NULL,
+  Street_ApartmentType varchar(200) DEFAULT NULL,
+  Street_ApartmentNumberPrefix varchar(200) DEFAULT NULL,
+  Street_ApartmentNumber varchar(200) DEFAULT NULL,
+  Street_ApartmentNumberSuffix varchar(200) DEFAULT NULL,
+  City varchar(200) DEFAULT NULL,
+  StateProvince varchar(200) DEFAULT NULL,
+  Country varchar(200) DEFAULT NULL,
+  PostalCode varchar(200) DEFAULT NULL,
+  GridLocation_Latitude varchar(200) DEFAULT NULL,
+  GridLocation_Longitude varchar(200) DEFAULT NULL,
+  MapReference_Type varchar(200) DEFAULT NULL,
+  MapReference_XCoordinate varchar(200) DEFAULT NULL,
+  MapReference_YCoordinate varchar(200) DEFAULT NULL,
+  MapReference_MapNumber varchar(200) DEFAULT NULL,
+  RadioContact varchar(200) DEFAULT NULL,
+  Community varchar(200) DEFAULT NULL,
+  LocalId varchar(200) DEFAULT NULL,
+  AddressGlobalUID varchar(200) DEFAULT NULL,
+  INDEX `Address_AGAddressCSEntityContact_IX` (`AGAddressCS_EntityContact_Id`),
+  CONSTRAINT `Address_AGAddressCSEntityContact_FK` FOREIGN KEY (`AGAddressCS_EntityContact_Id`) REFERENCES `AGAddressCS_EntityContact` (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  
+create table AGAddressCS_EntityContact_Address_StatisticalArea (
+  id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
+  AGAddressCS_EntityContact_Address_Id MEDIUMINT NOT NULL,
+  spatialUnitType varchar(200) DEFAULT NULL,
+  statisticalArea varchar(200) DEFAULT NULL,
+  INDEX `StatArea_AGAddressCSEntityContactAddress_IX` (`AGAddressCS_EntityContact_Address_Id`),
+  CONSTRAINT `StatArea_AGAddressCSEntityContactAddress_FK` FOREIGN KEY (`AGAddressCS_EntityContact_Address_Id`) REFERENCES `AGAddressCS_EntityContact_Address` (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+create table AGAddressCS_AGAddressCollectionReporting (
+  id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
+  AGAddressCS_RefId varchar(36) NOT NULL,
+  AddressCollectionRefId VARCHAR(200) NULL,
+  EntityLevel VARCHAR(200) NULL,
+  SchoolInfoRefId VARCHAR(200) NULL,
+  LocalId VARCHAR(200) NULL,
+  StateProvinceId VARCHAR(200) NULL,
+  CommonwealthId VARCHAR(200) NULL,
+  AcaraId VARCHAR(200) NULL,
+  EntityName VARCHAR(200) NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+create table AGAddressCR_EntityContact (
+  id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
+  AGAddressCR_Id MEDIUMINT NOT NULL,
+  PositionTitle varchar(200) DEFAULT NULL,
+  Role varchar(200) DEFAULT NULL,
+  RegistrationDetails varchar(200) DEFAULT NULL,
+  Qualifications varchar(200) DEFAULT NULL,
+  Email_Type varchar(200) DEFAULT NULL,
+  Email_Value varchar(200) DEFAULT NULL,
+  PhoneNumber_Type varchar(200) DEFAULT NULL,
+  PhoneNumber_Number varchar(200) DEFAULT NULL,
+  PhoneNumber_Extension varchar(200) DEFAULT NULL,
+  PhoneNumber_ListedStatus varchar(200) DEFAULT NULL,
+  PhoneNumber_Preference varchar(200) DEFAULT NULL,
+  INDEX `EntityContact_AGAddressCR_IX` (`AGAddressCR_Id`),
+  CONSTRAINT `EntityContact_AGAddressCR_FK` FOREIGN KEY (`AGAddressCR_Id`) REFERENCES `AGAddressCS_AGAddressCollectionReporting` (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+create table AGAddressCR_EntityContact_Name (
+  id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
+  AGAddressCR_EntityContact_Id MEDIUMINT NOT NULL,
+  NameType varchar(200) DEFAULT NULL,
+  Title varchar(200) DEFAULT NULL,
+  FamilyName varchar(200) DEFAULT NULL,
+  GivenName varchar(200) DEFAULT NULL,
+  MiddleName varchar(200) DEFAULT NULL,
+  FamilyNameFirst varchar(200) DEFAULT NULL,
+  PreferredFamilyName varchar(200) DEFAULT NULL,
+  PreferredFamilyNameFirst varchar(200) DEFAULT NULL,
+  PreferredGivenName varchar(200) DEFAULT NULL,
+  Suffix varchar(200) DEFAULT NULL,
+  FullName varchar(200) DEFAULT NULL,
+  INDEX `Name_AGAddressCREntityContact_IX` (`AGAddressCR_EntityContact_Id`),
+  CONSTRAINT `Name_AGAddressCREntityContact_FK` FOREIGN KEY (`AGAddressCR_EntityContact_Id`) REFERENCES `AGAddressCR_EntityContact` (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+create table AGAddressCR_EntityContact_Address (
+  id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
+  AGAddressCR_EntityContact_Id MEDIUMINT NOT NULL,
+  AddressType varchar(200) DEFAULT NULL,
+  AddressRole varchar(200) DEFAULT NULL,
+  EffectiveFromDate varchar(200) DEFAULT NULL,
+  EffectiveToDate varchar(200) DEFAULT NULL,
+  Street_Line1 varchar(200) DEFAULT NULL,
+  Street_Line2 varchar(200) DEFAULT NULL,
+  Street_Line3 varchar(200) DEFAULT NULL,
+  Street_Complex varchar(200) DEFAULT NULL,
+  Street_StreetNumber varchar(200) DEFAULT NULL,
+  Street_StreetPrefix varchar(200) DEFAULT NULL,
+  Street_StreetName varchar(200) DEFAULT NULL,
+  Street_StreetType varchar(200) DEFAULT NULL,
+  Street_StreetSuffix varchar(200) DEFAULT NULL,
+  Street_ApartmentType varchar(200) DEFAULT NULL,
+  Street_ApartmentNumberPrefix varchar(200) DEFAULT NULL,
+  Street_ApartmentNumber varchar(200) DEFAULT NULL,
+  Street_ApartmentNumberSuffix varchar(200) DEFAULT NULL,
+  City varchar(200) DEFAULT NULL,
+  StateProvince varchar(200) DEFAULT NULL,
+  Country varchar(200) DEFAULT NULL,
+  PostalCode varchar(200) DEFAULT NULL,
+  GridLocation_Latitude varchar(200) DEFAULT NULL,
+  GridLocation_Longitude varchar(200) DEFAULT NULL,
+  MapReference_Type varchar(200) DEFAULT NULL,
+  MapReference_XCoordinate varchar(200) DEFAULT NULL,
+  MapReference_YCoordinate varchar(200) DEFAULT NULL,
+  MapReference_MapNumber varchar(200) DEFAULT NULL,
+  RadioContact varchar(200) DEFAULT NULL,
+  Community varchar(200) DEFAULT NULL,
+  LocalId varchar(200) DEFAULT NULL,
+  AddressGlobalUID varchar(200) DEFAULT NULL,
+  INDEX `Address_AGAddressCREntityContact_IX` (`AGAddressCR_EntityContact_Id`),
+  CONSTRAINT `Address_AGAddressCREntityContact_FK` FOREIGN KEY (`AGAddressCR_EntityContact_Id`) REFERENCES `AGAddressCR_EntityContact` (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  
+create table AGAddressCR_EntityContact_Address_StatisticalArea (
+  id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
+  AGAddressCR_EntityContact_Address_Id MEDIUMINT NOT NULL,
+  spatialUnitType varchar(200) DEFAULT NULL,
+  statisticalArea varchar(200) DEFAULT NULL,
+  INDEX `StatArea_AGAddressCREntityContactAddress_IX` (`AGAddressCR_EntityContact_Address_Id`),
+  CONSTRAINT `StatArea_AGAddressCREntityContactAddress_FK` FOREIGN KEY (`AGAddressCR_EntityContact_Address_Id`) REFERENCES `AGAddressCR_EntityContact_Address` (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+create table AGAddressCR_Student (
+  id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
+  AGAddressCR_Id MEDIUMINT NOT NULL,
+  LocalId VARCHAR(200) NULL,
+  EducationLevel VARCHAR(200) NULL,
+  BoardingStatus VARCHAR(200) NULL,
+  INDEX `Student_AGAddressCR_IX` (`AGAddressCR_Id`),
+  CONSTRAINT `Student_AGAddressCR_FK` FOREIGN KEY (`AGAddressCR_Id`) REFERENCES `AGAddressCS_AGAddressCollectionReporting` (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+create table AGAddressCR_Student_Address (
+  id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
+  AGAddressCR_Student_Id MEDIUMINT NOT NULL,
+  AddressType varchar(200) DEFAULT NULL,
+  AddressRole varchar(200) DEFAULT NULL,
+  EffectiveFromDate varchar(200) DEFAULT NULL,
+  EffectiveToDate varchar(200) DEFAULT NULL,
+  Street_Line1 varchar(200) DEFAULT NULL,
+  Street_Line2 varchar(200) DEFAULT NULL,
+  Street_Line3 varchar(200) DEFAULT NULL,
+  Street_Complex varchar(200) DEFAULT NULL,
+  Street_StreetNumber varchar(200) DEFAULT NULL,
+  Street_StreetPrefix varchar(200) DEFAULT NULL,
+  Street_StreetName varchar(200) DEFAULT NULL,
+  Street_StreetType varchar(200) DEFAULT NULL,
+  Street_StreetSuffix varchar(200) DEFAULT NULL,
+  Street_ApartmentType varchar(200) DEFAULT NULL,
+  Street_ApartmentNumberPrefix varchar(200) DEFAULT NULL,
+  Street_ApartmentNumber varchar(200) DEFAULT NULL,
+  Street_ApartmentNumberSuffix varchar(200) DEFAULT NULL,
+  City varchar(200) DEFAULT NULL,
+  StateProvince varchar(200) DEFAULT NULL,
+  Country varchar(200) DEFAULT NULL,
+  PostalCode varchar(200) DEFAULT NULL,
+  GridLocation_Latitude varchar(200) DEFAULT NULL,
+  GridLocation_Longitude varchar(200) DEFAULT NULL,
+  MapReference_Type varchar(200) DEFAULT NULL,
+  MapReference_XCoordinate varchar(200) DEFAULT NULL,
+  MapReference_YCoordinate varchar(200) DEFAULT NULL,
+  MapReference_MapNumber varchar(200) DEFAULT NULL,
+  RadioContact varchar(200) DEFAULT NULL,
+  Community varchar(200) DEFAULT NULL,
+  LocalId varchar(200) DEFAULT NULL,
+  AddressGlobalUID varchar(200) DEFAULT NULL,
+  INDEX `Address_AGAddressCRStudent_IX` (`AGAddressCR_Student_Id`),
+  CONSTRAINT `Address_AGAddressCRStudent_FK` FOREIGN KEY (`AGAddressCR_Student_Id`) REFERENCES `AGAddressCR_Student` (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  
+create table AGAddressCR_Student_Address_StatisticalArea (
+  id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
+  AGAddressCR_Student_Address_Id MEDIUMINT NOT NULL,
+  spatialUnitType varchar(200) DEFAULT NULL,
+  statisticalArea varchar(200) DEFAULT NULL,
+  INDEX `StatArea_AGAddressCRStudentAddress_IX` (`AGAddressCR_Student_Address_Id`),
+  CONSTRAINT `StatArea_AGAddressCRStudentAddress_FK` FOREIGN KEY (`AGAddressCR_Student_Address_Id`) REFERENCES `AGAddressCR_Student_Address` (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+create table AGAddressCR_Parent (
+  id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
+  AGAddressCR_Student_Id MEDIUMINT NOT NULL,
+  ParentNumber MEDIUMINT NOT NULL,
+  AddressSameAsStudent VARCHAR(20) NULL,
+  INDEX `Student_AGAddressCRStudent_IX` (`AGAddressCR_Student_Id`),
+  CONSTRAINT `Student_AGAddressCRStudent_FK` FOREIGN KEY (`AGAddressCR_Student_Id`) REFERENCES `AGAddressCR_Student` (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+create table AGAddressCR_Parent_Name (
+  id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
+  AGAddressCR_Parent_Id MEDIUMINT NOT NULL,
+  NameType varchar(200) DEFAULT NULL,
+  Title varchar(200) DEFAULT NULL,
+  FamilyName varchar(200) DEFAULT NULL,
+  GivenName varchar(200) DEFAULT NULL,
+  MiddleName varchar(200) DEFAULT NULL,
+  FamilyNameFirst varchar(200) DEFAULT NULL,
+  PreferredFamilyName varchar(200) DEFAULT NULL,
+  PreferredFamilyNameFirst varchar(200) DEFAULT NULL,
+  PreferredGivenName varchar(200) DEFAULT NULL,
+  Suffix varchar(200) DEFAULT NULL,
+  FullName varchar(200) DEFAULT NULL,
+  INDEX `Name_AGAddressCRParent_IX` (`AGAddressCR_Parent_Id`),
+  CONSTRAINT `Name_AGAddressCRParent_FK` FOREIGN KEY (`AGAddressCR_Parent_Id`) REFERENCES `AGAddressCR_Parent` (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+create table AGAddressCR_Parent_Address (
+  id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
+  AGAddressCR_Parent_Id MEDIUMINT NOT NULL,
+  AddressType varchar(200) DEFAULT NULL,
+  AddressRole varchar(200) DEFAULT NULL,
+  EffectiveFromDate varchar(200) DEFAULT NULL,
+  EffectiveToDate varchar(200) DEFAULT NULL,
+  Street_Line1 varchar(200) DEFAULT NULL,
+  Street_Line2 varchar(200) DEFAULT NULL,
+  Street_Line3 varchar(200) DEFAULT NULL,
+  Street_Complex varchar(200) DEFAULT NULL,
+  Street_StreetNumber varchar(200) DEFAULT NULL,
+  Street_StreetPrefix varchar(200) DEFAULT NULL,
+  Street_StreetName varchar(200) DEFAULT NULL,
+  Street_StreetType varchar(200) DEFAULT NULL,
+  Street_StreetSuffix varchar(200) DEFAULT NULL,
+  Street_ApartmentType varchar(200) DEFAULT NULL,
+  Street_ApartmentNumberPrefix varchar(200) DEFAULT NULL,
+  Street_ApartmentNumber varchar(200) DEFAULT NULL,
+  Street_ApartmentNumberSuffix varchar(200) DEFAULT NULL,
+  City varchar(200) DEFAULT NULL,
+  StateProvince varchar(200) DEFAULT NULL,
+  Country varchar(200) DEFAULT NULL,
+  PostalCode varchar(200) DEFAULT NULL,
+  GridLocation_Latitude varchar(200) DEFAULT NULL,
+  GridLocation_Longitude varchar(200) DEFAULT NULL,
+  MapReference_Type varchar(200) DEFAULT NULL,
+  MapReference_XCoordinate varchar(200) DEFAULT NULL,
+  MapReference_YCoordinate varchar(200) DEFAULT NULL,
+  MapReference_MapNumber varchar(200) DEFAULT NULL,
+  RadioContact varchar(200) DEFAULT NULL,
+  Community varchar(200) DEFAULT NULL,
+  LocalId varchar(200) DEFAULT NULL,
+  AddressGlobalUID varchar(200) DEFAULT NULL,
+  INDEX `Address_AGAddressCRParent_IX` (`AGAddressCR_Parent_Id`),
+  CONSTRAINT `Address_AGAddressCRParent_FK` FOREIGN KEY (`AGAddressCR_Parent_Id`) REFERENCES `AGAddressCR_Parent` (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  
+create table AGAddressCR_Parent_Address_StatisticalArea (
+  id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
+  AGAddressCR_Parent_Address_Id MEDIUMINT NOT NULL,
+  spatialUnitType varchar(200) DEFAULT NULL,
+  statisticalArea varchar(200) DEFAULT NULL,
+  INDEX `StatArea_AGAddressCRParentAddress_IX` (`AGAddressCR_Parent_Address_Id`),
+  CONSTRAINT `StatArea_AGAddressCRParentAddress_FK` FOREIGN KEY (`AGAddressCR_Parent_Address_Id`) REFERENCES `AGAddressCR_Parent_Address` (`Id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
