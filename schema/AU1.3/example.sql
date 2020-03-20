@@ -889,6 +889,7 @@ CREATE TABLE IF NOT EXISTS Invoice_FinancialAccount (
 CREATE TABLE IF NOT EXISTS Debtor (
 	-- Note: address information should go into the new Address table created in #128
 	RefId  VARCHAR(36) PRIMARY KEY,
+    LocalId VARCHAR(200) DEFAULT NULL,
 	BilledEntity  VARCHAR(36), -- — joins to either VendorInfo/RefId or StudentContactPersonal/RefId?,
 	BilledEntity_SIFRefObject VARCHAR(200),	-- XXX Bad DB structure for SQL (see above too)
 	BillingName  VARCHAR(200),

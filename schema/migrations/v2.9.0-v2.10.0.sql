@@ -44,3 +44,6 @@ ALTER TABLE PurchaseOrder ADD LocalId varchar(200) DEFAULT NULL after RefId;
 
 /* Vendor Info */
 ALTER TABLE VendorInfo ADD LocalId varchar(200) DEFAULT NULL after RefId;
+
+/* Debtor */
+ALTER TABLE Debtor ADD LocalId varchar(200) DEFAULT NULL after RefId;
