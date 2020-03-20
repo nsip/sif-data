@@ -920,6 +920,7 @@ CREATE TABLE IF NOT EXISTS VendorInfo (
 
 CREATE TABLE IF NOT EXISTS PaymentReceipt (
 	RefId  VARCHAR(36) PRIMARY KEY,
+    LocalId VARCHAR(200) DEFAULT NULL,
 	TransactionType  VARCHAR(200),
 	Invoice_RefId  VARCHAR(36), -- — joins to Invoice/RefId?,
 	VendorInfo_RefId  VARCHAR(36), -- — joins to VendorInfo/RefId?,
@@ -948,6 +949,28 @@ CREATE TABLE IF NOT EXISTS PaymentReceipt_FinancialAccount (
 	FinancialAccount_RefId  VARCHAR(36), -- — joins to FinancialAccount/RefId?,
 	FOREIGN KEY (PaymentReceipt_RefId) REFERENCES PaymentReceipt(RefId),
 	FOREIGN KEY (FinancialAccount_RefId) REFERENCES FinancialAccount(RefId)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS PaymentReceipt_AccountCode (
+    PaymentReceipt_RefId  VARCHAR(36),
+    AccountCode  VARCHAR(200),
+    FOREIGN KEY (PaymentReceipt_RefId) REFERENCES PaymentReceipt(RefId),
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS PaymentReceipt_PaymentReceiptLine (
+    id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
+    PaymentReceipt_RefId  VARCHAR(36),
+    Invoice_RefId  VARCHAR(36) DEFAULT NULL,
+    LocalId    VARCHAR(200) DEFAULT NULL,
+    LocalPaymentReceiptLineId    VARCHAR(200) DEFAULT NULL,
+    TransactionAmount_Value VARCHAR(200) DEFAULT NULL,
+    TransactionAmount_Type  VARCHAR(200) DEFAULT NULL,
+    FinancialAccount_RefId  VARCHAR(36) DEFAULT NULL,
+    AccountCode  VARCHAR(200) DEFAULT NULL,
+    TransactionDescription VARCHAR(200) DEFAULT NULL,
+    TaxRate VARCHAR(200) DEFAULT NULL,
+    TaxAmount VARCHAR(200) DEFAULT NULL,
+    FOREIGN KEY (PaymentReceipt_RefId) REFERENCES PaymentReceipt(RefId),
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS PurchaseOrder_PurchasingItems (
