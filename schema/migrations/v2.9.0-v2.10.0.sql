@@ -41,3 +41,6 @@ CREATE TABLE IF NOT EXISTS PaymentReceipt_PaymentReceiptLine (
 
 /* Purchase Order */
 ALTER TABLE PurchaseOrder ADD LocalId varchar(200) DEFAULT NULL after RefId;
+
+/* Vendor Info */
+ALTER TABLE VendorInfo ADD LocalId varchar(200) DEFAULT NULL after RefId;

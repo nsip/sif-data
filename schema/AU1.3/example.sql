@@ -899,6 +899,7 @@ CREATE TABLE IF NOT EXISTS Debtor (
 CREATE TABLE IF NOT EXISTS VendorInfo (
 	-- Note: address information in LocationInfo/ContactInfo should go into the new Address table created in #128
 	RefId  VARCHAR(36) PRIMARY KEY,
+    LocalId VARCHAR(200) DEFAULT NULL,
 	Name VARCHAR(200),
 	ContactInfo_FamilyName VARCHAR(200),
 	ContactInfo_GivenName VARCHAR(200),
