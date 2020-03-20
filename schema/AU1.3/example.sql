@@ -361,7 +361,7 @@ CREATE TABLE StaffAssignment_StaffSubject (
    TimeTableSubject_RefId VARCHAR(36),
    PRIMARY KEY (id),
    INDEX SA_StaffSubject_IX (StaffAssignment_RefId),
-   CONSTRAINT SA_StaffSubject_FK FOREIGN KEY (StaffAssignment_RefId) REFERENCES StaffAssignment (RefId)  
+   CONSTRAINT SA_StaffSubject_FK FOREIGN KEY (StaffAssignment_RefId) REFERENCES StaffAssignment (RefId)
 ) Engine=InnoDB DEFAULT Charset=utf8;
 
 CREATE TABLE IF NOT EXISTS StudentContactPersonal (
@@ -820,6 +820,7 @@ CREATE TABLE IF NOT EXISTS PurchaseOrder (
 
 CREATE TABLE IF NOT EXISTS Invoice (
 	RefId  VARCHAR(36) PRIMARY KEY,
+    LocalId VARCHAR(200) DEFAULT NULL,
 	InvoicedEntity  VARCHAR(36), -- joins to either Debtor/RefId or PurchaseOrder/RefId?, (XXX see below)
 	InvoicedEntity_SIFRefObject VARCHAR(200),	-- XXX Difficult SQL Referential Integrity !!!
 	BillingDate  VARCHAR(200),
@@ -841,6 +842,13 @@ CREATE TABLE IF NOT EXISTS Invoice (
 	FormNumber VARCHAR(200),
 	FOREIGN KEY (LocationInfo_RefId) REFERENCES LocationInfo(RefId),
 	FOREIGN KEY (Related_PurchaseOrder_RefId) REFERENCES PurchaseOrder(RefId)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS Invoice_AccountCode (
+    -- This is a 1:n join of Invoice to FinancialAccount?
+    Invoice_RefId  VARCHAR(36), -- joins to Invoice/RefId?,
+    AccountCode  VARCHAR(200),
+    FOREIGN KEY (Invoice_RefId) REFERENCES Invoice(RefId),
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS FinancialClass (
@@ -1819,7 +1827,7 @@ create table FQSubmission_EntityContact_Address (
   INDEX `Address_FQSubmissionEntityContact_IX` (`FQSubmission_EntityContact_Id`),
   CONSTRAINT `Address_FQSubmissionEntityContact_FK` FOREIGN KEY (`FQSubmission_EntityContact_Id`) REFERENCES `FQSubmission_EntityContact` (`Id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-  
+
 create table FQSubmission_EntityContact_Address_StatisticalArea (
   id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
   FQSubmission_EntityContact_Address_Id MEDIUMINT NOT NULL,
@@ -1917,7 +1925,7 @@ create table FQReporting_EntityContact_Address (
   INDEX `Address_FQReportingEntityContact_IX` (`FQReporting_EntityContact_Id`),
   CONSTRAINT `Address_FQReportingEntityContact_FK` FOREIGN KEY (`FQReporting_EntityContact_Id`) REFERENCES `FQReporting_EntityContact` (`Id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-  
+
 create table FQReporting_EntityContact_Address_StatisticalArea (
   id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
   FQReporting_EntityContact_Address_Id MEDIUMINT NOT NULL,
@@ -2069,7 +2077,7 @@ create table AGAddressCS_EntityContact_Address (
   INDEX `Address_AGAddressCSEntityContact_IX` (`AGAddressCS_EntityContact_Id`),
   CONSTRAINT `Address_AGAddressCSEntityContact_FK` FOREIGN KEY (`AGAddressCS_EntityContact_Id`) REFERENCES `AGAddressCS_EntityContact` (`Id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-  
+
 create table AGAddressCS_EntityContact_Address_StatisticalArea (
   id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
   AGAddressCS_EntityContact_Address_Id MEDIUMINT NOT NULL,
@@ -2165,7 +2173,7 @@ create table AGAddressCR_EntityContact_Address (
   INDEX `Address_AGAddressCREntityContact_IX` (`AGAddressCR_EntityContact_Id`),
   CONSTRAINT `Address_AGAddressCREntityContact_FK` FOREIGN KEY (`AGAddressCR_EntityContact_Id`) REFERENCES `AGAddressCR_EntityContact` (`Id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-  
+
 create table AGAddressCR_EntityContact_Address_StatisticalArea (
   id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
   AGAddressCR_EntityContact_Address_Id MEDIUMINT NOT NULL,
@@ -2222,7 +2230,7 @@ create table AGAddressCR_Student_Address (
   INDEX `Address_AGAddressCRStudent_IX` (`AGAddressCR_Student_Id`),
   CONSTRAINT `Address_AGAddressCRStudent_FK` FOREIGN KEY (`AGAddressCR_Student_Id`) REFERENCES `AGAddressCR_Student` (`Id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-  
+
 create table AGAddressCR_Student_Address_StatisticalArea (
   id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
   AGAddressCR_Student_Address_Id MEDIUMINT NOT NULL,
@@ -2296,7 +2304,7 @@ create table AGAddressCR_Parent_Address (
   INDEX `Address_AGAddressCRParent_IX` (`AGAddressCR_Parent_Id`),
   CONSTRAINT `Address_AGAddressCRParent_FK` FOREIGN KEY (`AGAddressCR_Parent_Id`) REFERENCES `AGAddressCR_Parent` (`Id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-  
+
 create table AGAddressCR_Parent_Address_StatisticalArea (
   id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
   AGAddressCR_Parent_Address_Id MEDIUMINT NOT NULL,
@@ -2305,3 +2313,5 @@ create table AGAddressCR_Parent_Address_StatisticalArea (
   INDEX `StatArea_AGAddressCRParentAddress_IX` (`AGAddressCR_Parent_Address_Id`),
   CONSTRAINT `StatArea_AGAddressCRParentAddress_FK` FOREIGN KEY (`AGAddressCR_Parent_Address_Id`) REFERENCES `AGAddressCR_Parent_Address` (`Id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
