@@ -11,3 +11,6 @@ CREATE TABLE IF NOT EXISTS Invoice_AccountCode (
 /* FinancialAccount */
 ALTER TABLE FinancialAccount ADD LocalId varchar(200) DEFAULT NULL after RefId;
 ALTER TABLE FinancialAccount ADD AccountCode varchar(200) DEFAULT NULL;
+
+/* TeachingGroup */
+ALTER TABLE TeachingGroup ADD KeyLearningArea varchar(36) DEFAULT NULL;

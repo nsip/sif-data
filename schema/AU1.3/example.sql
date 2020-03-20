@@ -453,6 +453,7 @@ CREATE TABLE IF NOT EXISTS TeachingGroup (
 	SchoolYear varchar(200),
 	SchoolInfo_RefId varchar(36),
 	KLA varchar(100),
+    KeyLearningArea varchar(36) DEFAULT NULL,
 	FOREIGN KEY (SchoolInfo_RefId) REFERENCES SchoolInfo(RefId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
