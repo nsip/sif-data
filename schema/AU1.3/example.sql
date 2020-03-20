@@ -860,6 +860,7 @@ CREATE TABLE IF NOT EXISTS FinancialClass (
 
 CREATE TABLE IF NOT EXISTS FinancialAccount (
 	RefId  VARCHAR(36) PRIMARY KEY,
+    LocalId VARCHAR(200) DEFAULT NULL,
 	SubAccount_RefId  VARCHAR(36), -- joins to FinancialAccount/RefId?,
 	LocationInfo_RefId  VARCHAR(36), -- joins to LocationInfo/RefId?,
 	AccountNumber  VARCHAR(200),
@@ -869,6 +870,7 @@ CREATE TABLE IF NOT EXISTS FinancialAccount (
 	CreationDate  VARCHAR(200),
 	CreationTime  VARCHAR(200),
 	ClassType VARCHAR(200),
+    AccountCode VARCHAR(200) DEFAULT NULL,
 	FOREIGN KEY (LocationInfo_RefId) REFERENCES LocationInfo(RefId),
 	FOREIGN KEY (SubAccount_RefId) REFERENCES FinancialAccount(RefId),
 	FOREIGN KEY (FinancialClass_RefId) REFERENCES FinancialClass(RefId)

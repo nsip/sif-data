@@ -7,3 +7,7 @@ CREATE TABLE IF NOT EXISTS Invoice_AccountCode (
     AccountCode  VARCHAR(200),
     FOREIGN KEY (Invoice_RefId) REFERENCES Invoice(RefId),
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+/* FinancialAccount */
+ALTER TABLE FinancialAccount ADD LocalId varchar(200) DEFAULT NULL after RefId;
+ALTER TABLE FinancialAccount ADD AccountCode varchar(200) DEFAULT NULL;
