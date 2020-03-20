@@ -38,3 +38,6 @@ CREATE TABLE IF NOT EXISTS PaymentReceipt_PaymentReceiptLine (
     TaxAmount VARCHAR(200) DEFAULT NULL,
     FOREIGN KEY (PaymentReceipt_RefId) REFERENCES PaymentReceipt(RefId),
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+/* Purchase Order */
+ALTER TABLE PurchaseOrder ADD LocalId varchar(200) DEFAULT NULL after RefId;

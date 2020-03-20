@@ -805,6 +805,7 @@ CREATE TABLE IF NOT EXISTS LocationInfo (
 
 CREATE TABLE IF NOT EXISTS PurchaseOrder (
 	RefId  VARCHAR(36) PRIMARY KEY,
+    LocalId VARCHAR(200) DEFAULT NULL,
 	FormNumber  VARCHAR(200),
 	VendorInfo_RefId  VARCHAR(36), -- — joins to VendorInfo/RefId?,
 	LocationInfo_RefId  VARCHAR(36), -- — joins to LocationInfo/RefId?,
