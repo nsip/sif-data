@@ -1625,6 +1625,7 @@ CREATE TABLE WellbeingCharacteristic_Symptom (
 
 create table WellbeingAppeal (
 RefId varchar(36) NOT NULL,
+LocalId varchar(200) DEFAULT NULL,
 StudentPersonal_RefId varchar(36) DEFAULT NULL,
 SchoolInfo_RefId varchar(36) DEFAULT NULL,
 WellbeingResponse_RefId varchar(36) DEFAULT NULL,
