@@ -1379,6 +1379,7 @@ CREATE TABLE `NAPCodeFrame` (
 
 create table PersonalisedPlan (
 RefId varchar(36) NOT NULL,
+LocalId varchar(200) DEFAULT NULL,
 StudentPersonal_RefId varchar(36) DEFAULT NULL,
 SchoolInfo_RefId varchar(36) DEFAULT NULL,
 PersonalisedPlanCategory varchar(200) DEFAULT NULL,
