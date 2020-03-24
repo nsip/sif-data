@@ -1568,6 +1568,7 @@ KEY WellbeingEvent_FollowupAction_IX (WellbeingEvent_RefId)
 
 create table WellbeingCharacteristic (
 RefId varchar(36) NOT NULL,
+LocalId varchar(200) DEFAULT NULL,
 StudentPersonal_RefId varchar(36) DEFAULT NULL,
 SchoolInfo_RefId varchar(36) DEFAULT NULL,
 WellbeingCharacteristicClassification varchar(200) DEFAULT NULL,

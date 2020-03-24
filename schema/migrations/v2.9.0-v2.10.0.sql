@@ -56,3 +56,7 @@ ALTER TABLE WellbeingAppeal ADD LocalId varchar(200) DEFAULT NULL after RefId;
 
 /* PersonalisedPlan */
 ALTER TABLE PersonalisedPlan ADD LocalId varchar(200) DEFAULT NULL after RefId;
+
+/* WellbeingCharacteristic */
+ALTER TABLE WellbeingCharacteristic ADD LocalId varchar(200) DEFAULT NULL after RefId;
+
