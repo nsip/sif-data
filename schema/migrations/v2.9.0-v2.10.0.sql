@@ -47,3 +47,6 @@ ALTER TABLE VendorInfo ADD LocalId varchar(200) DEFAULT NULL after RefId;
 
 /* Debtor */
 ALTER TABLE Debtor ADD LocalId varchar(200) DEFAULT NULL after RefId;
+
+/* WellbeingResponse */
+ALTER TABLE WellbeingResponse ADD LocalId varchar(200) DEFAULT NULL after RefId;
