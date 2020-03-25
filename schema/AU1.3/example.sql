@@ -1001,8 +1001,11 @@ CREATE TABLE IF NOT EXISTS PurchaseOrder_PurchasingItem_ExpenseAccount (
 
 CREATE TABLE IF NOT EXISTS Journal (
 	RefId  VARCHAR(36) PRIMARY KEY,
+    LocalId varchar(200) DEFAULT NULL,
 	Debit_FinancialAccount_RefId  VARCHAR(36), -- — joins to FinancialAccount/RefId?,
+    DebitAccountCode varchar(200) DEFAULT NULL,
 	Credit_FinancialAccount_RefId  VARCHAR(36), -- — joins to FinancialAccount/RefId?,
+    CreditAccountCode varchar(200) DEFAULT NULL,
 	OriginatingTransaction_RefId  VARCHAR(36), -- — joins to either Invoice/RefId?, PaymentReceipt/RefId?, or PurchaseOrder/RefId?,
 	OriginatingTransaction_RefId_SIFRefObject VARCHAR(200),	-- XXX SQL ref integrity issues
 	Amount VARCHAR(200),
@@ -1016,6 +1019,19 @@ CREATE TABLE IF NOT EXISTS Journal (
 	FinancialClass_RefId  VARCHAR(36), -- — joins to FinancialClass/RefId?,
 	FOREIGN KEY (Debit_FinancialAccount_RefId) REFERENCES FinancialAccount(RefId),
 	FOREIGN KEY (Credit_FinancialAccount_RefId) REFERENCES FinancialAccount(RefId)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS Journal_JournalAdjustment (
+    id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
+    Journal_RefId  VARCHAR(36),
+    Debit_FinancialAccount_RefId  VARCHAR(36) DEFAULT NULL,
+    Credit_FinancialAccount_RefId  VARCHAR(36) DEFAULT NULL,
+    DebitAccountCode    VARCHAR(200) DEFAULT NULL,
+    CreditAccountCode    VARCHAR(200) DEFAULT NULL,
+    GSTCodeOriginal    VARCHAR(200) DEFAULT NULL,
+    GSTCodeReplacement VARCHAR(200) DEFAULT NULL,
+    LineAdjustmentAmount  VARCHAR(200) DEFAULT NULL,
+    FOREIGN KEY (Journal_RefId) REFERENCES Journal(RefId),
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Gradding and Scores

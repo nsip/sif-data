@@ -45,6 +45,25 @@ ALTER TABLE PurchaseOrder ADD LocalId varchar(200) DEFAULT NULL after RefId;
 /* Vendor Info */
 ALTER TABLE VendorInfo ADD LocalId varchar(200) DEFAULT NULL after RefId;
 
+/* Journal */
+ALTER TABLE Journal ADD LocalId varchar(200) DEFAULT NULL after RefId;
+ALTER TABLE Journal ADD DebitAccountCode varchar(200) DEFAULT NULL after Debit_FinancialAccount_RefId;
+ALTER TABLE Journal ADD CreditAccountCode varchar(200) DEFAULT NULL after Credit_FinancialAccount_RefId;
+
+CREATE TABLE IF NOT EXISTS Journal_JournalAdjustment (
+    id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
+    Journal_RefId  VARCHAR(36),
+    Debit_FinancialAccount_RefId  VARCHAR(36) DEFAULT NULL,
+    Credit_FinancialAccount_RefId  VARCHAR(36) DEFAULT NULL,
+    DebitAccountCode    VARCHAR(200) DEFAULT NULL,
+    CreditAccountCode    VARCHAR(200) DEFAULT NULL,
+    GSTCodeOriginal    VARCHAR(200) DEFAULT NULL,
+    GSTCodeReplacement VARCHAR(200) DEFAULT NULL,
+    LineAdjustmentAmount  VARCHAR(200) DEFAULT NULL,
+    FOREIGN KEY (Journal_RefId) REFERENCES Journal(RefId),
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
 /* Debtor */
 ALTER TABLE Debtor ADD LocalId varchar(200) DEFAULT NULL after RefId;
 
