@@ -2003,6 +2003,7 @@ CREATE TABLE FQReporting_AGRule (
 
 create table WellbeingPersonLink (
     RefId VARCHAR(36) NOT NULL PRIMARY KEY,
+    LocalId varchar(200) DEFAULT NULL,
     WellbeingEvent_RefId VARCHAR(36) NULL,
     WellbeingResponse_RefId VARCHAR(36) NULL,
     GroupId VARCHAR(200) NULL,
