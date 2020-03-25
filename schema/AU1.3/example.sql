@@ -980,6 +980,7 @@ CREATE TABLE IF NOT EXISTS PurchaseOrder_PurchasingItems (
 	-- This is a 1:n join of PurchaseOrder to the PurchaseOrder/PurchasingItems/PurchasingItem entry
 	PurchaseOrder_RefId  VARCHAR(36), -- — joins to PurchaseOrder/RefId?,
 	Id MEDIUMINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    LocalItemId varchar(200) DEFAULT NULL,
 	ItemNumber  VARCHAR(200),
 	ItemDescription  VARCHAR(200),
 	Quantity VARCHAR(200),

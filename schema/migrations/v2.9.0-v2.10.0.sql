@@ -62,3 +62,6 @@ ALTER TABLE WellbeingCharacteristic ADD LocalId varchar(200) DEFAULT NULL after 
 
 /* WellbeingPersonLink */
 ALTER TABLE WellbeingPersonLink ADD LocalId varchar(200) DEFAULT NULL after RefId;
+
+/* PurchaseOrder_PurchasingItems */
+ALTER TABLE PurchaseOrder_PurchasingItems ADD LocalItemId varchar(200) DEFAULT NULL after PurchaseOrder_RefId;
