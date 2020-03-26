@@ -2365,4 +2365,37 @@ create table AGAddressCR_Parent_Address_StatisticalArea (
   CONSTRAINT `StatArea_AGAddressCRParentAddress_FK` FOREIGN KEY (`AGAddressCR_Parent_Address_Id`) REFERENCES `AGAddressCR_Parent_Address` (`Id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+create table StudentScoreJudgementAgainstStandard (
+  RefId VARCHAR(36) PRIMARY KEY,
+  SchoolYear VARCHAR(200) DEFAULT NULL,
+  TermInfo_RefId VARCHAR(36) DEFAULT NULL,
+  LocalTermCode VARCHAR(200) DEFAULT NULL,
+  StudentPersonal_RefId VARCHAR(36) DEFAULT NULL,
+  StudentStateProvinceId VARCHAR(200) DEFAULT NULL,
+  StudentLocalId VARCHAR(200) DEFAULT NULL,
+  YearLevel VARCHAR(200) DEFAULT NULL,
+  TeachingGroup_RefId VARCHAR(36) DEFAULT NULL,
+  ClassLocalId VARCHAR(200) DEFAULT NULL,
+  StaffPersonal_RefId VARCHAR(36) DEFAULT NULL,
+  StaffLocalId VARCHAR(200) DEFAULT NULL,
+  CurriculumCode VARCHAR(200) DEFAULT NULL,
+  CurriculumNodeCode VARCHAR(200) DEFAULT NULL,
+  Score VARCHAR(200) DEFAULT NULL,
+  SpecialCircumstanceLocalCode VARCHAR(200) DEFAULT NULL,
+  ManagedPathwayLocalCode VARCHAR(200) DEFAULT NULL,
+  SchoolInfo_RefId VARCHAR(36) DEFAULT NULL,
+  SchoolLocalId VARCHAR(200) DEFAULT NULL,
+  SchoolCommonwealthId VARCHAR(200) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+create table StudentScoreJAS_LearningStandard (
+  id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
+  StudentScoreJudgementAgainstStandard_RefId VARCHAR(36) NOT NULL,
+  LearningStandardItem_RefId VARCHAR(36) DEFAULT NULL,
+  LearningStandardURL VARCHAR(256) DEFAULT NULL,
+  LearningStandardLocalId VARCHAR(200) DEFAULT NULL,
+  INDEX `StudentScoreJudgementAgainstStandard_IX` (`StudentScoreJudgementAgainstStandard_RefId`),
+  CONSTRAINT `StudentScoreJudgementAgainstStandard_FK` FOREIGN KEY (`StudentScoreJudgementAgainstStandard_RefId`) REFERENCES `StudentScoreJudgementAgainstStandard` (`RefId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 
