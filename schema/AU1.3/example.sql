@@ -453,7 +453,6 @@ CREATE TABLE IF NOT EXISTS TeachingGroup (
 	SchoolYear varchar(200),
 	SchoolInfo_RefId varchar(36),
 	KLA varchar(100),
-    KeyLearningArea varchar(36) DEFAULT NULL,
 	FOREIGN KEY (SchoolInfo_RefId) REFERENCES SchoolInfo(RefId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -1003,9 +1002,9 @@ CREATE TABLE IF NOT EXISTS Journal (
 	RefId  VARCHAR(36) PRIMARY KEY,
     LocalId varchar(200) DEFAULT NULL,
 	Debit_FinancialAccount_RefId  VARCHAR(36), -- — joins to FinancialAccount/RefId?,
-    DebitAccountCode varchar(200) DEFAULT NULL,
+    Debit_AccountCode varchar(200) DEFAULT NULL,
 	Credit_FinancialAccount_RefId  VARCHAR(36), -- — joins to FinancialAccount/RefId?,
-    CreditAccountCode varchar(200) DEFAULT NULL,
+    Credit_AccountCode varchar(200) DEFAULT NULL,
 	OriginatingTransaction_RefId  VARCHAR(36), -- — joins to either Invoice/RefId?, PaymentReceipt/RefId?, or PurchaseOrder/RefId?,
 	OriginatingTransaction_RefId_SIFRefObject VARCHAR(200),	-- XXX SQL ref integrity issues
 	Amount VARCHAR(200),
