@@ -4,7 +4,7 @@ ALTER TABLE Invoice ADD LocalId varchar(200) DEFAULT NULL after RefId;
 CREATE TABLE IF NOT EXISTS Invoice_AccountCode (
     Invoice_RefId  VARCHAR(36),
     AccountCode  VARCHAR(200),
-    FOREIGN KEY (Invoice_RefId) REFERENCES Invoice(RefId),
+    FOREIGN KEY (Invoice_RefId) REFERENCES Invoice(RefId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /* FinancialAccount */
@@ -20,7 +20,7 @@ ALTER TABLE PaymentReceipt ADD LocalId varchar(200) DEFAULT NULL after RefId;
 CREATE TABLE IF NOT EXISTS PaymentReceipt_AccountCode (
     PaymentReceipt_RefId  VARCHAR(36),
     AccountCode  VARCHAR(200),
-    FOREIGN KEY (PaymentReceipt_RefId) REFERENCES PaymentReceipt(RefId),
+    FOREIGN KEY (PaymentReceipt_RefId) REFERENCES PaymentReceipt(RefId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS PaymentReceipt_PaymentReceiptLine (
@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS PaymentReceipt_PaymentReceiptLine (
     TransactionDescription VARCHAR(200) DEFAULT NULL,
     TaxRate VARCHAR(200) DEFAULT NULL,
     TaxAmount VARCHAR(200) DEFAULT NULL,
-    FOREIGN KEY (PaymentReceipt_RefId) REFERENCES PaymentReceipt(RefId),
+    FOREIGN KEY (PaymentReceipt_RefId) REFERENCES PaymentReceipt(RefId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /* Purchase Order */
@@ -60,7 +60,7 @@ CREATE TABLE IF NOT EXISTS Journal_JournalAdjustment (
     GSTCodeOriginal    VARCHAR(200) DEFAULT NULL,
     GSTCodeReplacement VARCHAR(200) DEFAULT NULL,
     LineAdjustmentAmount  VARCHAR(200) DEFAULT NULL,
-    FOREIGN KEY (Journal_RefId) REFERENCES Journal(RefId),
+    FOREIGN KEY (Journal_RefId) REFERENCES Journal(RefId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
