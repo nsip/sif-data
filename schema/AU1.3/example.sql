@@ -361,7 +361,7 @@ CREATE TABLE StaffAssignment_StaffSubject (
    TimeTableSubject_RefId VARCHAR(36),
    PRIMARY KEY (id),
    INDEX SA_StaffSubject_IX (StaffAssignment_RefId),
-   CONSTRAINT SA_StaffSubject_FK FOREIGN KEY (StaffAssignment_RefId) REFERENCES StaffAssignment (RefId)  
+   CONSTRAINT SA_StaffSubject_FK FOREIGN KEY (StaffAssignment_RefId) REFERENCES StaffAssignment (RefId)
 ) Engine=InnoDB DEFAULT Charset=utf8;
 
 CREATE TABLE IF NOT EXISTS StudentContactPersonal (
@@ -804,6 +804,7 @@ CREATE TABLE IF NOT EXISTS LocationInfo (
 
 CREATE TABLE IF NOT EXISTS PurchaseOrder (
 	RefId  VARCHAR(36) PRIMARY KEY,
+    LocalId VARCHAR(200) DEFAULT NULL,
 	FormNumber  VARCHAR(200),
 	VendorInfo_RefId  VARCHAR(36), -- — joins to VendorInfo/RefId?,
 	LocationInfo_RefId  VARCHAR(36), -- — joins to LocationInfo/RefId?,
@@ -820,6 +821,7 @@ CREATE TABLE IF NOT EXISTS PurchaseOrder (
 
 CREATE TABLE IF NOT EXISTS Invoice (
 	RefId  VARCHAR(36) PRIMARY KEY,
+    LocalId VARCHAR(200) DEFAULT NULL,
 	InvoicedEntity  VARCHAR(36), -- joins to either Debtor/RefId or PurchaseOrder/RefId?, (XXX see below)
 	InvoicedEntity_SIFRefObject VARCHAR(200),	-- XXX Difficult SQL Referential Integrity !!!
 	BillingDate  VARCHAR(200),
@@ -843,6 +845,13 @@ CREATE TABLE IF NOT EXISTS Invoice (
 	FOREIGN KEY (Related_PurchaseOrder_RefId) REFERENCES PurchaseOrder(RefId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE IF NOT EXISTS Invoice_AccountCode (
+    -- This is a 1:n join of Invoice to FinancialAccount?
+    Invoice_RefId  VARCHAR(36), -- joins to Invoice/RefId?,
+    AccountCode  VARCHAR(200),
+    FOREIGN KEY (Invoice_RefId) REFERENCES Invoice(RefId)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 CREATE TABLE IF NOT EXISTS FinancialClass (
 	RefId VARCHAR(36) PRIMARY KEY,
 	Name VARCHAR(200),
@@ -852,6 +861,7 @@ CREATE TABLE IF NOT EXISTS FinancialClass (
 
 CREATE TABLE IF NOT EXISTS FinancialAccount (
 	RefId  VARCHAR(36) PRIMARY KEY,
+    LocalId VARCHAR(200) DEFAULT NULL,
 	SubAccount_RefId  VARCHAR(36), -- joins to FinancialAccount/RefId?,
 	LocationInfo_RefId  VARCHAR(36), -- joins to LocationInfo/RefId?,
 	AccountNumber  VARCHAR(200),
@@ -861,6 +871,7 @@ CREATE TABLE IF NOT EXISTS FinancialAccount (
 	CreationDate  VARCHAR(200),
 	CreationTime  VARCHAR(200),
 	ClassType VARCHAR(200),
+    AccountCode VARCHAR(200) DEFAULT NULL,
 	FOREIGN KEY (LocationInfo_RefId) REFERENCES LocationInfo(RefId),
 	FOREIGN KEY (SubAccount_RefId) REFERENCES FinancialAccount(RefId),
 	FOREIGN KEY (FinancialClass_RefId) REFERENCES FinancialClass(RefId)
@@ -877,6 +888,7 @@ CREATE TABLE IF NOT EXISTS Invoice_FinancialAccount (
 CREATE TABLE IF NOT EXISTS Debtor (
 	-- Note: address information should go into the new Address table created in #128
 	RefId  VARCHAR(36) PRIMARY KEY,
+    LocalId VARCHAR(200) DEFAULT NULL,
 	BilledEntity  VARCHAR(36), -- — joins to either VendorInfo/RefId or StudentContactPersonal/RefId?,
 	BilledEntity_SIFRefObject VARCHAR(200),	-- XXX Bad DB structure for SQL (see above too)
 	BillingName  VARCHAR(200),
@@ -887,6 +899,7 @@ CREATE TABLE IF NOT EXISTS Debtor (
 CREATE TABLE IF NOT EXISTS VendorInfo (
 	-- Note: address information in LocationInfo/ContactInfo should go into the new Address table created in #128
 	RefId  VARCHAR(36) PRIMARY KEY,
+    LocalId VARCHAR(200) DEFAULT NULL,
 	Name VARCHAR(200),
 	ContactInfo_FamilyName VARCHAR(200),
 	ContactInfo_GivenName VARCHAR(200),
@@ -909,6 +922,7 @@ CREATE TABLE IF NOT EXISTS VendorInfo (
 
 CREATE TABLE IF NOT EXISTS PaymentReceipt (
 	RefId  VARCHAR(36) PRIMARY KEY,
+    LocalId VARCHAR(200) DEFAULT NULL,
 	TransactionType  VARCHAR(200),
 	Invoice_RefId  VARCHAR(36), -- — joins to Invoice/RefId?,
 	VendorInfo_RefId  VARCHAR(36), -- — joins to VendorInfo/RefId?,
@@ -939,10 +953,33 @@ CREATE TABLE IF NOT EXISTS PaymentReceipt_FinancialAccount (
 	FOREIGN KEY (FinancialAccount_RefId) REFERENCES FinancialAccount(RefId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE IF NOT EXISTS PaymentReceipt_AccountCode (
+    PaymentReceipt_RefId  VARCHAR(36),
+    AccountCode  VARCHAR(200),
+    FOREIGN KEY (PaymentReceipt_RefId) REFERENCES PaymentReceipt(RefId)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS PaymentReceipt_PaymentReceiptLine (
+    id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
+    PaymentReceipt_RefId  VARCHAR(36),
+    Invoice_RefId  VARCHAR(36) DEFAULT NULL,
+    LocalId    VARCHAR(200) DEFAULT NULL,
+    LocalPaymentReceiptLineId    VARCHAR(200) DEFAULT NULL,
+    TransactionAmount_Value VARCHAR(200) DEFAULT NULL,
+    TransactionAmount_Type  VARCHAR(200) DEFAULT NULL,
+    FinancialAccount_RefId  VARCHAR(36) DEFAULT NULL,
+    AccountCode  VARCHAR(200) DEFAULT NULL,
+    TransactionDescription VARCHAR(200) DEFAULT NULL,
+    TaxRate VARCHAR(200) DEFAULT NULL,
+    TaxAmount VARCHAR(200) DEFAULT NULL,
+    FOREIGN KEY (PaymentReceipt_RefId) REFERENCES PaymentReceipt(RefId)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 CREATE TABLE IF NOT EXISTS PurchaseOrder_PurchasingItems (
 	-- This is a 1:n join of PurchaseOrder to the PurchaseOrder/PurchasingItems/PurchasingItem entry
 	PurchaseOrder_RefId  VARCHAR(36), -- — joins to PurchaseOrder/RefId?,
 	Id MEDIUMINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    LocalItemId varchar(200) DEFAULT NULL,
 	ItemNumber  VARCHAR(200),
 	ItemDescription  VARCHAR(200),
 	Quantity VARCHAR(200),
@@ -963,8 +1000,11 @@ CREATE TABLE IF NOT EXISTS PurchaseOrder_PurchasingItem_ExpenseAccount (
 
 CREATE TABLE IF NOT EXISTS Journal (
 	RefId  VARCHAR(36) PRIMARY KEY,
+    LocalId varchar(200) DEFAULT NULL,
 	Debit_FinancialAccount_RefId  VARCHAR(36), -- — joins to FinancialAccount/RefId?,
+    Debit_AccountCode varchar(200) DEFAULT NULL,
 	Credit_FinancialAccount_RefId  VARCHAR(36), -- — joins to FinancialAccount/RefId?,
+    Credit_AccountCode varchar(200) DEFAULT NULL,
 	OriginatingTransaction_RefId  VARCHAR(36), -- — joins to either Invoice/RefId?, PaymentReceipt/RefId?, or PurchaseOrder/RefId?,
 	OriginatingTransaction_RefId_SIFRefObject VARCHAR(200),	-- XXX SQL ref integrity issues
 	Amount VARCHAR(200),
@@ -978,6 +1018,19 @@ CREATE TABLE IF NOT EXISTS Journal (
 	FinancialClass_RefId  VARCHAR(36), -- — joins to FinancialClass/RefId?,
 	FOREIGN KEY (Debit_FinancialAccount_RefId) REFERENCES FinancialAccount(RefId),
 	FOREIGN KEY (Credit_FinancialAccount_RefId) REFERENCES FinancialAccount(RefId)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS Journal_JournalAdjustment (
+    id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
+    Journal_RefId  VARCHAR(36),
+    Debit_FinancialAccount_RefId  VARCHAR(36) DEFAULT NULL,
+    Credit_FinancialAccount_RefId  VARCHAR(36) DEFAULT NULL,
+    DebitAccountCode    VARCHAR(200) DEFAULT NULL,
+    CreditAccountCode    VARCHAR(200) DEFAULT NULL,
+    GSTCodeOriginal    VARCHAR(200) DEFAULT NULL,
+    GSTCodeReplacement VARCHAR(200) DEFAULT NULL,
+    LineAdjustmentAmount  VARCHAR(200) DEFAULT NULL,
+    FOREIGN KEY (Journal_RefId) REFERENCES Journal(RefId)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Gradding and Scores
@@ -1342,6 +1395,7 @@ CREATE TABLE `NAPCodeFrame` (
 
 create table PersonalisedPlan (
 RefId varchar(36) NOT NULL,
+LocalId varchar(200) DEFAULT NULL,
 StudentPersonal_RefId varchar(36) DEFAULT NULL,
 SchoolInfo_RefId varchar(36) DEFAULT NULL,
 PersonalisedPlanCategory varchar(200) DEFAULT NULL,
@@ -1369,6 +1423,7 @@ KEY PersonalisedPlan_Document_IX (PersonalisedPlan_RefId)
 
 create table WellbeingResponse (
 RefId varchar(36) NOT NULL,
+LocalId varchar(200) DEFAULT NULL,
 StudentPersonal_RefId varchar(36) DEFAULT NULL,
 SchoolInfo_RefId varchar(36) DEFAULT NULL,
 Date varchar(200) DEFAULT NULL,
@@ -1529,6 +1584,7 @@ KEY WellbeingEvent_FollowupAction_IX (WellbeingEvent_RefId)
 
 create table WellbeingCharacteristic (
 RefId varchar(36) NOT NULL,
+LocalId varchar(200) DEFAULT NULL,
 StudentPersonal_RefId varchar(36) DEFAULT NULL,
 SchoolInfo_RefId varchar(36) DEFAULT NULL,
 WellbeingCharacteristicClassification varchar(200) DEFAULT NULL,
@@ -1587,6 +1643,7 @@ CREATE TABLE WellbeingCharacteristic_Symptom (
 
 create table WellbeingAppeal (
 RefId varchar(36) NOT NULL,
+LocalId varchar(200) DEFAULT NULL,
 StudentPersonal_RefId varchar(36) DEFAULT NULL,
 SchoolInfo_RefId varchar(36) DEFAULT NULL,
 WellbeingResponse_RefId varchar(36) DEFAULT NULL,
@@ -1819,7 +1876,7 @@ create table FQSubmission_EntityContact_Address (
   INDEX `Address_FQSubmissionEntityContact_IX` (`FQSubmission_EntityContact_Id`),
   CONSTRAINT `Address_FQSubmissionEntityContact_FK` FOREIGN KEY (`FQSubmission_EntityContact_Id`) REFERENCES `FQSubmission_EntityContact` (`Id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-  
+
 create table FQSubmission_EntityContact_Address_StatisticalArea (
   id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
   FQSubmission_EntityContact_Address_Id MEDIUMINT NOT NULL,
@@ -1917,7 +1974,7 @@ create table FQReporting_EntityContact_Address (
   INDEX `Address_FQReportingEntityContact_IX` (`FQReporting_EntityContact_Id`),
   CONSTRAINT `Address_FQReportingEntityContact_FK` FOREIGN KEY (`FQReporting_EntityContact_Id`) REFERENCES `FQReporting_EntityContact` (`Id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-  
+
 create table FQReporting_EntityContact_Address_StatisticalArea (
   id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
   FQReporting_EntityContact_Address_Id MEDIUMINT NOT NULL,
@@ -1962,6 +2019,7 @@ CREATE TABLE FQReporting_AGRule (
 
 create table WellbeingPersonLink (
     RefId VARCHAR(36) NOT NULL PRIMARY KEY,
+    LocalId varchar(200) DEFAULT NULL,
     WellbeingEvent_RefId VARCHAR(36) NULL,
     WellbeingResponse_RefId VARCHAR(36) NULL,
     GroupId VARCHAR(200) NULL,
@@ -2069,7 +2127,7 @@ create table AGAddressCS_EntityContact_Address (
   INDEX `Address_AGAddressCSEntityContact_IX` (`AGAddressCS_EntityContact_Id`),
   CONSTRAINT `Address_AGAddressCSEntityContact_FK` FOREIGN KEY (`AGAddressCS_EntityContact_Id`) REFERENCES `AGAddressCS_EntityContact` (`Id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-  
+
 create table AGAddressCS_EntityContact_Address_StatisticalArea (
   id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
   AGAddressCS_EntityContact_Address_Id MEDIUMINT NOT NULL,
@@ -2165,7 +2223,7 @@ create table AGAddressCR_EntityContact_Address (
   INDEX `Address_AGAddressCREntityContact_IX` (`AGAddressCR_EntityContact_Id`),
   CONSTRAINT `Address_AGAddressCREntityContact_FK` FOREIGN KEY (`AGAddressCR_EntityContact_Id`) REFERENCES `AGAddressCR_EntityContact` (`Id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-  
+
 create table AGAddressCR_EntityContact_Address_StatisticalArea (
   id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
   AGAddressCR_EntityContact_Address_Id MEDIUMINT NOT NULL,
@@ -2222,7 +2280,7 @@ create table AGAddressCR_Student_Address (
   INDEX `Address_AGAddressCRStudent_IX` (`AGAddressCR_Student_Id`),
   CONSTRAINT `Address_AGAddressCRStudent_FK` FOREIGN KEY (`AGAddressCR_Student_Id`) REFERENCES `AGAddressCR_Student` (`Id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-  
+
 create table AGAddressCR_Student_Address_StatisticalArea (
   id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
   AGAddressCR_Student_Address_Id MEDIUMINT NOT NULL,
@@ -2296,7 +2354,7 @@ create table AGAddressCR_Parent_Address (
   INDEX `Address_AGAddressCRParent_IX` (`AGAddressCR_Parent_Id`),
   CONSTRAINT `Address_AGAddressCRParent_FK` FOREIGN KEY (`AGAddressCR_Parent_Id`) REFERENCES `AGAddressCR_Parent` (`Id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-  
+
 create table AGAddressCR_Parent_Address_StatisticalArea (
   id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
   AGAddressCR_Parent_Address_Id MEDIUMINT NOT NULL,
@@ -2305,3 +2363,38 @@ create table AGAddressCR_Parent_Address_StatisticalArea (
   INDEX `StatArea_AGAddressCRParentAddress_IX` (`AGAddressCR_Parent_Address_Id`),
   CONSTRAINT `StatArea_AGAddressCRParentAddress_FK` FOREIGN KEY (`AGAddressCR_Parent_Address_Id`) REFERENCES `AGAddressCR_Parent_Address` (`Id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+create table StudentScoreJudgementAgainstStandard (
+  RefId VARCHAR(36) PRIMARY KEY,
+  SchoolYear VARCHAR(200) DEFAULT NULL,
+  TermInfo_RefId VARCHAR(36) DEFAULT NULL,
+  LocalTermCode VARCHAR(200) DEFAULT NULL,
+  StudentPersonal_RefId VARCHAR(36) DEFAULT NULL,
+  StudentStateProvinceId VARCHAR(200) DEFAULT NULL,
+  StudentLocalId VARCHAR(200) DEFAULT NULL,
+  YearLevel VARCHAR(200) DEFAULT NULL,
+  TeachingGroup_RefId VARCHAR(36) DEFAULT NULL,
+  ClassLocalId VARCHAR(200) DEFAULT NULL,
+  StaffPersonal_RefId VARCHAR(36) DEFAULT NULL,
+  StaffLocalId VARCHAR(200) DEFAULT NULL,
+  CurriculumCode VARCHAR(200) DEFAULT NULL,
+  CurriculumNodeCode VARCHAR(200) DEFAULT NULL,
+  Score VARCHAR(200) DEFAULT NULL,
+  SpecialCircumstanceLocalCode VARCHAR(200) DEFAULT NULL,
+  ManagedPathwayLocalCode VARCHAR(200) DEFAULT NULL,
+  SchoolInfo_RefId VARCHAR(36) DEFAULT NULL,
+  SchoolLocalId VARCHAR(200) DEFAULT NULL,
+  SchoolCommonwealthId VARCHAR(200) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+create table StudentScoreJAS_LearningStandard (
+  id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
+  StudentScoreJudgementAgainstStandard_RefId VARCHAR(36) NOT NULL,
+  LearningStandardItem_RefId VARCHAR(36) DEFAULT NULL,
+  LearningStandardURL VARCHAR(256) DEFAULT NULL,
+  LearningStandardLocalId VARCHAR(200) DEFAULT NULL,
+  INDEX `StudentScoreJudgementAgainstStandard_IX` (`StudentScoreJudgementAgainstStandard_RefId`),
+  CONSTRAINT `StudentScoreJudgementAgainstStandard_FK` FOREIGN KEY (`StudentScoreJudgementAgainstStandard_RefId`) REFERENCES `StudentScoreJudgementAgainstStandard` (`RefId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
