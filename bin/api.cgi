@@ -48,7 +48,7 @@ if ($@) {
 eval {
 	unlink "/tmp/$$.log" if (-f "/tmp/$$.log");
 
-	$ENV{PERL5LIB} = "lib";
+	$ENV{PERL5LIB} = $ENV{PERL5LIB} + "lib";
 
 	system ("cd ~scottp/nsip/sif-data; perl bin/create_sif_data.pl --create-database=$name >> /tmp/$$.log 2>/tmp/$$.err");
 	system ("cd ~scottp/nsip/sif-data; perl bin/create_sif_data.pl --database=$name --create-schools=$schools >> /tmp/$$.log 2>/tmp/$$.err");
