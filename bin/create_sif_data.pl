@@ -21,6 +21,8 @@
 
 use strict;
 use warnings;
+use lib "/var/sif/sif-data/lib";
+use lib "/home/ubuntu/perl5/lib/perl5";
 use perl5i::2;
 use SIF::Data;
 use Getopt::Long;

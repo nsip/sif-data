@@ -1,4 +1,4 @@
-#!/usr/bin/env perl
+o!/usr/bin/env perl
 use perl5i::2;
 use CGI qw{ :standard };
 use CGI::Carp qw{ fatalsToBrowser };
@@ -6,11 +6,13 @@ use HTML::Entities;
 use DBI;
 use YAML;
 use JSON;
+use Cwd;
+
 
 $ENV{HOME} = "/var/sif/";
 my $root = "/var/sif/sif-data";
 use lib "/var/sif/sif-data/lib";
-$ENV{PERL5LIB} = "/var/sif/sif-data/lib";
+use lib "/home/ubuntu/perl5/lib/perl5";
 
 param('form_field');
 $0 = "create.cgi - Start up";
@@ -152,6 +154,7 @@ eval {
 	# XXX Check all the values above so I can throw sensible errors !
 
     chdir $root;
+    print STDERR "ROOT=$root, CWD=" .  getcwd . "\n";
 
 	# XXX Rather than redirect to file - just capture here !
 	system ("echo 'CREATE DB $name' >> /tmp/$$.log 2>>/tmp/$$.err");

@@ -3,6 +3,8 @@ package SIF::Data;
 use 5.006;
 use strict;
 use warnings FATAL => 'all';
+use lib "/var/sif/sif-data/lib";
+use lib "/home/ubuntu/perl5/lib/perl5";
 use Text::CSV;
 use Data::UUID;
 use Data::RandomPerson;
