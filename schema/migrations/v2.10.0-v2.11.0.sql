@@ -38,7 +38,7 @@ create table SchoolCourseInfo (
 create table SchoolCourseInfo_SubjectArea (
   Id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
   SchoolCourseInfo_RefId VARCHAR(36) NOT NULL,
-  Code VARCHAR(200) DEFAULT NULL
+  Code VARCHAR(200) DEFAULT NULL,
   INDEX `SchoolCourseInfo_IX` (`SchoolCourseInfo_RefId`),
   CONSTRAINT `SchoolCourseInfo_FK` FOREIGN KEY (`SchoolCourseInfo_RefId`) REFERENCES `SchoolCourseInfo` (`RefId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
