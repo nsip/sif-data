@@ -1,0 +1,1 @@
+{"name":"DataGen01","type":"custom","options":{"schools":1,"students":[100,200],"teachers":[5,10],"classrooms":[3,5],"scheduledactivities":[8,16],"teachinggroups":true,"timetable":true,"grading":true,"contacts":true,"accounts":true,"naplan":true,"hmac":true}}
