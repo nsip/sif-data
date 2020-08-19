@@ -386,3 +386,32 @@ create table CensusReporting_Student (
   INDEX `Student_CensusReporting_IX` (`CensusReporting_Id`),
   CONSTRAINT `Student_CensusReporting_FK` FOREIGN KEY (`CensusReporting_Id`) REFERENCES `CensusReporting` (`Id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+create table CollectionRound (
+    RefId VARCHAR(36) NOT NULL PRIMARY KEY,
+    AGCollection VARCHAR(200) NULL,
+    CollectionYear VARCHAR(200) NULL,
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+create table CollectionRound_LocalCode (
+    id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
+    CollectionRound_RefId varchar(36) NOT NULL,
+    LocalisedCode varchar(200) NULL,
+    Description varchar(200) NULL,
+    Element varchar(200) NULL,
+    ListIndex MEDIUMINT NULL,
+    INDEX `LocalCode_CollectionRound_IX` (`CollectionRound_RefId`),
+    CONSTRAINT `LocalCode_CollectionRound_FK` FOREIGN KEY (`CollectionRound_RefId`) REFERENCES `CollectionRound` (`RefId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+create table AGRound (
+    id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
+    CollectionRound_RefId varchar(36) NOT NULL,
+    RoundCode VARCHAR(200) DEFAULT NULL,
+    RoundName VARCHAR(200) DEFAULT NULL,
+    StartDate VARCHAR(200) DEFAULT NULL,
+    DueDate VARCHAR(200) DEFAULT NULL,
+    EndDate VARCHAR(200) DEFAULT NULL,
+    INDEX `AGRound_CollectionRound_IX` (`CollectionRound_RefId`),
+    CONSTRAINT `AGRound_CollectionRound_FK` FOREIGN KEY (`CollectionRound_RefId`) REFERENCES `CollectionRound` (`RefId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
