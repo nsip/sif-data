@@ -2247,3 +2247,22 @@ create table CensusReporting_Staff_ActivityOtherCode (
   INDEX `ActivityOtherCode_CensusReportingStaff_IX` (`CensusReporting_Staff_Id`),
   CONSTRAINT `ActivityOtherCode_CensusReportingStaff_FK` FOREIGN KEY (`CensusReporting_Staff_Id`) REFERENCES `CensusReporting_Staff` (`Id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+create table CensusReporting_Student (
+  id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
+  CensusReporting_Id MEDIUMINT NOT NULL,
+  StudentCohortId VARCHAR(200) DEFAULT NULL,
+  YearLevel VARCHAR(200) DEFAULT NULL,
+  CensusAge VARCHAR(200) DEFAULT NULL,
+  CohortGender VARCHAR(200) DEFAULT NULL,
+  CohortIndigenousType VARCHAR(200) DEFAULT NULL,
+  EducationMode VARCHAR(200) DEFAULT NULL,
+  StudentOnVisa VARCHAR(200) DEFAULT NULL,
+  OverseasStudent VARCHAR(200) DEFAULT NULL,
+  DisabilityLevelOfAdjustment VARCHAR(200) DEFAULT NULL,
+  DisabilityCategory VARCHAR(200) DEFAULT NULL,
+  Fte VARCHAR(200) DEFAULT NULL,
+  Headcount VARCHAR(200) DEFAULT NULL,
+  INDEX `Student_CensusReporting_IX` (`CensusReporting_Id`),
+  CONSTRAINT `Student_CensusReporting_FK` FOREIGN KEY (`CensusReporting_Id`) REFERENCES `CensusReporting` (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
