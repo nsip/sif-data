@@ -2121,3 +2121,129 @@ create table AddressCR_Parent_Address_StatisticalArea (
   INDEX `StatArea_AddressCRParentAddress_IX` (`AddressCR_Parent_Address_Id`),
   CONSTRAINT `StatArea_AddressCRParentAddress_FK` FOREIGN KEY (`AddressCR_Parent_Address_Id`) REFERENCES `AddressCR_Parent_Address` (`Id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+create table CensusCollection (
+    RefId VARCHAR(36) NOT NULL PRIMARY KEY,
+    CensusYear VARCHAR(200) NULL,
+    RoundCode VARCHAR(200) NULL,
+    ReportingAuthorityCommonwealthId VARCHAR(200) NULL,
+    SoftwareVendorInfo_SoftwareProduct VARCHAR(200) NULL,
+    SoftwareVendorInfo_SoftwareVersion VARCHAR(200) NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+create table CensusReporting (
+    id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
+    CensusCollection_RefId VARCHAR(36) NOT NULL,
+    EntityLevel VARCHAR(200) DEFAULT NULL,
+    CommonwealthId VARCHAR(200) DEFAULT NULL,
+    EntityName VARCHAR(200) DEFAULT NULL,
+    INDEX `CensusReporting_CensusCollection_IX` (`CensusCollection_RefId`),
+    CONSTRAINT `CensusReporting_CensusCollection_FK` FOREIGN KEY (`CensusCollection_RefId`) REFERENCES `CensusCollection` (`RefId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+create table CensusReporting_EntityContact (
+  id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
+  CensusReporting_Id MEDIUMINT NOT NULL,
+  PositionTitle varchar(200) DEFAULT NULL,
+  Role varchar(200) DEFAULT NULL,
+  RegistrationDetails varchar(200) DEFAULT NULL,
+  Qualifications varchar(200) DEFAULT NULL,
+  Email_Type varchar(200) DEFAULT NULL,
+  Email_Value varchar(200) DEFAULT NULL,
+  PhoneNumber_Type varchar(200) DEFAULT NULL,
+  PhoneNumber_Number varchar(200) DEFAULT NULL,
+  PhoneNumber_Extension varchar(200) DEFAULT NULL,
+  PhoneNumber_ListedStatus varchar(200) DEFAULT NULL,
+  PhoneNumber_Preference varchar(200) DEFAULT NULL,
+  INDEX `EntityContact_CensusReporting_IX` (`CensusReporting_Id`),
+  CONSTRAINT `EntityContact_CensusReporting_FK` FOREIGN KEY (`CensusReporting_Id`) REFERENCES `CensusReporting` (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+create table CensusReporting_EntityContact_Name (
+  id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
+  CensusReporting_EntityContact_Id MEDIUMINT NOT NULL,
+  NameType varchar(200) DEFAULT NULL,
+  Title varchar(200) DEFAULT NULL,
+  FamilyName varchar(200) DEFAULT NULL,
+  GivenName varchar(200) DEFAULT NULL,
+  MiddleName varchar(200) DEFAULT NULL,
+  FamilyNameFirst varchar(200) DEFAULT NULL,
+  PreferredFamilyName varchar(200) DEFAULT NULL,
+  PreferredFamilyNameFirst varchar(200) DEFAULT NULL,
+  PreferredGivenName varchar(200) DEFAULT NULL,
+  Suffix varchar(200) DEFAULT NULL,
+  FullName varchar(200) DEFAULT NULL,
+  INDEX `Name_CensusReportingEntityContact_IX` (`CensusReporting_EntityContact_Id`),
+  CONSTRAINT `Name_CensusReportingEntityContact_FK` FOREIGN KEY (`CensusReportingEntityContact_Id`) REFERENCES `CensusReporting_EntityContact` (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+create table CensusReporting_EntityContact_Address (
+  id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
+  CensusReporting_EntityContact_Id MEDIUMINT NOT NULL,
+  AddressType varchar(200) DEFAULT NULL,
+  AddressRole varchar(200) DEFAULT NULL,
+  EffectiveFromDate varchar(200) DEFAULT NULL,
+  EffectiveToDate varchar(200) DEFAULT NULL,
+  Street_Line1 varchar(200) DEFAULT NULL,
+  Street_Line2 varchar(200) DEFAULT NULL,
+  Street_Line3 varchar(200) DEFAULT NULL,
+  Street_Complex varchar(200) DEFAULT NULL,
+  Street_StreetNumber varchar(200) DEFAULT NULL,
+  Street_StreetPrefix varchar(200) DEFAULT NULL,
+  Street_StreetName varchar(200) DEFAULT NULL,
+  Street_StreetType varchar(200) DEFAULT NULL,
+  Street_StreetSuffix varchar(200) DEFAULT NULL,
+  Street_ApartmentType varchar(200) DEFAULT NULL,
+  Street_ApartmentNumberPrefix varchar(200) DEFAULT NULL,
+  Street_ApartmentNumber varchar(200) DEFAULT NULL,
+  Street_ApartmentNumberSuffix varchar(200) DEFAULT NULL,
+  City varchar(200) DEFAULT NULL,
+  StateProvince varchar(200) DEFAULT NULL,
+  Country varchar(200) DEFAULT NULL,
+  PostalCode varchar(200) DEFAULT NULL,
+  GridLocation_Latitude varchar(200) DEFAULT NULL,
+  GridLocation_Longitude varchar(200) DEFAULT NULL,
+  MapReference_Type varchar(200) DEFAULT NULL,
+  MapReference_XCoordinate varchar(200) DEFAULT NULL,
+  MapReference_YCoordinate varchar(200) DEFAULT NULL,
+  MapReference_MapNumber varchar(200) DEFAULT NULL,
+  RadioContact varchar(200) DEFAULT NULL,
+  Community varchar(200) DEFAULT NULL,
+  LocalId varchar(200) DEFAULT NULL,
+  AddressGlobalUID varchar(200) DEFAULT NULL,
+  INDEX `Address_CensusReportingEntityContact_IX` (`CensusReporting_EntityContact_Id`),
+  CONSTRAINT `Address_CensusReportingEntityContact_FK` FOREIGN KEY (`CensusReporting_EntityContact_Id`) REFERENCES `CensusReporting_EntityContact` (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+create table CensusReporting_EntityContact_Address_StatisticalArea (
+  id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
+  CensusReporting_EntityContact_Address_Id MEDIUMINT NOT NULL,
+  spatialUnitType varchar(200) DEFAULT NULL,
+  statisticalArea varchar(200) DEFAULT NULL,
+  INDEX `StatArea_CensusReportingEntityContactAddress_IX` (`CensusReporting_EntityContact_Address_Id`),
+  CONSTRAINT `StatArea_CensusReportingEntityContactAddress_FK` FOREIGN KEY (`CensusReporting_EntityContact_Address_Id`) REFERENCES `CensusReporting_EntityContact_Address` (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+create table CensusReporting_Staff (
+  id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
+  CensusReporting_Id MEDIUMINT NOT NULL,
+  StaffCohortId VARCHAR(200) DEFAULT NULL,
+  StaffActivity VARCHAR(200) DEFAULT NULL,
+  CohortGender VARCHAR(200) DEFAULT NULL,
+  CohortIndigenousType VARCHAR(200) DEFAULT NULL,
+  PrimaryFTE VARCHAR(200) DEFAULT NULL,
+  SecondaryFTE VARCHAR(200) DEFAULT NULL,
+  JobFTE VARCHAR(200) DEFAULT NULL,
+  HeadCount VARCHAR(200) DEFAULT NULL,
+  INDEX `Staff_CensusReporting_IX` (`CensusReporting_Id`),
+  CONSTRAINT `Staff_CensusReporting_FK` FOREIGN KEY (`CensusReporting_Id`) REFERENCES `CensusReporting` (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+create table CensusReporting_Staff_ActivityOtherCode (
+  id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
+  CensusReporting_Staff_Id MEDIUMINT NOT NULL,
+  OtherCode VARCHAR(200) DEFAULT NULL,
+  Codeset VARCHAR(200) DEFAULT NULL,
+  INDEX `ActivityOtherCode_CensusReportingStaff_IX` (`CensusReporting_Staff_Id`),
+  CONSTRAINT `ActivityOtherCode_CensusReportingStaff_FK` FOREIGN KEY (`CensusReporting_Staff_Id`) REFERENCES `CensusReporting_Staff` (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
