@@ -2295,3 +2295,52 @@ create table AGRound (
     INDEX `AGRound_CollectionRound_IX` (`CollectionRound_RefId`),
     CONSTRAINT `AGRound_CollectionRound_FK` FOREIGN KEY (`CollectionRound_RefId`) REFERENCES `CollectionRound` (`RefId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+create table CollectionStatus (
+    RefId VARCHAR(36) NOT NULL PRIMARY KEY,
+    ReportingAuthority VARCHAR(200) DEFAULT NULL,
+    ReportingAuthoritySystem VARCHAR(200) DEFAULT NULL,
+    ReportingAuthorityCommonwealthId VARCHAR(200) DEFAULT NULL,
+    SubmittedBy VARCHAR(200) DEFAULT NULL,
+    SubmissionTimestamp VARCHAR(200) DEFAULT NULL,
+    AgCollection VARCHAR(200) DEFAULT NULL,
+    CollectionYear VARCHAR(200) DEFAULT NULL,
+    RoundCode VARCHAR(200) DEFAULT NULL,
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+create table CollectionStatus_LocalCode (
+    id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
+    CollectionStatus_RefId varchar(36) NOT NULL,
+    LocalisedCode varchar(200) NULL,
+    Description varchar(200) NULL,
+    Element varchar(200) NULL,
+    ListIndex MEDIUMINT NULL,
+    INDEX `LocalCode_CollectionStatus_IX` (`CollectionStatus_RefId`),
+    CONSTRAINT `LocalCode_CollectionStatus_FK` FOREIGN KEY (`CollectionStatus_RefId`) REFERENCES `CollectionStatus` (`RefId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+create table CollectionStatus_AGReportingObjectReponse (
+    id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
+    CollectionStatus_RefId varchar(36) NOT NULL,
+    SubmittedRefId VARCHAR(200) DEFAULT NULL,
+    SifRefId VARCHAR(200) DEFAULT NULL,
+    HttpStatusCode VARCHAR(200) DEFAULT NULL,
+    ErrorText VARCHAR(200) DEFAULT NULL,
+    CommonwealthId VARCHAR(200) DEFAULT NULL,
+    EntityName VARCHAR(200) DEFAULT NULL,
+    AgSubmissionStatusCode VARCHAR(200) DEFAULT NULL,
+    INDEX `AGReportingObjectReponse_CollectionStatus_IX` (`CollectionStatus_RefId`),
+    CONSTRAINT `AGReportingObjectReponse_CollectionStatus_FK` FOREIGN KEY (`CollectionStatus_RefId`) REFERENCES `CollectionStatus` (`RefId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+create table CollectionStatus_AGROResponse_AGRule (
+    id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
+    AGReportingObjectResponse_Id mediumint NOT NULL,
+    AGRuleCode VARCHAR(200) DEFAULT NULL,
+    AGRuleComment VARCHAR(200) DEFAULT NULL,
+    AGRuleResponse VARCHAR(200) DEFAULT NULL,
+    AGRuleStatus VARCHAR(200) DEFAULT NULL,
+    INDEX `AGRule_CollectionStatusAGROResponse_IX` (`AGReportingObjectResponse_Id`),
+    CONSTRAINT `AGRule_CollectionStatusAGROResponse_FK` FOREIGN KEY (`AGReportingObjectResponse_Id`) REFERENCES `CollectionStatus_AGReportingObjectReponse` (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
