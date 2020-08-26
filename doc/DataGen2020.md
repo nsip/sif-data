@@ -71,14 +71,14 @@ The two major limitations of this code are: SQL (and a very definied set) only a
 * Priority: These steps are prefixed with low, med, high for how important they are to the next version.
 * Future: Bullet points along the lines of "FUTURE:" are added as useful tips or information
 * Estimate: Small (1 effort day), Medium (1 effort week), Large (> 2 effort weeks) is added for future estimates.
+* Helpers: are common code (or in this case, common text) to stop repetition
 
 ## Walk through specifics:
-
 
 * (low) bin/create.cgi creates necessary starting data and starts a background process.
     * FUTURE: Move to hits-dashboard API but keep it as a REST request
     * ESTIMATE: small
-* (med) Massages the data, macking sure options that depend on each other are selected and ranges make sense.
+* (med) Massages the data, making sure options that depend on each other are selected and ranges make sense.
     * ESTIMATE: small
 * (low) it becomes its own background task, also writing to /tmp and the database each step
     * ESTIMATE: NA (part of hits-dashboard which is always running)
@@ -95,7 +95,7 @@ The two major limitations of this code are: SQL (and a very definied set) only a
             * FUTURE: Would like to change that to allow interoperability
         * RefId - New UUID
         * Address
-            * TODO
+            * See Helper Random Address
             * Fields:
             	* Address_Street_StreetNumber
             	* Address_Street_StreetName
@@ -157,7 +157,7 @@ The two major limitations of this code are: SQL (and a very definied set) only a
 
 * RandomPerson
     * TODO
-* Address
+* RandomAddress
     * Street Number = int(rand(300))+1;
     * Street Name = RandomPerson First Name + Random Street Type of:
 		* Avenue
@@ -193,5 +193,18 @@ The two major limitations of this code are: SQL (and a very definied set) only a
         * BSPnumber
         * BSPname
         * Category
+
+# The Future
+
+## Ideals (from Meetings with Matt, Nick, Peter)
+
+* Generate JSON, then use other tools for CSV, XML etc
+* Don't force STRUCTS
+* Should be reasonably fast (10s of seconds for multiple schools)
+
+## Tasks
+
+* Investigate existing JSON generation tools
+*
 
 # See Also
