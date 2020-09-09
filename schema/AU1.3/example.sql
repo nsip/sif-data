@@ -2319,7 +2319,7 @@ create table CollectionStatus_LocalCode (
     CONSTRAINT `LocalCode_CollectionStatus_FK` FOREIGN KEY (`CollectionStatus_RefId`) REFERENCES `CollectionStatus` (`RefId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-create table CollectionStatus_AGReportingObjectReponse (
+create table CollectionStatus_AGReportingObjectResponse (
     id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
     CollectionStatus_RefId varchar(36) NOT NULL,
     SubmittedRefId VARCHAR(200) DEFAULT NULL,
@@ -2341,7 +2341,7 @@ create table CollectionStatus_AGROResponse_AGRule (
     AGRuleResponse VARCHAR(200) DEFAULT NULL,
     AGRuleStatus VARCHAR(200) DEFAULT NULL,
     INDEX `AGRule_CollectionStatusAGROResponse_IX` (`AGReportingObjectResponse_Id`),
-    CONSTRAINT `AGRule_CollectionStatusAGROResponse_FK` FOREIGN KEY (`AGReportingObjectResponse_Id`) REFERENCES `CollectionStatus_AGReportingObjectReponse` (`Id`)
+    CONSTRAINT `AGRule_CollectionStatusAGROResponse_FK` FOREIGN KEY (`AGReportingObjectResponse_Id`) REFERENCES `CollectionStatus_AGReportingObjectResponse` (`Id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 create table FinancialQuestionnaireCollection (
