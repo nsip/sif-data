@@ -2174,7 +2174,7 @@ create table CensusReporting_EntityContact_Name (
   Suffix varchar(200) DEFAULT NULL,
   FullName varchar(200) DEFAULT NULL,
   INDEX `Name_CensusReportingEntityContact_IX` (`CensusReporting_EntityContact_Id`),
-  CONSTRAINT `Name_CensusReportingEntityContact_FK` FOREIGN KEY (`CensusReportingEntityContact_Id`) REFERENCES `CensusReporting_EntityContact` (`Id`)
+  CONSTRAINT `Name_CensusReportingEntityContact_FK` FOREIGN KEY (`CensusReporting_EntityContact_Id`) REFERENCES `CensusReporting_EntityContact` (`Id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 create table CensusReporting_EntityContact_Address (
@@ -2270,7 +2270,7 @@ create table CensusReporting_Student (
 create table CollectionRound (
     RefId VARCHAR(36) NOT NULL PRIMARY KEY,
     AGCollection VARCHAR(200) NULL,
-    CollectionYear VARCHAR(200) NULL,
+    CollectionYear VARCHAR(200) NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 create table CollectionRound_LocalCode (
@@ -2305,7 +2305,7 @@ create table CollectionStatus (
     SubmissionTimestamp VARCHAR(200) DEFAULT NULL,
     AgCollection VARCHAR(200) DEFAULT NULL,
     CollectionYear VARCHAR(200) DEFAULT NULL,
-    RoundCode VARCHAR(200) DEFAULT NULL,
+    RoundCode VARCHAR(200) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 create table CollectionStatus_LocalCode (
@@ -2411,7 +2411,7 @@ create table FQReporting_EntityContact_Name (
   Suffix varchar(200) DEFAULT NULL,
   FullName varchar(200) DEFAULT NULL,
   INDEX `Name_FQReportingEntityContact_IX` (`FQReporting_EntityContact_Id`),
-  CONSTRAINT `Name_FQReportingEntityContact_FK` FOREIGN KEY (`FQReportingEntityContact_Id`) REFERENCES `FQReporting_EntityContact` (`Id`)
+  CONSTRAINT `Name_FQReportingEntityContact_FK` FOREIGN KEY (`FQReporting_EntityContact_Id`) REFERENCES `FQReporting_EntityContact` (`Id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 create table FQReporting_EntityContact_Address (
@@ -2637,19 +2637,19 @@ create table StudentAttendanceCR_YearLevel_StatsCohort (
 
 create table LibraryPatronStatus (
   RefId VARCHAR(36) PRIMARY KEY,
-  LibraryType VARHCAR(200) DEFAULT NULL,
-  PatronRefId VARHCAR(200) DEFAULT NULL,
-  PatronLocalId VARHCAR(200) DEFAULT NULL,
-  PatronRefObject VARHCAR(200) DEFAULT NULL,
-  NumberOfCheckouts VARHCAR(200) DEFAULT NULL,
-  NumberOfHoldItems VARHCAR(200) DEFAULT NULL,
-  NumberOfOverdues VARHCAR(200) DEFAULT NULL,
-  NumberOfFines VARHCAR(200) DEFAULT NULL,
-  FineAmount_Amount VARHCAR(200) DEFAULT NULL,
-  FineAmount_Currency VARHCAR(200) DEFAULT NULL,
-  NumberOfRefunds VARHCAR(200) DEFAULT NULL,
-  RefundAmount_Amount VARHCAR(200) DEFAULT NULL,
-  RefundAmount_Currency VARHCAR(200) DEFAULT NULL
+  LibraryType VARCHAR(200) DEFAULT NULL,
+  PatronRefId VARCHAR(200) DEFAULT NULL,
+  PatronLocalId VARCHAR(200) DEFAULT NULL,
+  PatronRefObject VARCHAR(200) DEFAULT NULL,
+  NumberOfCheckouts VARCHAR(200) DEFAULT NULL,
+  NumberOfHoldItems VARCHAR(200) DEFAULT NULL,
+  NumberOfOverdues VARCHAR(200) DEFAULT NULL,
+  NumberOfFines VARCHAR(200) DEFAULT NULL,
+  FineAmount_Amount VARCHAR(200) DEFAULT NULL,
+  FineAmount_Currency VARCHAR(200) DEFAULT NULL,
+  NumberOfRefunds VARCHAR(200) DEFAULT NULL,
+  RefundAmount_Amount VARCHAR(200) DEFAULT NULL,
+  RefundAmount_Currency VARCHAR(200) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 create table LibraryPatronStatus_PatronName (
@@ -2688,17 +2688,17 @@ create table LibraryPatronStatus_Transaction (
 create table LibraryPatronStatus_Transaction_Item (
   id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
   Transaction_Id MEDIUMINT NOT NULL,
-  Title VARHCAR(200) NOT NULL,
-  Author VARHCAR(200) NOT NULL,
-  ElectronicId VARHCAR(200) NOT NULL,
-  ElectronicIdType VARHCAR(200) NOT NULL,
-  CallNumber VARHCAR(200) NOT NULL,
-  ISBN VARHCAR(200) NOT NULL,
-  Cost_Amount VARHCAR(200) NOT NULL,
-  Cost_Currency VARHCAR(200) NOT NULL,
-  ReplacementCost_Amount VARHCAR(200) NOT NULL,
-  ReplacementCost_Currency VARHCAR(200) NOT NULL,
-  ItemType VARHCAR(200) NOT NULL,
+  Title VARCHAR(200) NOT NULL,
+  Author VARCHAR(200) NOT NULL,
+  ElectronicId VARCHAR(200) NOT NULL,
+  ElectronicIdType VARCHAR(200) NOT NULL,
+  CallNumber VARCHAR(200) NOT NULL,
+  ISBN VARCHAR(200) NOT NULL,
+  Cost_Amount VARCHAR(200) NOT NULL,
+  Cost_Currency VARCHAR(200) NOT NULL,
+  ReplacementCost_Amount VARCHAR(200) NOT NULL,
+  ReplacementCost_Currency VARCHAR(200) NOT NULL,
+  ItemType VARCHAR(200) NOT NULL,
   INDEX `Item_LibraryTransaction_IX` (`Transaction_Id`),
   CONSTRAINT `Item_LibraryTransaction_FK` FOREIGN KEY (`Transaction_Id`) REFERENCES `LibraryPatronStatus_Transaction` (`Id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -2746,8 +2746,8 @@ create table LibraryPatronStatus_Message (
   MessageText VARCHAR(2000) DEFAULT NULL,
   Priority VARCHAR(200) DEFAULT NULL,
   PriorityCodeset VARCHAR(200) DEFAULT NULL,
-  INDEX `ElectronicId_LibraryPatronStatus_IX` (`LibraryPatronStatus_RefId`),
-  CONSTRAINT `ElectronicId_LibraryPatronStatus_FK` FOREIGN KEY (`LibraryPatronStatus_RefId`) REFERENCES `LibraryPatronStatus` (`RefId`)
+  INDEX `Message_LibraryPatronStatus_IX` (`LibraryPatronStatus_RefId`),
+  CONSTRAINT `Message_LibraryPatronStatus_FK` FOREIGN KEY (`LibraryPatronStatus_RefId`) REFERENCES `LibraryPatronStatus` (`RefId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 create table LibraryPatronStatus_LocalCode (

@@ -40,7 +40,7 @@ create table AddressCollection_LocalCode (
     ListIndex MEDIUMINT NULL,
     INDEX `LocalCode_AddressCollection_IX` (`AddressCollection_RefId`),
     CONSTRAINT `LocalCode_AddressCollection_FK` FOREIGN KEY (`AddressCollection_RefId`) REFERENCES `AddressCollection` (`RefId`)
-)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 create table AddressCollectionReporting (
     id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
@@ -218,6 +218,7 @@ create table AddressCR_Parent (
 create table AddressCR_Parent_Name (
   id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
   AddressCR_Parent_Id MEDIUMINT NOT NULL,
+  NameType varchar(200) DEFAULT NULL,
   Title varchar(200) DEFAULT NULL,
   FamilyName varchar(200) DEFAULT NULL,
   GivenName varchar(200) DEFAULT NULL,
@@ -298,16 +299,6 @@ create table CensusReporting (
     CONSTRAINT `CensusReporting_CensusCollection_FK` FOREIGN KEY (`CensusCollection_RefId`) REFERENCES `CensusCollection` (`RefId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-create table CensusReporting (
-    id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
-    CensusCollection_RefId VARCHAR(36) NOT NULL,
-    EntityLevel VARCHAR(200) DEFAULT NULL,
-    CommonwealthId VARCHAR(200) DEFAULT NULL,
-    EntityName VARCHAR(200) DEFAULT NULL,
-    INDEX `CensusReporting_CensusCollection_IX` (`CensusCollection_RefId`),
-    CONSTRAINT `CensusReporting_CensusCollection_FK` FOREIGN KEY (`CensusCollection_RefId`) REFERENCES `CensusCollection` (`RefId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 create table CensusReporting_EntityContact (
   id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
   CensusReporting_Id MEDIUMINT NOT NULL,
@@ -341,7 +332,54 @@ create table CensusReporting_EntityContact_Name (
   Suffix varchar(200) DEFAULT NULL,
   FullName varchar(200) DEFAULT NULL,
   INDEX `Name_CensusReportingEntityContact_IX` (`CensusReporting_EntityContact_Id`),
-  CONSTRAINT `Name_CensusReportingEntityContact_FK` FOREIGN KEY (`CensusReportingEntityContact_Id`) REFERENCES `CensusReporting_EntityContact` (`Id`)
+  CONSTRAINT `Name_CensusReportingEntityContact_FK` FOREIGN KEY (`CensusReporting_EntityContact_Id`) REFERENCES `CensusReporting_EntityContact` (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+create table CensusReporting_EntityContact_Address (
+  id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
+  CensusReporting_EntityContact_Id MEDIUMINT NOT NULL,
+  AddressType varchar(200) DEFAULT NULL,
+  AddressRole varchar(200) DEFAULT NULL,
+  EffectiveFromDate varchar(200) DEFAULT NULL,
+  EffectiveToDate varchar(200) DEFAULT NULL,
+  Street_Line1 varchar(200) DEFAULT NULL,
+  Street_Line2 varchar(200) DEFAULT NULL,
+  Street_Line3 varchar(200) DEFAULT NULL,
+  Street_Complex varchar(200) DEFAULT NULL,
+  Street_StreetNumber varchar(200) DEFAULT NULL,
+  Street_StreetPrefix varchar(200) DEFAULT NULL,
+  Street_StreetName varchar(200) DEFAULT NULL,
+  Street_StreetType varchar(200) DEFAULT NULL,
+  Street_StreetSuffix varchar(200) DEFAULT NULL,
+  Street_ApartmentType varchar(200) DEFAULT NULL,
+  Street_ApartmentNumberPrefix varchar(200) DEFAULT NULL,
+  Street_ApartmentNumber varchar(200) DEFAULT NULL,
+  Street_ApartmentNumberSuffix varchar(200) DEFAULT NULL,
+  City varchar(200) DEFAULT NULL,
+  StateProvince varchar(200) DEFAULT NULL,
+  Country varchar(200) DEFAULT NULL,
+  PostalCode varchar(200) DEFAULT NULL,
+  GridLocation_Latitude varchar(200) DEFAULT NULL,
+  GridLocation_Longitude varchar(200) DEFAULT NULL,
+  MapReference_Type varchar(200) DEFAULT NULL,
+  MapReference_XCoordinate varchar(200) DEFAULT NULL,
+  MapReference_YCoordinate varchar(200) DEFAULT NULL,
+  MapReference_MapNumber varchar(200) DEFAULT NULL,
+  RadioContact varchar(200) DEFAULT NULL,
+  Community varchar(200) DEFAULT NULL,
+  LocalId varchar(200) DEFAULT NULL,
+  AddressGlobalUID varchar(200) DEFAULT NULL,
+  INDEX `Address_CensusReportingEntityContact_IX` (`CensusReporting_EntityContact_Id`),
+  CONSTRAINT `Address_CensusReportingEntityContact_FK` FOREIGN KEY (`CensusReporting_EntityContact_Id`) REFERENCES `CensusReporting_EntityContact` (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+create table CensusReporting_EntityContact_Address_StatisticalArea (
+  id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
+  CensusReporting_EntityContact_Address_Id MEDIUMINT NOT NULL,
+  spatialUnitType varchar(200) DEFAULT NULL,
+  statisticalArea varchar(200) DEFAULT NULL,
+  INDEX `StatArea_CensusReportingEntityContactAddress_IX` (`CensusReporting_EntityContact_Address_Id`),
+  CONSTRAINT `StatArea_CensusReportingEntityContactAddress_FK` FOREIGN KEY (`CensusReporting_EntityContact_Address_Id`) REFERENCES `CensusReporting_EntityContact_Address` (`Id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 create table CensusReporting_Staff (
@@ -390,7 +428,7 @@ create table CensusReporting_Student (
 create table CollectionRound (
     RefId VARCHAR(36) NOT NULL PRIMARY KEY,
     AGCollection VARCHAR(200) NULL,
-    CollectionYear VARCHAR(200) NULL,
+    CollectionYear VARCHAR(200) NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 create table CollectionRound_LocalCode (
@@ -425,7 +463,7 @@ create table CollectionStatus (
     SubmissionTimestamp VARCHAR(200) DEFAULT NULL,
     AgCollection VARCHAR(200) DEFAULT NULL,
     CollectionYear VARCHAR(200) DEFAULT NULL,
-    RoundCode VARCHAR(200) DEFAULT NULL,
+    RoundCode VARCHAR(200) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 create table CollectionStatus_LocalCode (
@@ -463,7 +501,6 @@ create table CollectionStatus_AGROResponse_AGRule (
     INDEX `AGRule_CollectionStatusAGROResponse_IX` (`AGReportingObjectResponse_Id`),
     CONSTRAINT `AGRule_CollectionStatusAGROResponse_FK` FOREIGN KEY (`AGReportingObjectResponse_Id`) REFERENCES `CollectionStatus_AGReportingObjectReponse` (`Id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 
 create table FinancialQuestionnaireCollection (
   RefId VARCHAR(36) NOT NULL PRIMARY KEY,
@@ -532,7 +569,7 @@ create table FQReporting_EntityContact_Name (
   Suffix varchar(200) DEFAULT NULL,
   FullName varchar(200) DEFAULT NULL,
   INDEX `Name_FQReportingEntityContact_IX` (`FQReporting_EntityContact_Id`),
-  CONSTRAINT `Name_FQReportingEntityContact_FK` FOREIGN KEY (`FQReportingEntityContact_Id`) REFERENCES `FQReporting_EntityContact` (`Id`)
+  CONSTRAINT `Name_FQReportingEntityContact_FK` FOREIGN KEY (`FQReporting_EntityContact_Id`) REFERENCES `FQReporting_EntityContact` (`Id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 create table FQReporting_EntityContact_Address (
@@ -756,22 +793,21 @@ create table StudentAttendanceCR_YearLevel_StatsCohort (
   CONSTRAINT `StatsCohort_YearLevel_FK` FOREIGN KEY (`StatsCohortYearLevel_Id`) REFERENCES `StudentAttendanceCR_StatsCohortYearLevel` (`Id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
 create table LibraryPatronStatus (
   RefId VARCHAR(36) PRIMARY KEY,
-  LibraryType VARHCAR(200) DEFAULT NULL,
-  PatronRefId VARHCAR(200) DEFAULT NULL,
-  PatronLocalId VARHCAR(200) DEFAULT NULL,
-  PatronRefObject VARHCAR(200) DEFAULT NULL,
-  NumberOfCheckouts VARHCAR(200) DEFAULT NULL,
-  NumberOfHoldItems VARHCAR(200) DEFAULT NULL,
-  NumberOfOverdues VARHCAR(200) DEFAULT NULL,
-  NumberOfFines VARHCAR(200) DEFAULT NULL,
-  FineAmount_Amount VARHCAR(200) DEFAULT NULL,
-  FineAmount_Currency VARHCAR(200) DEFAULT NULL,
-  NumberOfRefunds VARHCAR(200) DEFAULT NULL,
-  RefundAmount_Amount VARHCAR(200) DEFAULT NULL,
-  RefundAmount_Currency VARHCAR(200) DEFAULT NULL
+  LibraryType VARCHAR(200) DEFAULT NULL,
+  PatronRefId VARCHAR(200) DEFAULT NULL,
+  PatronLocalId VARCHAR(200) DEFAULT NULL,
+  PatronRefObject VARCHAR(200) DEFAULT NULL,
+  NumberOfCheckouts VARCHAR(200) DEFAULT NULL,
+  NumberOfHoldItems VARCHAR(200) DEFAULT NULL,
+  NumberOfOverdues VARCHAR(200) DEFAULT NULL,
+  NumberOfFines VARCHAR(200) DEFAULT NULL,
+  FineAmount_Amount VARCHAR(200) DEFAULT NULL,
+  FineAmount_Currency VARCHAR(200) DEFAULT NULL,
+  NumberOfRefunds VARCHAR(200) DEFAULT NULL,
+  RefundAmount_Amount VARCHAR(200) DEFAULT NULL,
+  RefundAmount_Currency VARCHAR(200) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 create table LibraryPatronStatus_PatronName (
@@ -810,17 +846,17 @@ create table LibraryPatronStatus_Transaction (
 create table LibraryPatronStatus_Transaction_Item (
   id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
   Transaction_Id MEDIUMINT NOT NULL,
-  Title VARHCAR(200) NOT NULL,
-  Author VARHCAR(200) NOT NULL,
-  ElectronicId VARHCAR(200) NOT NULL,
-  ElectronicIdType VARHCAR(200) NOT NULL,
-  CallNumber VARHCAR(200) NOT NULL,
-  ISBN VARHCAR(200) NOT NULL,
-  Cost_Amount VARHCAR(200) NOT NULL,
-  Cost_Currency VARHCAR(200) NOT NULL,
-  ReplacementCost_Amount VARHCAR(200) NOT NULL,
-  ReplacementCost_Currency VARHCAR(200) NOT NULL,
-  ItemType VARHCAR(200) NOT NULL,
+  Title VARCHAR(200) NOT NULL,
+  Author VARCHAR(200) NOT NULL,
+  ElectronicId VARCHAR(200) NOT NULL,
+  ElectronicIdType VARCHAR(200) NOT NULL,
+  CallNumber VARCHAR(200) NOT NULL,
+  ISBN VARCHAR(200) NOT NULL,
+  Cost_Amount VARCHAR(200) NOT NULL,
+  Cost_Currency VARCHAR(200) NOT NULL,
+  ReplacementCost_Amount VARCHAR(200) NOT NULL,
+  ReplacementCost_Currency VARCHAR(200) NOT NULL,
+  ItemType VARCHAR(200) NOT NULL,
   INDEX `Item_LibraryTransaction_IX` (`Transaction_Id`),
   CONSTRAINT `Item_LibraryTransaction_FK` FOREIGN KEY (`Transaction_Id`) REFERENCES `LibraryPatronStatus_Transaction` (`Id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -868,8 +904,8 @@ create table LibraryPatronStatus_Message (
   MessageText VARCHAR(2000) DEFAULT NULL,
   Priority VARCHAR(200) DEFAULT NULL,
   PriorityCodeset VARCHAR(200) DEFAULT NULL,
-  INDEX `ElectronicId_LibraryPatronStatus_IX` (`LibraryPatronStatus_RefId`),
-  CONSTRAINT `ElectronicId_LibraryPatronStatus_FK` FOREIGN KEY (`LibraryPatronStatus_RefId`) REFERENCES `LibraryPatronStatus` (`RefId`)
+  INDEX `Message_LibraryPatronStatus_IX` (`LibraryPatronStatus_RefId`),
+  CONSTRAINT `Message_LibraryPatronStatus_FK` FOREIGN KEY (`LibraryPatronStatus_RefId`) REFERENCES `LibraryPatronStatus` (`RefId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 create table LibraryPatronStatus_LocalCode (
