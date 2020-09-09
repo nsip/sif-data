@@ -756,3 +756,129 @@ create table StudentAttendanceCR_YearLevel_StatsCohort (
   CONSTRAINT `StatsCohort_YearLevel_FK` FOREIGN KEY (`StatsCohortYearLevel_Id`) REFERENCES `StudentAttendanceCR_StatsCohortYearLevel` (`Id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+
+create table LibraryPatronStatus (
+  RefId VARCHAR(36) PRIMARY KEY,
+  LibraryType VARHCAR(200) DEFAULT NULL,
+  PatronRefId VARHCAR(200) DEFAULT NULL,
+  PatronLocalId VARHCAR(200) DEFAULT NULL,
+  PatronRefObject VARHCAR(200) DEFAULT NULL,
+  NumberOfCheckouts VARHCAR(200) DEFAULT NULL,
+  NumberOfHoldItems VARHCAR(200) DEFAULT NULL,
+  NumberOfOverdues VARHCAR(200) DEFAULT NULL,
+  NumberOfFines VARHCAR(200) DEFAULT NULL,
+  FineAmount_Amount VARHCAR(200) DEFAULT NULL,
+  FineAmount_Currency VARHCAR(200) DEFAULT NULL,
+  NumberOfRefunds VARHCAR(200) DEFAULT NULL,
+  RefundAmount_Amount VARHCAR(200) DEFAULT NULL,
+  RefundAmount_Currency VARHCAR(200) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+create table LibraryPatronStatus_PatronName (
+  id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
+  LibraryPatronStatus_RefId VARCHAR(36) NOT NULL,
+  Title varchar(200) DEFAULT NULL,
+  FamilyName varchar(200) DEFAULT NULL,
+  GivenName varchar(200) DEFAULT NULL,
+  MiddleName varchar(200) DEFAULT NULL,
+  FamilyNameFirst varchar(200) DEFAULT NULL,
+  PreferredFamilyName varchar(200) DEFAULT NULL,
+  PreferredFamilyNameFirst varchar(200) DEFAULT NULL,
+  PreferredGivenName varchar(200) DEFAULT NULL,
+  Suffix varchar(200) DEFAULT NULL,
+  FullName varchar(200) DEFAULT NULL,
+  INDEX `PatronName_LibraryPatronStatus_IX` (`LibraryPatronStatus_RefId`),
+  CONSTRAINT `PatronName_LibraryPatronStatus_FK` FOREIGN KEY (`LibraryPatronStatus_RefId`) REFERENCES `LibraryPatronStatus` (`RefId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+create table LibraryPatronStatus_ElectronicId (
+  id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
+  LibraryPatronStatus_RefId VARCHAR(36) NOT NULL,
+  ElectronicId VARCHAR(200) DEFAULT NULL,
+  ElectronicIdType VARCHAR(200) DEFAULT NULL,
+  INDEX `ElectronicId_LibraryPatronStatus_IX` (`LibraryPatronStatus_RefId`),
+  CONSTRAINT `ElectronicId_LibraryPatronStatus_FK` FOREIGN KEY (`LibraryPatronStatus_RefId`) REFERENCES `LibraryPatronStatus` (`RefId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+create table LibraryPatronStatus_Transaction (
+  id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
+  LibraryPatronStatus_RefId varchar(36) NOT NULL,
+  INDEX `Transaction_LibraryPatronStatus_IX` (`LibraryPatronStatus_RefId`),
+  CONSTRAINT `Transaction_LibraryPatronStatus_FK` FOREIGN KEY (`LibraryPatronStatus_RefId`) REFERENCES `LibraryPatronStatus` (`RefId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+create table LibraryPatronStatus_Transaction_Item (
+  id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
+  Transaction_Id MEDIUMINT NOT NULL,
+  Title VARHCAR(200) NOT NULL,
+  Author VARHCAR(200) NOT NULL,
+  ElectronicId VARHCAR(200) NOT NULL,
+  ElectronicIdType VARHCAR(200) NOT NULL,
+  CallNumber VARHCAR(200) NOT NULL,
+  ISBN VARHCAR(200) NOT NULL,
+  Cost_Amount VARHCAR(200) NOT NULL,
+  Cost_Currency VARHCAR(200) NOT NULL,
+  ReplacementCost_Amount VARHCAR(200) NOT NULL,
+  ReplacementCost_Currency VARHCAR(200) NOT NULL,
+  ItemType VARHCAR(200) NOT NULL,
+  INDEX `Item_LibraryTransaction_IX` (`Transaction_Id`),
+  CONSTRAINT `Item_LibraryTransaction_FK` FOREIGN KEY (`Transaction_Id`) REFERENCES `LibraryPatronStatus_Transaction` (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+create table LibraryPatronStatus_Transaction_Checkout (
+  id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
+  Transaction_Id MEDIUMINT NOT NULL,
+  CheckedOutOn VARCHAR(200) DEFAULT NULL,
+  ReturnBy VARCHAR(200) DEFAULT NULL,
+  RenewalCount VARCHAR(200) DEFAULT NULL,
+  INDEX `Checkout_LibraryTransaction_IX` (`Transaction_Id`),
+  CONSTRAINT `Checkout_LibraryTransaction_FK` FOREIGN KEY (`Transaction_Id`) REFERENCES `LibraryPatronStatus_Transaction` (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+create table LibraryPatronStatus_Transaction_HoldInfo (
+  id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
+  Transaction_Id MEDIUMINT NOT NULL,
+  DatePlaced VARCHAR(200) DEFAULT NULL,
+  DateNeeded VARCHAR(200) DEFAULT NULL,
+  ReservationExpiry VARCHAR(200) DEFAULT NULL,
+  MadeAvailable VARCHAR(200) DEFAULT NULL,
+  Expires VARCHAR(200) DEFAULT NULL,
+  HoldType VARCHAR(200) DEFAULT NULL,
+  INDEX `HoldInfo_LibraryTransaction_IX` (`Transaction_Id`),
+  CONSTRAINT `HoldInfo_LibraryTransaction_FK` FOREIGN KEY (`Transaction_Id`) REFERENCES `LibraryPatronStatus_Transaction` (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+create table LibraryPatronStatus_Transaction_FineInfo (
+  id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
+  Transaction_Id MEDIUMINT NOT NULL,
+  Assessed VARCHAR(200) DEFAULT NULL,
+  Description VARCHAR(200) DEFAULT NULL,
+  Amount VARCHAR(200) DEFAULT NULL,
+  Currency VARCHAR(200) DEFAULT NULL,
+  Reference VARCHAR(200) DEFAULT NULL,
+  FineType VARCHAR(200) DEFAULT NULL,
+  INDEX `FineInfo_LibraryTransaction_IX` (`Transaction_Id`),
+  CONSTRAINT `FineInfo_LibraryTransaction_FK` FOREIGN KEY (`Transaction_Id`) REFERENCES `LibraryPatronStatus_Transaction` (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+create table LibraryPatronStatus_Message (
+  id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
+  LibraryPatronStatus_RefId VARCHAR(36) NOT NULL,
+  Sent VARCHAR(200) DEFAULT NULL,
+  MessageText VARCHAR(2000) DEFAULT NULL,
+  Priority VARCHAR(200) DEFAULT NULL,
+  PriorityCodeset VARCHAR(200) DEFAULT NULL,
+  INDEX `ElectronicId_LibraryPatronStatus_IX` (`LibraryPatronStatus_RefId`),
+  CONSTRAINT `ElectronicId_LibraryPatronStatus_FK` FOREIGN KEY (`LibraryPatronStatus_RefId`) REFERENCES `LibraryPatronStatus` (`RefId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+create table LibraryPatronStatus_LocalCode (
+  id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
+  LibraryPatronStatus_RefId varchar(36) NOT NULL,
+  LocalisedCode varchar(200) NULL,
+  Description varchar(200) NULL,
+  Element varchar(200) NULL,
+  ListIndex MEDIUMINT NULL,
+  INDEX `LocalCode_LibraryPatronStatus_IX` (`LibraryPatronStatus_RefId`),
+  CONSTRAINT `LocalCode_LibraryPatronStatus_FK` FOREIGN KEY (`LibraryPatronStatus_RefId`) REFERENCES `LibraryPatronStatus` (`RefId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
