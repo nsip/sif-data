@@ -2655,6 +2655,7 @@ create table LibraryPatronStatus (
 create table LibraryPatronStatus_PatronName (
   id MEDIUMINT AUTO_INCREMENT PRIMARY KEY,
   LibraryPatronStatus_RefId VARCHAR(36) NOT NULL,
+  NameType varchar(200) DEFAULT NULL,
   Title varchar(200) DEFAULT NULL,
   FamilyName varchar(200) DEFAULT NULL,
   GivenName varchar(200) DEFAULT NULL,
