@@ -1,3 +1,6 @@
+# docker build -t nsip/sif-data:latest -t nsip/sif-data:v0.1.0 .
+# docker push nsip/sif-data:v0.1.0
+# docker push nsip/sif-data:latest
 FROM perl:5.26
 
 RUN cpanm Carton \
