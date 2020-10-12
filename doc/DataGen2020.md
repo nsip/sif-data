@@ -194,4 +194,10 @@ The two major limitations of this code are: SQL (and a very definied set) only a
         * BSPname
         * Category
 
+# Experiments
+
+## ndg - NSIP|NIAS Data Generator
+
+Based on dummy-json and extended with alternative data to generate a school.
+
 # See Also
