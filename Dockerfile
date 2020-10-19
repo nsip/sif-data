@@ -10,6 +10,7 @@ RUN cpanm Data::UUID
 RUN cpanm Data::RandomPerson
 RUN cpanm Data::Random
 RUN cpanm YAML
+RUN cpanm JSON
 RUN cpanm DBI
 RUN cpanm DBD::mysql
 
