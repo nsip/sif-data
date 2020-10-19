@@ -9,7 +9,6 @@ use Text::CSV;
 use Data::UUID;
 use Data::RandomPerson;
 use Data::Random qw/:all/;
-use YAML;
 use DBI;
 
 $ENV{TZ} = "UTC";
@@ -60,6 +59,20 @@ sub new {
 	return $self;
 }
 
+sub getConfig {
+	return {
+                mysql_user => $ENV{DB_USER},
+                mysql_password => $ENV{DB_PASS},
+                mysql_dsn_sif => "dbi:mysql:database=hits_sif3_infra;host=" . $ENV{DB_HOST},
+                mysql_dsn_hits => "dbi:mysql:database=hits;host=" . $ENV{DB_HOST},
+                mysql_host => $ENV{DB_HOST},
+                mysql_port => $ENV{DB_PORT},
+                mysql_driver => "dbi:mysql",
+                #data_dir => ,
+                #schema_dir => ,
+        };
+}
+
 =head2 Connect to database
 
 =cut
@@ -67,7 +80,7 @@ sub new {
 sub db_connect {
 	my ($self, $db_name) = @_;
 
-	my $config = YAML::LoadFile($ENV{NSIP_SIF_DATA} || "/etc/nsip/nsip_sif_data");
+	my $config = $self->getConfig();
 
 	if (! defined $db_name) {
 		$db_name = $config->{mysql_database};
@@ -99,7 +112,7 @@ sub create_database {
 
 	die "Bad db name" if ($db_name =~ m/[\/|\.|;|\s]+/);
 
-	my $config = YAML::LoadFile($ENV{NSIP_SIF_DATA} || "/etc/nsip/nsip_sif_data");
+	my $config = $self->getConfig();
 
 	my $dsn = $config->{mysql_driver} . ':';
 	$dsn .= ';host='    . $config->{mysql_host} if (defined $config->{mysql_host});
