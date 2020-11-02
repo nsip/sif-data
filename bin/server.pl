@@ -1,13 +1,13 @@
 {
 package MyWebServer;
- 
+
 use HTTP::Server::Simple::CGI;
 use base qw(HTTP::Server::Simple::CGI);
 use HTML::Entities;
 use DBI;
 use JSON;
 use Cwd;
- 
+
 #$ENV{HOME} = "/var/sif/";
 #my $root = "/var/sif/sif-data";
 use lib "/usr/src/app/lib";
@@ -18,18 +18,18 @@ my %dispatch = (
     '/dbcreate' => \&db_create,
     # ...
 );
- 
+
 sub handle_request {
     my $self = shift;
     my $cgi  = shift;
-   
+
     my $path = $cgi->path_info();
     my $handler = $dispatch{$path};
- 
+
     if (ref($handler) eq "CODE") {
         print "HTTP/1.0 200 OK\r\n";
         $handler->($cgi);
-         
+
     } else {
         print "HTTP/1.0 404 Not found\r\n";
         print $cgi->header,
@@ -38,7 +38,7 @@ sub handle_request {
               $cgi->end_html;
     }
 }
- 
+
 sub db_create {
 	my $cgi  = shift;   # CGI.pm object
 	return if !ref $cgi;
@@ -55,19 +55,31 @@ sub db_create {
 		print "<h1>Creating/Checking = $name</h1>";
 	}
 
-	my $config = SIF::Data::getConfig();
-	my $dbh_hits = DBI->connect(
+    my $config = eval {return SIF::Data::getConfig(); };
+    if ($@) {
+        print "<h1>ERROR (config): $@</h1>\n";
+        return;
+    }
+	my $dbh_hits = eval { return DBI->connect(
 		$config->{mysql_dsn_hits},
 		$config->{mysql_user},
 		$config->{mysql_password},
 		{RaiseError => 1, AutoCommit => 1}
-	);
-	my $dbh_sif = DBI->connect(
+	)};
+    if ($@) {
+        print "<h1>ERROR (dbh_hits): $@</h1>\n";
+        return;
+    }
+	my $dbh_sif = eval { return DBI->connect(
 		$config->{mysql_dsn_sif},
 		$config->{mysql_user},
 		$config->{mysql_password},
 		{RaiseError => 1, AutoCommit => 1}
-	);
+	)};
+    if ($@) {
+        print "<h1>ERROR (dbh_sif): $@</h1>\n";
+        return;
+    }
 
 	my $options = "";
 	my $optiondata = {};
@@ -330,16 +342,15 @@ sub db_create {
 		print "</body></html>\n";
 		exit 0;
 	}
-     
+
 	#print $cgi->header,
 	#  $cgi->start_html("Hello"),
 	#  $cgi->h1("Hello $who!"),
 	#  $cgi->end_html;
 }
- 
-} 
- 
+
+}
+
 # start the server on port 8080
 my $pid = MyWebServer->new(8080)->run();
 # print "Use 'kill $pid' to stop server.\n";
-

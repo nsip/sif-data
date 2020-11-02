@@ -1,4 +1,29 @@
-README.md
+= sif-data
+
+sif-data is the SQL generator and schema repository for HITS Dashboard and SIF HITS Java implmentation, started in in 2012 and running to approximately 2020.
+
+= History
+
+* 2015 and earlier - manual shell scripts
+* 2018 and earlier /bin/create.cgi
+* 2019 - Apache executed /bin/api.cgi
+
+= 2020 Docker Version
+
+* bin/server.pl - a persisten forking server to generate the necessary files
+    * Emulates the older api.cgi
+    * TODO:
+        * Remove bin/api.cgi
+        * Look if XSD needs to be updated
+        * Look at how to execute upgrade scripts
+            * Probably copy script to hits-dashboard !
+            * Or build docker command integrating hits-dashboard and sif-data
+        * Location to read data files
+        * Remove TMP and just use default STDOUT/STDERR logging
+
+
+
+= README.md
 
  * bin/ 	Scripts to create and manage schema
  * lib/ 	Common or useful libraries
