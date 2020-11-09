@@ -4,6 +4,7 @@
 # docker push nsip/sif-data:latest
 FROM perl:5.26
 
+# RUN (install libmariadb ???t)
 RUN cpanm HTTP::Server::Simple::CGI
 RUN cpanm Text::CSV
 RUN cpanm Data::UUID
