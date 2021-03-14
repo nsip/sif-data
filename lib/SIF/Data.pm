@@ -982,9 +982,9 @@ sub create_collection_round_list_item {
                 $collectionroundrefid, 
                 $type . $roundnumber,
                 %collectionname{$type} . " " . $roundnumber,
-                make_this_year() + sprintf("-%02d-%02d", $roundnumber * 2 + 5, int(rand(20))),
-                make_this_year() + sprintf("-%02d-%02d", $roundnumber * 2 + 6, int(rand(20))),
-                make_this_year() + sprintf("-%02d-%02d", $roundnumber * 2 + 8, int(rand(20))),
+                make_this_year() + sprintf("-%02d-%02d", $roundnumber * 2 + 5, int(rand(20)+1)),
+                make_this_year() + sprintf("-%02d-%02d", $roundnumber * 2 + 6, int(rand(20)+1)),
+                make_this_year() + sprintf("-%02d-%02d", $roundnumber * 2 + 8, int(rand(20)+1)),
         );
 }
 
