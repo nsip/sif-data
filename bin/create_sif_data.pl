@@ -33,7 +33,7 @@ use Data::Dumper;
 my $sd = SIF::Data->new();
 
 my ($schools, $students, $student_contacts, $staff, $rooms, $groups,
-	$grading, $account, $vendors, $debtors, $fix, $codeset, $create_db,
+	$grading, $account, $vendors, $debtors, $agcollections, $fix, $codeset, $create_db,
 	$db_name, $ttable, $school_id, $elements, $fobjects, $scheduled_activities,
 	$silent) = get_args();
 
@@ -94,6 +94,8 @@ if ($ttable) {
 
 	create_grading($grading, $school_id);
 
+	create_agcollections($agcollections);
+
 	create_student_contacts($student_contacts, $school_id);
 
 	create_accounts($account);
@@ -127,6 +129,7 @@ sub get_args {
 	my $account          = undef;
 	my $vendors          = undef;
 	my $debtors          = undef;
+	my $agcollections    = undef;
 	my $fix              = undef;
 	my $codeset          = undef;
 	my $create_db        = undef;
@@ -151,6 +154,7 @@ sub get_args {
 		"create-accounts=s"        => \$account,
 		"create-vendors=s"         => \$vendors,
 		"create-debtors=s"         => \$debtors,
+		"create-agcollections"     => \$agcollections,
 		"fix"                      => \$fix,
 		"codeset"                  => \$codeset,
 		"create-database=s"        => \$create_db,
@@ -192,7 +196,7 @@ sub get_args {
 		usage_exit();
 	}
 
-	if ($create_db && $elements && (! $schools)) {
+	if ($create_db && $elements && (! $schools )) {
 		print "\nMust include create-schools when creating database and other elements\n";
 		usage_exit();
 	}
@@ -211,7 +215,7 @@ sub get_args {
 	}
 
 	return ($schools, $students, $student_contacts, $staff, $rooms,
-	$groups, $grading, $account, $vendors, $debtors, $fix, $codeset,
+	$groups, $grading, $account, $vendors, $debtors, $agcollections, $fix, $codeset,
 	$create_db, $db_name, $ttable,  $school_id, $elements, $fobjects, $scheduled_activities,
 	$silent);
 }
@@ -243,6 +247,8 @@ Sample usage is:
   ./create_sif_data.pl --create-teaching-groups # Create groups for all years and students
 
   ./create_sif_data.pl --create-debtors=8..16   # Create random 8-16 Debtors
+
+  ./create_sif_data.pl --create-agcollections   # Create AG Collections round and status reports
 
   ./create_sif_data.pl --create-scheduled-activities=8..16   # Create random 8-16 scheduled activities
 
@@ -365,6 +371,14 @@ sub create_grading {
 	if (defined $grading) {
 		make_grading($grading, $school);
 	}
+}
+
+sub create_agcollections {
+        my ($agcollections) = @_;
+
+        if (defined $agcollections) {
+                make_agcollections($agcollections);
+        }
 }
 
 sub create_student_contacts {
@@ -1486,6 +1500,100 @@ sub make_grading {
 	if ( (defined $grading) && ($num_tg_seen == 0) ) {
 		die qq(\nNo teaching groups were found.\nYou may need to run this program with the "--create-teaching-groups" options first);
 	}
+}
+
+#
+# Populate the CollectionRound and CollectionStatus tables
+#
+
+sub make_agcollections {
+        my ($grading, $school) = @_;
+
+                my $sth_collectionround = $dbh->prepare(q{
+                                        INSERT INTO CollectionRound
+                                        (
+                                                RefId,
+                                                AGCollection,
+                                                CollectionYear
+                                        )
+                                VALUES
+                                        (
+                                                ?,
+                                                ?,
+                                                ?
+                                        )
+                        });
+                 my $sth_aground = $dbh->prepare(q{
+                                INSERT INTO AGRound
+                                        (
+                                                CollectionRoundRefId, RoundCode, RoundName,
+                                                StartDate, DueDate, EndDate
+                                        )
+                                VALUES
+                                        (
+                                                ?, ?, ?, ?, ?, ?
+                                        )
+                   });
+                   my $sth_collectionstatus = $dbh->prepare(q{
+                                INSERT INTO CollectionStatus
+                                        (
+                                                RefId, ReportingAuthority, ReportingAuthoritySystem,
+                                                ReportingAuthorityCommonwealthId, SubmittedBy,
+                                                SubmissionTimestamp, AGCollection, CollectionYear, RoundCode
+                                        )
+                                VALUES
+                                        (
+                                                ?, ?, ?, ?, ?, ?, ?, ?, ?
+                                        )
+                   });
+                   my $sth_objectresponse = $dbh->prepare(q{
+                                INSERT INTO AGReportingObjectResponse
+                                        (
+                                                CollectionStatusRefId, SubmittedRefId, SIFRefId, 
+                                                HTTPStatusCode, ErrorText, CommonwealthId, 
+                                                EntityName, AGSubmissionStatusCode
+                                        )
+                                VALUES
+                                        (
+                                                ?, ?, ?, ?, ?, ?, ?, ?
+                                        )
+                   });
+                   my $sth_agrule = $dbh->prepare(q{
+                                INSERT INTO AGRule
+                                        (
+                                                ReportingObjectResponseRecordNumber, AGRuleCode, 
+                                                AGRuleComment, AGRuleResponse, AGRuleStatus
+
+                                        )
+                                VALUES
+                                        (
+                                                ?, ?, ?, ?, ?
+                                        )
+                   });
+
+
+
+
+        foreach $type qw(COI FQ SES STATS) {
+                 my @values = $sd->create_collection_rounds($type);
+                 $sth_collectionround->execute( @values );
+                 my $roundrefid = $values[0];
+                 foreach my $roundnumber (1..2) {
+                        my @values = $sd->create_collection_round_list_item($roundrefid, $type, $roundnumber);
+                        $sth_aground->execute( @values );
+                        my @values2 = $sd->create_collection_status($type, $roundnumber);
+                        $sth_collectionstatus->execute( @values2 );
+                        my $collectionstatusrefid = $values2[0];
+                        my @values3 = $sd->create_reporting_object_response($collectionstatusrefid, $type, $roundnumber);
+                        $sth_objectresponse->execute( @values3 );
+                        my $reportingobjectrecordnumber = $values3[1];
+                        foreach my $rulenumber (1..3) {
+                            my @values = $sd->create_agrule($reportingobjectrecordnumber, sprintf("WR-%03d", $rulenumber));
+                            $sth_agrule->execute( @values );
+
+                        }
+                 }
+        }
 }
 
 sub num_teaching_groups {
