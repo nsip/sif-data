@@ -1054,11 +1054,7 @@ sub create_reporting_object_response {
                 "Accepted",
                 "101",
                 "Middleton Primary School",
-                "In Progress",
-                make_this_year() + sprintf("-%02d-%02d", $roundnumber * 2 + 6, 1),
-                $type,
-                make_this_year(),
-                $type . $roundnumber,
+                "In Progress"
         );
 }
 

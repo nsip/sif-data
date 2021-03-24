@@ -1526,7 +1526,7 @@ sub make_agcollections {
                  my $sth_aground = $dbh->prepare(q{
                                 INSERT INTO AGRound
                                         (
-                                                CollectionRoundRefId, RoundCode, RoundName,
+                                                CollectionRound_RefId, RoundCode, RoundName,
                                                 StartDate, DueDate, EndDate
                                         )
                                 VALUES
@@ -1539,7 +1539,7 @@ sub make_agcollections {
                                         (
                                                 RefId, ReportingAuthority, ReportingAuthoritySystem,
                                                 ReportingAuthorityCommonwealthId, SubmittedBy,
-                                                SubmissionTimestamp, AGCollection, CollectionYear, RoundCode
+                                                SubmissionTimestamp, AgCollection, CollectionYear, RoundCode
                                         )
                                 VALUES
                                         (
@@ -1547,21 +1547,24 @@ sub make_agcollections {
                                         )
                    });
                    my $sth_objectresponse = $dbh->prepare(q{
-                                INSERT INTO AGReportingObjectResponse
+                                INSERT INTO CollectionStatus_AGReportingObjectResponse
                                         (
-                                                CollectionStatusRefId, SubmittedRefId, SIFRefId, 
-                                                HTTPStatusCode, ErrorText, CommonwealthId, 
-                                                EntityName, AGSubmissionStatusCode
+                                                CollectionStatus_RefId, SubmittedRefId, SifRefId, 
+                                                HttpStatusCode, ErrorText, CommonwealthId, 
+                                                EntityName, AgSubmissionStatusCode
                                         )
                                 VALUES
                                         (
                                                 ?, ?, ?, ?, ?, ?, ?, ?
                                         )
                    });
+                   my $sth_getresponse = $dbh->prepare("
+                        SELECT id FROM CollectionStatus_AGReportingObjectResponse WHERE
+                        CollectionStatus_RefId = ? AND SubmittedRefId = ?");
                    my $sth_agrule = $dbh->prepare(q{
-                                INSERT INTO AGRule
+                                INSERT INTO CollectionStatus_AGROResponse_AGRule
                                         (
-                                                ReportingObjectResponseRecordNumber, AGRuleCode, 
+                                                AGReportingObjectResponse_Id, AGRuleCode, 
                                                 AGRuleComment, AGRuleResponse, AGRuleStatus
 
                                         )
@@ -1571,25 +1574,24 @@ sub make_agcollections {
                                         )
                    });
 
-
-
-
         foreach $type qw(COI FQ SES STATS) {
-                 my @values = $sd->create_collection_rounds($type);
-                 $sth_collectionround->execute( @values );
-                 my $roundrefid = $values[0];
+                 my @collection_rounds_values = $sd->create_collection_rounds($type);
+                 $sth_collectionround->execute( @collection_rounds_values );
+                 my $roundrefid = $collection_rounds_values[0];
                  foreach my $roundnumber (1..2) {
                         my @values = $sd->create_collection_round_list_item($roundrefid, $type, $roundnumber);
                         $sth_aground->execute( @values );
-                        my @values2 = $sd->create_collection_status($type, $roundnumber);
-                        $sth_collectionstatus->execute( @values2 );
-                        my $collectionstatusrefid = $values2[0];
-                        my @values3 = $sd->create_reporting_object_response($collectionstatusrefid, $type, $roundnumber);
-                        $sth_objectresponse->execute( @values3 );
-                        my $reportingobjectrecordnumber = $values3[1];
+                        my @collection_status_values = $sd->create_collection_status($type, $roundnumber);
+                        $sth_collectionstatus->execute( @collection_status_values );
+                        my $collectionstatusrefid = $collection_status_values[0];
+                        my @reporting_object_response_values = $sd->create_reporting_object_response($collectionstatusrefid, $type, $roundnumber);
+                        $sth_objectresponse->execute( @reporting_object_response_values );
+                        $sth_getresponse->execute([$reporting_object_response_values[0], $reporting_object_response_values[1]]);
+                        my $row = $sth->fetchrow_hashref;
+                        my $reportingobjectrecordnumber = $row->{id};
                         foreach my $rulenumber (1..3) {
-                            my @values = $sd->create_agrule($reportingobjectrecordnumber, sprintf("WR-%03d", $rulenumber));
-                            $sth_agrule->execute( @values );
+                            my @ag_rule_values = $sd->create_agrule($reportingobjectrecordnumber, sprintf("WR-%03d", $rulenumber));
+                            $sth_agrule->execute( @ag_rule_values );
 
                         }
                  }
