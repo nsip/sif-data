@@ -919,6 +919,190 @@ sub create_OtherCode {
 	return ($code0, $code1);
 }
 
+=head2 Create Collection Rounds
+
+  my $sth = $dbh->prepare(q{
+        INSERT INTO CollectionRound
+                (
+                        RefId, AGCollection, CollectionYear
+                )
+        VALUES
+                (
+                        ?, ?, ?
+                )
+  });
+  $sth2->execute( $sd->create_collection_rounds($stId, $type));
+
+  $type: type of AG collection
+
+=cut
+
+sub create_collection_rounds {
+        my ($self, $type) = @_;
+
+        return (
+                make_new_id(),
+                $type,
+                make_this_year()
+        );
+}
+
+my %collectionname = (
+  "COI" => "Non-Government Schools Census",
+  "FQ" => "Financial Questionnaire",
+  "SES" => "Address Collection",
+  "STATS" => "Student Attendance (STATS)",
+);
+
+=head2 Create Collection Round list
+
+ my $sth = $dbh->prepare(q{
+        INSERT INTO AGRound
+                (
+                        CollectionRoundRefId, RoundCode, RoundName, StartDate, DueDate, EndDate
+                )
+        VALUES
+                (
+                        ?, ?, ?, ?, ?, ?
+                )
+  });
+  $sth2->execute( $sd->create_collection_round_list_item($collectionroundrefid, $type, $roundnumber));
+
+  $collectionroundrefid: RefID of parent CollectionRound object
+  $type: type of AG collection
+  $roundnumber: number of round
+
+  Assume two rounds a year
+=cut
+
+sub create_collection_round_list_item {
+        my ($self, $collectionroundrefid, $type, $roundnumber) = @_;
+
+        return (
+                $collectionroundrefid, 
+                $type . $roundnumber,
+                %collectionname{$type} . " " . $roundnumber,
+                make_this_year() + sprintf("-%02d-%02d", $roundnumber * 2 + 5, int(rand(20)+1)),
+                make_this_year() + sprintf("-%02d-%02d", $roundnumber * 2 + 6, int(rand(20)+1)),
+                make_this_year() + sprintf("-%02d-%02d", $roundnumber * 2 + 8, int(rand(20)+1)),
+        );
+}
+
+=head2 Create Collection Status
+
+ my $sth = $dbh->prepare(q{
+        INSERT INTO CollectionStatus
+                (
+                        RefId, ReportingAuthority, ReportingAuthoritySystem, ReportingAuthorityCommonwealthId, SubmittedBy, SubmissionTimestamp, AGCollection, CollectionYear, RoundCode
+                )
+        VALUES
+                (
+                        ?, ?, ?, ?, ?, ?, ?, ?, ?
+                )
+  });
+  $sth2->execute( $sd->create_collection_round_list_item($type, $roundnumber));
+
+  $type: type of AG collection
+  $roundnumber: number of round
+=cut
+
+sub create_collection_status {
+        my ($self, $type, $roundnumber) = @_;
+
+        return (
+                make_new_id(),
+                "Middleton Primary School Reporting Authority",
+                "",
+                "1",
+                "John Smith",
+                make_this_year() + sprintf("-%02d-%02d", $roundnumber * 2 + 6, 1),
+                $type,
+                make_this_year(),
+                $type . $roundnumber,
+        );
+}
+
+=head2 Create Reporting Object Response
+
+ my $sth = $dbh->prepare(q{
+        INSERT INTO AGReportingObjectResponse
+                (
+                        CollectionStatusRefId, ReportingObjectResponseRecordNumber, SubmittedRefId, SIFRefId, HTTPStatusCode, ErrorText, CommonwealthId, EntityName, AGSubmissionStatusCode
+                )
+        VALUES
+                (
+                        ?, ?, ?, ?, ?, ?, ?, ?, ?
+                )
+  });
+  $sth2->execute( $sd->create_reporting_object_response($collectionstatusrefid, $type, $roundnumber));
+
+  $collectionstatusrefid: RefID of parent CollectionStatus object
+  $type: type of AG collection
+  $roundnumber: number of round
+=cut
+
+# Note: we are not updating this object dynamically to link to a submitted collection record; the RefIds returned are dummies.
+sub create_reporting_object_response {
+        my ($self, $collectionstatusrefid, $type, $roundnumber) = @_;
+
+        return (
+                $collectionstatusrefid, 
+                make_new_id(),
+                make_new_id(),
+                make_new_id(),
+                "202",
+                "Accepted",
+                "101",
+                "Middleton Primary School",
+                "In Progress"
+        );
+}
+
+=head2 Create AGRule
+
+ my $sth = $dbh->prepare(q{
+        INSERT INTO AGRule
+                (
+                        ReportingObjectResponseRecordNumber, AGRuleCode, AGRuleComment, AGRuleResponse, AGRuleStatus
+                )
+        VALUES
+                (
+                        ?, ?, ?, ?, ?
+                )
+  });
+  $sth2->execute( $sd->create_agrule($reportingobjectrecordnumber, $rulecode));
+
+  $reportingobjectrecordnumber: Record Number in database of Reporting Object Response
+  $rulecode: AG Rule Code
+=cut
+
+# Note: we are not updating this object dynamically to link to a submitted collection record; the reported rules are dummies.
+sub create_agrule {
+        my ($self, $reportingobjectrecordnumber, $rulecode) = @_;
+
+        return (
+                $reportingobjectrecordnumber,
+                $rulecode,
+                "Cannot be ignored because Components do not add up to Total - Fix",
+                "Rejected",
+                "Fail"
+        );
+}
+
+
+
+sub create_calendar {
+        my ($self, $data) = @_;
+
+        $data->{refid}          = $self->make_new_id();
+        $data->{schoolyear}     = make_this_year();
+        $data->{daysinsession}  = 67+67+68+75;
+        $data->{startdate}      = $data->{schoolyear} . '-01-28';
+        $data->{enddate}        = $data->{schoolyear} . '-12-19';
+
+        return $data;
+}
+
 
 =head2 Create Calendar elements
 
