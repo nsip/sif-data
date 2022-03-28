@@ -1,0 +1,302 @@
+<SchoolInfos>
+<SchoolInfo RefId="F6D82C3D-4F95-4DB5-A689-C8C46AF0D202">
+  <LocalId>1</LocalId>
+  <StateProvinceId>7356</StateProvinceId>
+  <CommonwealthId>6802</CommonwealthId>
+  <SchoolName>Haleychester College</SchoolName>
+  <SchoolType>Pri/Sec</SchoolType>
+  <AddressList>
+    <Address Type="0123" Role="012A">
+      <Street>
+        <StreetNumber>416</StreetNumber>
+        <StreetName>Park</StreetName>
+        <StreetType>Crescent</StreetType>
+      </Street>
+      <City>Wisozkmouth</City>
+      <StateProvince>ACT</StateProvince>
+      <PostalCode>2609</PostalCode>
+    </Address>
+  </AddressList>
+  <ARIA>1</ARIA>
+  <OperationalStatus>O</OperationalStatus>
+  <Campus>
+    <ParentSchoolId>1</ParentSchoolId>
+    <SchoolCampusId>3</SchoolCampusId>
+    <CampusType>Pri/Sec</CampusType>
+    <AdminStatus>Y</AdminStatus>
+  </Campus>
+  <SchoolSector>Gov</SchoolSector>
+  <IndependentSchool>N</IndependentSchool>
+  <Entity_Open>1990-01-01</Entity_Open>
+</SchoolInfo>
+<SchoolInfo RefId="758EDB81-E368-4152-BD08-864898B257EA">
+  <LocalId>2</LocalId>
+  <StateProvinceId>2665</StateProvinceId>
+  <CommonwealthId>4775</CommonwealthId>
+  <SchoolName>Ernestinastad College</SchoolName>
+  <SchoolType>Pri/Sec</SchoolType>
+  <AddressList>
+    <Address Type="0123" Role="012A">
+      <Street>
+        <StreetNumber>43462</StreetNumber>
+        <StreetName>Stream</StreetName>
+        <StreetType>Drive</StreetType>
+      </Street>
+      <City>Strosinburgh</City>
+      <StateProvince>ACT</StateProvince>
+      <PostalCode>2610</PostalCode>
+    </Address>
+  </AddressList>
+  <ARIA>1</ARIA>
+  <OperationalStatus>O</OperationalStatus>
+  <Campus>
+    <ParentSchoolId>2</ParentSchoolId>
+    <SchoolCampusId>3</SchoolCampusId>
+    <CampusType>Pri/Sec</CampusType>
+    <AdminStatus>N</AdminStatus>
+  </Campus>
+  <SchoolSector>Gov</SchoolSector>
+  <IndependentSchool>N</IndependentSchool>
+  <Entity_Open>1990-01-01</Entity_Open>
+</SchoolInfo>
+<SchoolInfo RefId="144D3D22-0476-4C91-A951-3126840B6463">
+  <LocalId>3</LocalId>
+  <StateProvinceId>5216</StateProvinceId>
+  <CommonwealthId>653</CommonwealthId>
+  <SchoolName>Feilside College</SchoolName>
+  <SchoolType>Pri/Sec</SchoolType>
+  <AddressList>
+    <Address Type="0123" Role="012A">
+      <Street>
+        <StreetNumber>1467</StreetNumber>
+        <StreetName>Islands</StreetName>
+        <StreetType>Place</StreetType>
+      </Street>
+      <City>South Lang</City>
+      <StateProvince>TAS</StateProvince>
+      <PostalCode>7202</PostalCode>
+    </Address>
+  </AddressList>
+  <ARIA>1</ARIA>
+  <OperationalStatus>O</OperationalStatus>
+  <Campus>
+    <ParentSchoolId>3</ParentSchoolId>
+    <SchoolCampusId>2</SchoolCampusId>
+    <CampusType>Pri/Sec</CampusType>
+    <AdminStatus>N</AdminStatus>
+  </Campus>
+  <SchoolSector>Gov</SchoolSector>
+  <IndependentSchool>N</IndependentSchool>
+  <Entity_Open>1990-01-01</Entity_Open>
+</SchoolInfo>
+<SchoolInfo RefId="3E7A85CF-4911-46B4-BFAC-1E252DCD4FCE">
+  <LocalId>4</LocalId>
+  <StateProvinceId>9925</StateProvinceId>
+  <CommonwealthId>912</CommonwealthId>
+  <SchoolName>Josuefurt College</SchoolName>
+  <SchoolType>Pri/Sec</SchoolType>
+  <AddressList>
+    <Address Type="0123" Role="012A">
+      <Street>
+        <StreetNumber>257</StreetNumber>
+        <StreetName>Estates</StreetName>
+        <StreetType>Crescent</StreetType>
+      </Street>
+      <City>Murazikstad</City>
+      <StateProvince>NT</StateProvince>
+      <PostalCode>0873</PostalCode>
+    </Address>
+  </AddressList>
+  <ARIA>1</ARIA>
+  <OperationalStatus>O</OperationalStatus>
+  <Campus>
+    <ParentSchoolId>4</ParentSchoolId>
+    <SchoolCampusId>3</SchoolCampusId>
+    <CampusType>Pri/Sec</CampusType>
+    <AdminStatus>Y</AdminStatus>
+  </Campus>
+  <SchoolSector>Gov</SchoolSector>
+  <IndependentSchool>N</IndependentSchool>
+  <Entity_Open>1990-01-01</Entity_Open>
+</SchoolInfo>
+<SchoolInfo RefId="197CD4D8-AD58-4128-AF8F-433A77DACAD6">
+  <LocalId>5</LocalId>
+  <StateProvinceId>454</StateProvinceId>
+  <CommonwealthId>3765</CommonwealthId>
+  <SchoolName>Port Wunsch College</SchoolName>
+  <SchoolType>Pri/Sec</SchoolType>
+  <AddressList>
+    <Address Type="0123" Role="012A">
+      <Street>
+        <StreetNumber>6474</StreetNumber>
+        <StreetName>Forks</StreetName>
+        <StreetType>Walk</StreetType>
+      </Street>
+      <City>Jerrellshire</City>
+      <StateProvince>ACT</StateProvince>
+      <PostalCode>2618</PostalCode>
+    </Address>
+  </AddressList>
+  <ARIA>1</ARIA>
+  <OperationalStatus>O</OperationalStatus>
+  <Campus>
+    <ParentSchoolId>5</ParentSchoolId>
+    <SchoolCampusId>2</SchoolCampusId>
+    <CampusType>Pri/Sec</CampusType>
+    <AdminStatus>Y</AdminStatus>
+  </Campus>
+  <SchoolSector>Gov</SchoolSector>
+  <IndependentSchool>N</IndependentSchool>
+  <Entity_Open>1990-01-01</Entity_Open>
+</SchoolInfo>
+<SchoolInfo RefId="8E9887BA-A320-461C-B684-BAB180294798">
+  <LocalId>6</LocalId>
+  <StateProvinceId>5572</StateProvinceId>
+  <CommonwealthId>6095</CommonwealthId>
+  <SchoolName>South Koelpin College</SchoolName>
+  <SchoolType>Pri/Sec</SchoolType>
+  <AddressList>
+    <Address Type="0123" Role="012A">
+      <Street>
+        <StreetNumber>7563</StreetNumber>
+        <StreetName>Drive</StreetName>
+        <StreetType>Road</StreetType>
+      </Street>
+      <City>Michealport</City>
+      <StateProvince>WA</StateProvince>
+      <PostalCode>6592</PostalCode>
+    </Address>
+  </AddressList>
+  <ARIA>1</ARIA>
+  <OperationalStatus>O</OperationalStatus>
+  <Campus>
+    <ParentSchoolId>6</ParentSchoolId>
+    <SchoolCampusId>3</SchoolCampusId>
+    <CampusType>Pri/Sec</CampusType>
+    <AdminStatus>Y</AdminStatus>
+  </Campus>
+  <SchoolSector>Gov</SchoolSector>
+  <IndependentSchool>N</IndependentSchool>
+  <Entity_Open>1990-01-01</Entity_Open>
+</SchoolInfo>
+<SchoolInfo RefId="E151224A-7114-4C30-986E-F4CDD03CE679">
+  <LocalId>7</LocalId>
+  <StateProvinceId>5123</StateProvinceId>
+  <CommonwealthId>2410</CommonwealthId>
+  <SchoolName>Funkton College</SchoolName>
+  <SchoolType>Pri/Sec</SchoolType>
+  <AddressList>
+    <Address Type="0123" Role="012A">
+      <Street>
+        <StreetNumber>440</StreetNumber>
+        <StreetName>Burgs</StreetName>
+        <StreetType>Drive</StreetType>
+      </Street>
+      <City>Port Keeling</City>
+      <StateProvince>WA</StateProvince>
+      <PostalCode>6785</PostalCode>
+    </Address>
+  </AddressList>
+  <ARIA>1</ARIA>
+  <OperationalStatus>O</OperationalStatus>
+  <Campus>
+    <ParentSchoolId>7</ParentSchoolId>
+    <SchoolCampusId>3</SchoolCampusId>
+    <CampusType>Pri/Sec</CampusType>
+    <AdminStatus>N</AdminStatus>
+  </Campus>
+  <SchoolSector>Gov</SchoolSector>
+  <IndependentSchool>N</IndependentSchool>
+  <Entity_Open>1990-01-01</Entity_Open>
+</SchoolInfo>
+<SchoolInfo RefId="F24CABDE-7FD1-4054-ACF4-E2E80686A7F1">
+  <LocalId>8</LocalId>
+  <StateProvinceId>5174</StateProvinceId>
+  <CommonwealthId>8456</CommonwealthId>
+  <SchoolName>Hermistonfort College</SchoolName>
+  <SchoolType>Pri/Sec</SchoolType>
+  <AddressList>
+    <Address Type="0123" Role="012A">
+      <Street>
+        <StreetNumber>588</StreetNumber>
+        <StreetName>Branch</StreetName>
+        <StreetType>Terrace</StreetType>
+      </Street>
+      <City>Coleville</City>
+      <StateProvince>ACT</StateProvince>
+      <PostalCode>2616</PostalCode>
+    </Address>
+  </AddressList>
+  <ARIA>1</ARIA>
+  <OperationalStatus>O</OperationalStatus>
+  <Campus>
+    <ParentSchoolId>8</ParentSchoolId>
+    <SchoolCampusId>3</SchoolCampusId>
+    <CampusType>Pri/Sec</CampusType>
+    <AdminStatus>Y</AdminStatus>
+  </Campus>
+  <SchoolSector>Gov</SchoolSector>
+  <IndependentSchool>N</IndependentSchool>
+  <Entity_Open>1990-01-01</Entity_Open>
+</SchoolInfo>
+<SchoolInfo RefId="B346B532-5CD0-444B-A563-E2CBB3C526D3">
+  <LocalId>9</LocalId>
+  <StateProvinceId>2677</StateProvinceId>
+  <CommonwealthId>2486</CommonwealthId>
+  <SchoolName>Francescaton College</SchoolName>
+  <SchoolType>Pri/Sec</SchoolType>
+  <AddressList>
+    <Address Type="0123" Role="012A">
+      <Street>
+        <StreetNumber>222</StreetNumber>
+        <StreetName>Parkway</StreetName>
+        <StreetType>Boulevard</StreetType>
+      </Street>
+      <City>Creminberg</City>
+      <StateProvince>QLD</StateProvince>
+      <PostalCode>4254</PostalCode>
+    </Address>
+  </AddressList>
+  <ARIA>1</ARIA>
+  <OperationalStatus>O</OperationalStatus>
+  <Campus>
+    <ParentSchoolId>9</ParentSchoolId>
+    <SchoolCampusId>4</SchoolCampusId>
+    <CampusType>Pri/Sec</CampusType>
+    <AdminStatus>N</AdminStatus>
+  </Campus>
+  <SchoolSector>Gov</SchoolSector>
+  <IndependentSchool>N</IndependentSchool>
+  <Entity_Open>1990-01-01</Entity_Open>
+</SchoolInfo>
+<SchoolInfo RefId="58551EA7-52F1-49B9-87B1-5220D5D88533">
+  <LocalId>10</LocalId>
+  <StateProvinceId>3510</StateProvinceId>
+  <CommonwealthId>4670</CommonwealthId>
+  <SchoolName>Brianaland College</SchoolName>
+  <SchoolType>Pri/Sec</SchoolType>
+  <AddressList>
+    <Address Type="0123" Role="012A">
+      <Street>
+        <StreetNumber>794</StreetNumber>
+        <StreetName>Street</StreetName>
+        <StreetType>Place</StreetType>
+      </Street>
+      <City>Douglasville</City>
+      <StateProvince>TAS</StateProvince>
+      <PostalCode>7752</PostalCode>
+    </Address>
+  </AddressList>
+  <ARIA>1</ARIA>
+  <OperationalStatus>O</OperationalStatus>
+  <Campus>
+    <ParentSchoolId>10</ParentSchoolId>
+    <SchoolCampusId>2</SchoolCampusId>
+    <CampusType>Pri/Sec</CampusType>
+    <AdminStatus>Y</AdminStatus>
+  </Campus>
+  <SchoolSector>Gov</SchoolSector>
+  <IndependentSchool>N</IndependentSchool>
+  <Entity_Open>1990-01-01</Entity_Open>
+</SchoolInfo>
+</SchoolInfos>
