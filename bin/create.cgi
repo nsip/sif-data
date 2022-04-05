@@ -238,7 +238,7 @@ eval {
         $auth_method = "SIF_HMACSHA256";
     }
 	system ("echo 'Inserting SIF3_APP_TEMPLATE' >> /tmp/$$.log 2>>/tmp/$$.err");
-	$sth = $dbh_sif->prepare("INSERT INTO SIF3_APP_TEMPLATE (SOLUTION_ID, APPLICATION_KEY, PASSWORD, USER_TOKEN, AUTH_METHOD, ENV_TEMPLATE_ID) VALUES ('HITS', ?, ?, ?, ?, 'HITS')");
+	$sth = $dbh_sif->prepare("INSERT INTO SIF3_APP_TEMPLATE (SOLUTION_ID, APPLICATION_KEY, PASSWORD, USER_TOKEN, AUTH_METHOD, ENV_TEMPLATE_ID, INFRA_VERSION) VALUES ('HITS', ?, ?, ?, ?, 'HITS', '3.2.1')");
 	$sth->execute($name, $name, $name, $auth_method);
 
 	system ("echo 'Inserting APPKEY_DB_URL_MAPPER' >> /tmp/$$.log 2>>/tmp/$$.err");
