@@ -1,56 +1,26 @@
 <SchoolInfos>
-<SchoolInfo RefId="AAD32420-A096-4436-A813-B52E3AB7A2F8">
+<SchoolInfo RefId="97E104E8-5E93-45F0-9E01-05AD04C4036C">
   <LocalId>1</LocalId>
-  <StateProvinceId>1982</StateProvinceId>
-  <CommonwealthId>872</CommonwealthId>
-  <SchoolName>Bruenside College</SchoolName>
+  <StateProvinceId>6274</StateProvinceId>
+  <CommonwealthId>907</CommonwealthId>
+  <SchoolName>Powlowskimouth College</SchoolName>
   <SchoolType>Pri/Sec</SchoolType>
   <AddressList>
     <Address Type="0123" Role="012A">
       <Street>
-        <StreetNumber>33718</StreetNumber>
-        <StreetName>Manor</StreetName>
-        <StreetType>Road</StreetType>
+        <StreetNumber>834</StreetNumber>
+        <StreetName>Harbor</StreetName>
+        <StreetType>Way</StreetType>
       </Street>
-      <City>Ashtynmouth</City>
-      <StateProvince>WA</StateProvince>
-      <PostalCode>6010</PostalCode>
+      <City>Francoview</City>
+      <StateProvince>SA</StateProvince>
+      <PostalCode>5349</PostalCode>
     </Address>
   </AddressList>
   <ARIA>1</ARIA>
   <OperationalStatus>O</OperationalStatus>
   <Campus>
     <ParentSchoolId>1</ParentSchoolId>
-    <SchoolCampusId>2</SchoolCampusId>
-    <CampusType>Pri/Sec</CampusType>
-    <AdminStatus>Y</AdminStatus>
-  </Campus>
-  <SchoolSector>Gov</SchoolSector>
-  <IndependentSchool>N</IndependentSchool>
-  <Entity_Open>1990-01-01</Entity_Open>
-</SchoolInfo>
-<SchoolInfo RefId="C15F0893-23D7-4735-A71D-233E7F3077F7">
-  <LocalId>2</LocalId>
-  <StateProvinceId>2536</StateProvinceId>
-  <CommonwealthId>8089</CommonwealthId>
-  <SchoolName>Kuvalisville College</SchoolName>
-  <SchoolType>Pri/Sec</SchoolType>
-  <AddressList>
-    <Address Type="0123" Role="012A">
-      <Street>
-        <StreetNumber>2965</StreetNumber>
-        <StreetName>Court</StreetName>
-        <StreetType>Terrace</StreetType>
-      </Street>
-      <City>North Crona</City>
-      <StateProvince>VIC</StateProvince>
-      <PostalCode>3113</PostalCode>
-    </Address>
-  </AddressList>
-  <ARIA>1</ARIA>
-  <OperationalStatus>O</OperationalStatus>
-  <Campus>
-    <ParentSchoolId>2</ParentSchoolId>
     <SchoolCampusId>3</SchoolCampusId>
     <CampusType>Pri/Sec</CampusType>
     <AdminStatus>Y</AdminStatus>
@@ -59,22 +29,52 @@
   <IndependentSchool>N</IndependentSchool>
   <Entity_Open>1990-01-01</Entity_Open>
 </SchoolInfo>
-<SchoolInfo RefId="5EDD4C32-9A57-41F0-B22D-5B54D91B1041">
-  <LocalId>3</LocalId>
-  <StateProvinceId>6970</StateProvinceId>
-  <CommonwealthId>4202</CommonwealthId>
-  <SchoolName>Raumouth College</SchoolName>
+<SchoolInfo RefId="CF14DEE0-11E7-4D6C-A328-7DB92F69DF32">
+  <LocalId>2</LocalId>
+  <StateProvinceId>8429</StateProvinceId>
+  <CommonwealthId>2142</CommonwealthId>
+  <SchoolName>Heathcotemouth College</SchoolName>
   <SchoolType>Pri/Sec</SchoolType>
   <AddressList>
     <Address Type="0123" Role="012A">
       <Street>
-        <StreetNumber>95207</StreetNumber>
-        <StreetName>Mews</StreetName>
-        <StreetType>Way</StreetType>
+        <StreetNumber>965</StreetNumber>
+        <StreetName>Crescent</StreetName>
+        <StreetType>Place</StreetType>
       </Street>
-      <City>Karleyborough</City>
-      <StateProvince>ACT</StateProvince>
-      <PostalCode>2611</PostalCode>
+      <City>Mullerview</City>
+      <StateProvince>VIC</StateProvince>
+      <PostalCode>3119</PostalCode>
+    </Address>
+  </AddressList>
+  <ARIA>1</ARIA>
+  <OperationalStatus>O</OperationalStatus>
+  <Campus>
+    <ParentSchoolId>2</ParentSchoolId>
+    <SchoolCampusId>1</SchoolCampusId>
+    <CampusType>Pri/Sec</CampusType>
+    <AdminStatus>N</AdminStatus>
+  </Campus>
+  <SchoolSector>Gov</SchoolSector>
+  <IndependentSchool>N</IndependentSchool>
+  <Entity_Open>1990-01-01</Entity_Open>
+</SchoolInfo>
+<SchoolInfo RefId="B627CBC5-44F0-4D06-ACFF-B77A5E657543">
+  <LocalId>3</LocalId>
+  <StateProvinceId>110</StateProvinceId>
+  <CommonwealthId>4022</CommonwealthId>
+  <SchoolName>West Johnson College</SchoolName>
+  <SchoolType>Pri/Sec</SchoolType>
+  <AddressList>
+    <Address Type="0123" Role="012A">
+      <Street>
+        <StreetNumber>1928</StreetNumber>
+        <StreetName>Stravenue</StreetName>
+        <StreetType>Walk</StreetType>
+      </Street>
+      <City>Serenityville</City>
+      <StateProvince>TAS</StateProvince>
+      <PostalCode>7306</PostalCode>
     </Address>
   </AddressList>
   <ARIA>1</ARIA>
@@ -83,34 +83,124 @@
     <ParentSchoolId>3</ParentSchoolId>
     <SchoolCampusId>3</SchoolCampusId>
     <CampusType>Pri/Sec</CampusType>
-    <AdminStatus>Y</AdminStatus>
+    <AdminStatus>N</AdminStatus>
   </Campus>
   <SchoolSector>Gov</SchoolSector>
   <IndependentSchool>N</IndependentSchool>
   <Entity_Open>1990-01-01</Entity_Open>
 </SchoolInfo>
-<SchoolInfo RefId="8EA425ED-2A69-4126-9B84-638AA704563F">
+<SchoolInfo RefId="C9F82F14-8279-4718-B1D8-484627B32C75">
   <LocalId>4</LocalId>
-  <StateProvinceId>1483</StateProvinceId>
-  <CommonwealthId>2677</CommonwealthId>
-  <SchoolName>South Blick College</SchoolName>
+  <StateProvinceId>5122</StateProvinceId>
+  <CommonwealthId>1021</CommonwealthId>
+  <SchoolName>West Cummerata College</SchoolName>
   <SchoolType>Pri/Sec</SchoolType>
   <AddressList>
     <Address Type="0123" Role="012A">
       <Street>
-        <StreetNumber>685</StreetNumber>
-        <StreetName>Spur</StreetName>
-        <StreetType>Square</StreetType>
+        <StreetNumber>55219</StreetNumber>
+        <StreetName>Haven</StreetName>
+        <StreetType>Road</StreetType>
       </Street>
-      <City>Medhurstberg</City>
+      <City>Watsonville</City>
       <StateProvince>QLD</StateProvince>
-      <PostalCode>4168</PostalCode>
+      <PostalCode>4498</PostalCode>
     </Address>
   </AddressList>
   <ARIA>1</ARIA>
   <OperationalStatus>O</OperationalStatus>
   <Campus>
     <ParentSchoolId>4</ParentSchoolId>
+    <SchoolCampusId>2</SchoolCampusId>
+    <CampusType>Pri/Sec</CampusType>
+    <AdminStatus>Y</AdminStatus>
+  </Campus>
+  <SchoolSector>Gov</SchoolSector>
+  <IndependentSchool>N</IndependentSchool>
+  <Entity_Open>1990-01-01</Entity_Open>
+</SchoolInfo>
+<SchoolInfo RefId="AD96027D-73BB-4EDB-B476-CAFB1EA3DED8">
+  <LocalId>5</LocalId>
+  <StateProvinceId>1352</StateProvinceId>
+  <CommonwealthId>6690</CommonwealthId>
+  <SchoolName>Mosciskiton College</SchoolName>
+  <SchoolType>Pri/Sec</SchoolType>
+  <AddressList>
+    <Address Type="0123" Role="012A">
+      <Street>
+        <StreetNumber>642</StreetNumber>
+        <StreetName>Branch</StreetName>
+        <StreetType>Avenue</StreetType>
+      </Street>
+      <City>Ronnychester</City>
+      <StateProvince>QLD</StateProvince>
+      <PostalCode>4828</PostalCode>
+    </Address>
+  </AddressList>
+  <ARIA>1</ARIA>
+  <OperationalStatus>O</OperationalStatus>
+  <Campus>
+    <ParentSchoolId>5</ParentSchoolId>
+    <SchoolCampusId>4</SchoolCampusId>
+    <CampusType>Pri/Sec</CampusType>
+    <AdminStatus>Y</AdminStatus>
+  </Campus>
+  <SchoolSector>Gov</SchoolSector>
+  <IndependentSchool>N</IndependentSchool>
+  <Entity_Open>1990-01-01</Entity_Open>
+</SchoolInfo>
+<SchoolInfo RefId="89AED2A5-E8D6-4AD3-B99C-3D89CA5886D4">
+  <LocalId>6</LocalId>
+  <StateProvinceId>2989</StateProvinceId>
+  <CommonwealthId>5884</CommonwealthId>
+  <SchoolName>East Stoltenberg College</SchoolName>
+  <SchoolType>Pri/Sec</SchoolType>
+  <AddressList>
+    <Address Type="0123" Role="012A">
+      <Street>
+        <StreetNumber>504</StreetNumber>
+        <StreetName>Road</StreetName>
+        <StreetType>Court</StreetType>
+      </Street>
+      <City>Dachtown</City>
+      <StateProvince>WA</StateProvince>
+      <PostalCode>6709</PostalCode>
+    </Address>
+  </AddressList>
+  <ARIA>1</ARIA>
+  <OperationalStatus>O</OperationalStatus>
+  <Campus>
+    <ParentSchoolId>6</ParentSchoolId>
+    <SchoolCampusId>1</SchoolCampusId>
+    <CampusType>Pri/Sec</CampusType>
+    <AdminStatus>N</AdminStatus>
+  </Campus>
+  <SchoolSector>Gov</SchoolSector>
+  <IndependentSchool>N</IndependentSchool>
+  <Entity_Open>1990-01-01</Entity_Open>
+</SchoolInfo>
+<SchoolInfo RefId="19457ACF-B1B0-46FA-A301-9B6505710B87">
+  <LocalId>7</LocalId>
+  <StateProvinceId>7875</StateProvinceId>
+  <CommonwealthId>128</CommonwealthId>
+  <SchoolName>South Bins College</SchoolName>
+  <SchoolType>Pri/Sec</SchoolType>
+  <AddressList>
+    <Address Type="0123" Role="012A">
+      <Street>
+        <StreetNumber>5990</StreetNumber>
+        <StreetName>Bridge</StreetName>
+        <StreetType>Esplanade</StreetType>
+      </Street>
+      <City>Goldnerport</City>
+      <StateProvince>NSW</StateProvince>
+      <PostalCode>2145</PostalCode>
+    </Address>
+  </AddressList>
+  <ARIA>1</ARIA>
+  <OperationalStatus>O</OperationalStatus>
+  <Campus>
+    <ParentSchoolId>7</ParentSchoolId>
     <SchoolCampusId>4</SchoolCampusId>
     <CampusType>Pri/Sec</CampusType>
     <AdminStatus>N</AdminStatus>
@@ -119,112 +209,22 @@
   <IndependentSchool>N</IndependentSchool>
   <Entity_Open>1990-01-01</Entity_Open>
 </SchoolInfo>
-<SchoolInfo RefId="CE786B28-8699-4934-88AF-8A026D26B76D">
-  <LocalId>5</LocalId>
-  <StateProvinceId>5015</StateProvinceId>
-  <CommonwealthId>4141</CommonwealthId>
-  <SchoolName>New Metz College</SchoolName>
-  <SchoolType>Pri/Sec</SchoolType>
-  <AddressList>
-    <Address Type="0123" Role="012A">
-      <Street>
-        <StreetNumber>7859</StreetNumber>
-        <StreetName>Turnpike</StreetName>
-        <StreetType>Square</StreetType>
-      </Street>
-      <City>Reingerview</City>
-      <StateProvince>ACT</StateProvince>
-      <PostalCode>2603</PostalCode>
-    </Address>
-  </AddressList>
-  <ARIA>1</ARIA>
-  <OperationalStatus>O</OperationalStatus>
-  <Campus>
-    <ParentSchoolId>5</ParentSchoolId>
-    <SchoolCampusId>1</SchoolCampusId>
-    <CampusType>Pri/Sec</CampusType>
-    <AdminStatus>N</AdminStatus>
-  </Campus>
-  <SchoolSector>Gov</SchoolSector>
-  <IndependentSchool>N</IndependentSchool>
-  <Entity_Open>1990-01-01</Entity_Open>
-</SchoolInfo>
-<SchoolInfo RefId="C52A6C48-748E-402D-A9B8-0901CDA41DF8">
-  <LocalId>6</LocalId>
-  <StateProvinceId>9544</StateProvinceId>
-  <CommonwealthId>8657</CommonwealthId>
-  <SchoolName>Hettingermouth College</SchoolName>
-  <SchoolType>Pri/Sec</SchoolType>
-  <AddressList>
-    <Address Type="0123" Role="012A">
-      <Street>
-        <StreetNumber>66987</StreetNumber>
-        <StreetName>Lake</StreetName>
-        <StreetType>Court</StreetType>
-      </Street>
-      <City>Gregoryton</City>
-      <StateProvince>QLD</StateProvince>
-      <PostalCode>4098</PostalCode>
-    </Address>
-  </AddressList>
-  <ARIA>1</ARIA>
-  <OperationalStatus>O</OperationalStatus>
-  <Campus>
-    <ParentSchoolId>6</ParentSchoolId>
-    <SchoolCampusId>3</SchoolCampusId>
-    <CampusType>Pri/Sec</CampusType>
-    <AdminStatus>N</AdminStatus>
-  </Campus>
-  <SchoolSector>Gov</SchoolSector>
-  <IndependentSchool>N</IndependentSchool>
-  <Entity_Open>1990-01-01</Entity_Open>
-</SchoolInfo>
-<SchoolInfo RefId="50EF9D55-A782-4DF8-9B15-A71239FD6A15">
-  <LocalId>7</LocalId>
-  <StateProvinceId>6098</StateProvinceId>
-  <CommonwealthId>5940</CommonwealthId>
-  <SchoolName>Hudsonborough College</SchoolName>
-  <SchoolType>Pri/Sec</SchoolType>
-  <AddressList>
-    <Address Type="0123" Role="012A">
-      <Street>
-        <StreetNumber>30853</StreetNumber>
-        <StreetName>Drive</StreetName>
-        <StreetType>Boulevard</StreetType>
-      </Street>
-      <City>East Carter</City>
-      <StateProvince>QLD</StateProvince>
-      <PostalCode>4363</PostalCode>
-    </Address>
-  </AddressList>
-  <ARIA>1</ARIA>
-  <OperationalStatus>O</OperationalStatus>
-  <Campus>
-    <ParentSchoolId>7</ParentSchoolId>
-    <SchoolCampusId>1</SchoolCampusId>
-    <CampusType>Pri/Sec</CampusType>
-    <AdminStatus>N</AdminStatus>
-  </Campus>
-  <SchoolSector>Gov</SchoolSector>
-  <IndependentSchool>N</IndependentSchool>
-  <Entity_Open>1990-01-01</Entity_Open>
-</SchoolInfo>
-<SchoolInfo RefId="A22F003C-0D63-4A6E-B640-81D10AE0AC91">
+<SchoolInfo RefId="4C814862-4949-4858-A5C8-D7A39DFEA55D">
   <LocalId>8</LocalId>
-  <StateProvinceId>4730</StateProvinceId>
-  <CommonwealthId>5673</CommonwealthId>
-  <SchoolName>Lake Fahey College</SchoolName>
+  <StateProvinceId>3479</StateProvinceId>
+  <CommonwealthId>8041</CommonwealthId>
+  <SchoolName>Okunevaberg College</SchoolName>
   <SchoolType>Pri/Sec</SchoolType>
   <AddressList>
     <Address Type="0123" Role="012A">
       <Street>
-        <StreetNumber>5173</StreetNumber>
-        <StreetName>Estate</StreetName>
-        <StreetType>Square</StreetType>
+        <StreetNumber>2838</StreetNumber>
+        <StreetName>Drive</StreetName>
+        <StreetType>Way</StreetType>
       </Street>
-      <City>New Kovacek</City>
-      <StateProvince>QLD</StateProvince>
-      <PostalCode>4887</PostalCode>
+      <City>Naomiton</City>
+      <StateProvince>VIC</StateProvince>
+      <PostalCode>3820</PostalCode>
     </Address>
   </AddressList>
   <ARIA>1</ARIA>
@@ -233,28 +233,28 @@
     <ParentSchoolId>8</ParentSchoolId>
     <SchoolCampusId>4</SchoolCampusId>
     <CampusType>Pri/Sec</CampusType>
-    <AdminStatus>N</AdminStatus>
+    <AdminStatus>Y</AdminStatus>
   </Campus>
   <SchoolSector>Gov</SchoolSector>
   <IndependentSchool>N</IndependentSchool>
   <Entity_Open>1990-01-01</Entity_Open>
 </SchoolInfo>
-<SchoolInfo RefId="9DC8256D-6328-4AB3-80A8-F171AC93C22B">
+<SchoolInfo RefId="024C1627-8994-4173-BE31-0465FB7D2808">
   <LocalId>9</LocalId>
-  <StateProvinceId>551</StateProvinceId>
-  <CommonwealthId>9744</CommonwealthId>
-  <SchoolName>East Cremin College</SchoolName>
+  <StateProvinceId>568</StateProvinceId>
+  <CommonwealthId>5991</CommonwealthId>
+  <SchoolName>Kovacekland College</SchoolName>
   <SchoolType>Pri/Sec</SchoolType>
   <AddressList>
     <Address Type="0123" Role="012A">
       <Street>
-        <StreetNumber>330</StreetNumber>
-        <StreetName>Ranch</StreetName>
-        <StreetType>Place</StreetType>
+        <StreetNumber>430</StreetNumber>
+        <StreetName>Locks</StreetName>
+        <StreetType>Drive</StreetType>
       </Street>
-      <City>West Mante</City>
-      <StateProvince>SA</StateProvince>
-      <PostalCode>5533</PostalCode>
+      <City>Breitenbergborough</City>
+      <StateProvince>WA</StateProvince>
+      <PostalCode>6488</PostalCode>
     </Address>
   </AddressList>
   <ARIA>1</ARIA>
@@ -263,37 +263,37 @@
     <ParentSchoolId>9</ParentSchoolId>
     <SchoolCampusId>1</SchoolCampusId>
     <CampusType>Pri/Sec</CampusType>
-    <AdminStatus>N</AdminStatus>
+    <AdminStatus>Y</AdminStatus>
   </Campus>
   <SchoolSector>Gov</SchoolSector>
   <IndependentSchool>N</IndependentSchool>
   <Entity_Open>1990-01-01</Entity_Open>
 </SchoolInfo>
-<SchoolInfo RefId="72A67D9D-78F7-4441-B873-3E5D93EE7D99">
+<SchoolInfo RefId="8797085C-DE56-4310-ACC4-E71D756F5F36">
   <LocalId>10</LocalId>
-  <StateProvinceId>5299</StateProvinceId>
-  <CommonwealthId>9218</CommonwealthId>
-  <SchoolName>Orvalbury College</SchoolName>
+  <StateProvinceId>7956</StateProvinceId>
+  <CommonwealthId>5470</CommonwealthId>
+  <SchoolName>Rutherfordton College</SchoolName>
   <SchoolType>Pri/Sec</SchoolType>
   <AddressList>
     <Address Type="0123" Role="012A">
       <Street>
-        <StreetNumber>37812</StreetNumber>
-        <StreetName>Squares</StreetName>
-        <StreetType>Avenue</StreetType>
+        <StreetNumber>53750</StreetNumber>
+        <StreetName>Falls</StreetName>
+        <StreetType>Boulevard</StreetType>
       </Street>
-      <City>Eleanoramouth</City>
-      <StateProvince>NSW</StateProvince>
-      <PostalCode>2102</PostalCode>
+      <City>Wildermanburgh</City>
+      <StateProvince>VIC</StateProvince>
+      <PostalCode>3959</PostalCode>
     </Address>
   </AddressList>
   <ARIA>1</ARIA>
   <OperationalStatus>O</OperationalStatus>
   <Campus>
     <ParentSchoolId>10</ParentSchoolId>
-    <SchoolCampusId>4</SchoolCampusId>
+    <SchoolCampusId>2</SchoolCampusId>
     <CampusType>Pri/Sec</CampusType>
-    <AdminStatus>N</AdminStatus>
+    <AdminStatus>Y</AdminStatus>
   </Campus>
   <SchoolSector>Gov</SchoolSector>
   <IndependentSchool>N</IndependentSchool>

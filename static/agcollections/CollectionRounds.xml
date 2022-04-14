@@ -1,5 +1,5 @@
 <CollectionRounds>
-<CollectionRound RefId="5A80875F-EA37-453C-9ADE-9A21F1E12FC8">
+<CollectionRound RefId="E52D1EA0-54A0-455F-9706-4735146A54A3">
   <AGCollection>COI</AGCollection>
   <CollectionYear>2022</CollectionYear>
   <AGRoundList>
@@ -19,7 +19,7 @@
     </AGRound>
   </AGRoundList>
 </CollectionRound>
-<CollectionRound RefId="3F72ABEF-4F37-437F-B913-5F5D96FAE1AA">
+<CollectionRound RefId="AFDF2016-22F6-456F-A8A3-B5618879CBBA">
   <AGCollection>FQ</AGCollection>
   <CollectionYear>2022</CollectionYear>
   <AGRoundList>
@@ -39,7 +39,7 @@
     </AGRound>
   </AGRoundList>
 </CollectionRound>
-<CollectionRound RefId="29BA1583-51EA-4C1F-871F-5B05C0E3779A">
+<CollectionRound RefId="5B1A2F2B-C850-4E20-8A53-AB286962A03B">
   <AGCollection>SES</AGCollection>
   <CollectionYear>2022</CollectionYear>
   <AGRoundList>
@@ -59,7 +59,7 @@
     </AGRound>
   </AGRoundList>
 </CollectionRound>
-<CollectionRound RefId="2E818AFE-34E9-440B-88D9-AA1442564D8D">
+<CollectionRound RefId="FE14F44D-FA53-4781-95D0-6B21310E0AA3">
   <AGCollection>STATS</AGCollection>
   <CollectionYear>2022</CollectionYear>
   <AGRoundList>
