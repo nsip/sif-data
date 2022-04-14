@@ -981,7 +981,7 @@ sub create_collection_round_list_item {
         return (
                 $collectionroundrefid, 
                 $type . $roundnumber,
-                %collectionname{$type} . " " . $roundnumber,
+                $collectionname{$type} . " " . $roundnumber,
                 make_this_year() + sprintf("-%02d-%02d", $roundnumber * 2 + 5, int(rand(20)+1)),
                 make_this_year() + sprintf("-%02d-%02d", $roundnumber * 2 + 6, int(rand(20)+1)),
                 make_this_year() + sprintf("-%02d-%02d", $roundnumber * 2 + 8, int(rand(20)+1)),
@@ -1103,22 +1103,6 @@ sub create_calendar {
         return $data;
 }
 
-
-=head2 Create Calendar elements
-
-=cut
-
-sub create_calendar {
-	my ($self, $data) = @_;
-
-	$data->{refid}          = $self->make_new_id();
-	$data->{schoolyear}     = make_this_year();
-	$data->{daysinsession}  = 67+67+68+75;
-	$data->{startdate}      = $data->{schoolyear} . '-01-28';
-	$data->{enddate}        = $data->{schoolyear} . '-12-19';
-
-	return $data;
-}
 
 =head2 create_grading_assignment()
 
