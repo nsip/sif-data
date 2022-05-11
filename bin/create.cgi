@@ -14,7 +14,10 @@ my $root = "/var/sif/sif-data";
 use lib "/var/sif/sif-data/lib";
 use lib "/home/ubuntu/perl5/lib/perl5";
 
-mkdir "/tmp/sifdata";
+if (! -d "/tmp/sifdata") {
+    mkdir "/tmp/sifdata";
+}
+system ("echo 'Begin' >> /tmp/sifdata/$$.log 2>/tmp/sifdata/$$.err");
 
 param('form_field');
 $0 = "create.cgi - Start up";
@@ -24,6 +27,7 @@ $| = 1;
 my $name = param('name') || shift;
 my $encode = param('encode') || 'html';
 my $type = param('type') || 'empty';
+system ("echo 'Name=$name, Type=$type' >> /tmp/sifdata/$$.log 2>/tmp/sifdata/$$.err");
 
 if ($encode eq 'json') {
 	print "Content-type: text/json\n\n";

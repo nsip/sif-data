@@ -165,7 +165,7 @@ sub get_args {
 		"school-id=s"              => \$school_id,
 		"create-fobjects=s"        => \$fobjects,
 		"create-student-contacts"  => \$student_contacts,
-		"create-static"  => \$static,
+		"create-static=s"  => \$static,
 	);
 
 	if ($help) {
