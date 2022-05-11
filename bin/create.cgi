@@ -14,6 +14,8 @@ my $root = "/var/sif/sif-data";
 use lib "/var/sif/sif-data/lib";
 use lib "/home/ubuntu/perl5/lib/perl5";
 
+mkdir "/tmp/sifdata";
+
 param('form_field');
 $0 = "create.cgi - Start up";
 
@@ -134,8 +136,8 @@ if ($encode eq 'json') {
 # XXX Otherwise ask for a name !
 
 eval {
-	unlink "/tmp/$$.log" if (-f "/tmp/$$.log");
-	system ("echo 'Starting: $name' >> /tmp/$$.log 2>/tmp/$$.err");
+	# unlink "/tmp/sifdata/$$.log" if (-f "/tmp/sifdata/$$.log");
+	system ("echo 'Starting: $name' >> /tmp/sifdata/$$.log 2>/tmp/sifdata/$$.err");
 	my $sth = $dbh_hits->prepare("UPDATE `database` SET status = 'wip', message = ? WHERE id = ?");
 	$sth->execute("started", $name);
 
@@ -158,24 +160,24 @@ eval {
     print STDERR "ROOT=$root, CWD=" .  getcwd . "\n";
 
 	# XXX Rather than redirect to file - just capture here !
-	system ("echo 'CREATE DB $name' >> /tmp/$$.log 2>>/tmp/$$.err");
-	# system ("echo 'perl bin/create_sif_data.pl --create-database=$name' >> /tmp/$$.log 2>>/tmp/$$.err");
-	system ("perl bin/create_sif_data.pl --create-database=sif$name >> /tmp/$$.log 2>>/tmp/$$.err");
+	system ("echo 'CREATE DB $name' >> /tmp/sifdata/$$.log 2>>/tmp/sifdata/$$.err");
+	# system ("echo 'perl bin/create_sif_data.pl --create-database=$name' >> /tmp/sifdata/$$.log 2>>/tmp/sifdata/$$.err");
+	system ("perl bin/create_sif_data.pl --create-database=sif$name >> /tmp/sifdata/$$.log 2>>/tmp/sifdata/$$.err");
 
     # Static Data Create
     if ($type eq "ag_collection") {
-        system ("echo 'CREATE ag_collection' >> /tmp/$$.log 2>>/tmp/$$.err");
+        system ("echo 'CREATE ag_collection' >> /tmp/sifdata/$$.log 2>>/tmp/sifdata/$$.err");
         system (
             "perl bin/create_sif_data.pl "
             . "--database=sif$name "
             . "--create-static=ag_collection "
-            . ">> /tmp/$$.log 2>>/tmp/$$.err"
+            . ">> /tmp/sifdata/$$.log 2>>/tmp/sifdata/$$.err"
         );
     }
 
     # Standard Create
     else {
-        system ("echo 'CREATE SCHOOLS, STUDENTS, STAFF, ROOMS' >> /tmp/$$.log 2>>/tmp/$$.err");
+        system ("echo 'CREATE SCHOOLS, STUDENTS, STAFF, ROOMS' >> /tmp/sifdata/$$.log 2>>/tmp/sifdata/$$.err");
         system (
             "perl bin/create_sif_data.pl "
             . "--database=sif$name "
@@ -185,45 +187,45 @@ eval {
             . "--create-rooms=$rooms "
             . "--create-scheduled-activities=$scheduledactivities "
             . $teachinggroups
-            . ">> /tmp/$$.log 2>>/tmp/$$.err"
+            . ">> /tmp/sifdata/$$.log 2>>/tmp/sifdata/$$.err"
         );
 
         if ($optiondata->{timetable}) {
             #perl $root/bin/create_sif_data.pl --database="$1" --create-time-table=first
-            system ("echo 'CREATE TIMETABLE' >> /tmp/$$.log 2>>/tmp/$$.err");
+            system ("echo 'CREATE TIMETABLE' >> /tmp/sifdata/$$.log 2>>/tmp/sifdata/$$.err");
             system (
                 "perl bin/create_sif_data.pl "
                 . "--database=sif$name "
                 . "--create-time-table=first "
-                . ">> /tmp/$$.log 2>>/tmp/$$.err"
+                . ">> /tmp/sifdata/$$.log 2>>/tmp/sifdata/$$.err"
             );
         }
 
         if ($optiondata->{grading}) {
             #perl $root/bin/create_sif_data.pl --database="$1" --create-grading
-            system ("echo 'CREATE GRADING' >> /tmp/$$.log 2>>/tmp/$$.err");
+            system ("echo 'CREATE GRADING' >> /tmp/sifdata/$$.log 2>>/tmp/sifdata/$$.err");
             system (
                 "perl bin/create_sif_data.pl "
                 . "--database=sif$name "
                 . "--create-grading "
-                . ">> /tmp/$$.log 2>>/tmp/$$.err"
+                . ">> /tmp/sifdata/$$.log 2>>/tmp/sifdata/$$.err"
             );
         }
 
         if ($optiondata->{contacts}) {
             #perl $root/bin/create_sif_data.pl --database="$1" --create-student-contacts
-            system ("echo 'CREATE STUDENT CONTACTS' >> /tmp/$$.log 2>>/tmp/$$.err");
+            system ("echo 'CREATE STUDENT CONTACTS' >> /tmp/sifdata/$$.log 2>>/tmp/sifdata/$$.err");
             system (
                 "perl bin/create_sif_data.pl "
                 . "--database=sif$name "
                 . "--create-student-contacts "
-                . ">> /tmp/$$.log 2>>/tmp/$$.err"
+                . ">> /tmp/sifdata/$$.log 2>>/tmp/sifdata/$$.err"
             );
         }
 
         if ($optiondata->{accounts}) {
             #perl $root/bin/create_sif_data.pl --database="$1" --create-accounts=8..16 --create-vendors=8..16 --create-debtors=8..16
-            system ("echo 'CREATE ACCOUNTS' >> /tmp/$$.log 2>>/tmp/$$.err");
+            system ("echo 'CREATE ACCOUNTS' >> /tmp/sifdata/$$.log 2>>/tmp/sifdata/$$.err");
             system (
                 "perl bin/create_sif_data.pl "
                 . "--database=sif$name "
@@ -231,7 +233,7 @@ eval {
                 . "--create-accounts=8..16 "
                 . "--create-vendors=8..16 "
                 . "--create-debtors=8..16 "
-                . ">> /tmp/$$.log 2>>/tmp/$$.err"
+                . ">> /tmp/sifdata/$$.log 2>>/tmp/sifdata/$$.err"
             );
         }
 
@@ -244,7 +246,7 @@ eval {
         }
     }
 
-	system ("echo 'Update status = wip - starting permissions' >> /tmp/$$.log 2>>/tmp/$$.err");
+	system ("echo 'Update status = wip - starting permissions' >> /tmp/sifdata/$$.log 2>>/tmp/sifdata/$$.err");
 	$sth = $dbh_hits->prepare("UPDATE `database` SET status = 'wip', message = ? WHERE id = ?");
 	$sth->execute("finished, starting permissions", $name);
 
@@ -253,17 +255,17 @@ eval {
     if ($optiondata->{hmac}) {
         $auth_method = "SIF_HMACSHA256";
     }
-	system ("echo 'Inserting SIF3_APP_TEMPLATE' >> /tmp/$$.log 2>>/tmp/$$.err");
+	system ("echo 'Inserting SIF3_APP_TEMPLATE' >> /tmp/sifdata/$$.log 2>>/tmp/sifdata/$$.err");
 	$sth = $dbh_sif->prepare("INSERT INTO SIF3_APP_TEMPLATE (SOLUTION_ID, APPLICATION_KEY, PASSWORD, USER_TOKEN, AUTH_METHOD, ENV_TEMPLATE_ID, INFRA_VERSION) VALUES ('HITS', ?, ?, ?, ?, 'HITS', '3.2.1')");
 	$sth->execute($name, $name, $name, $auth_method);
 
-	system ("echo 'Inserting APPKEY_DB_URL_MAPPER' >> /tmp/$$.log 2>>/tmp/$$.err");
+	system ("echo 'Inserting APPKEY_DB_URL_MAPPER' >> /tmp/sifdata/$$.log 2>>/tmp/sifdata/$$.err");
 	$sth = $dbh_sif->prepare("INSERT INTO APPKEY_DB_URL_MAPPER (applicationKey, databaseUrl) VALUES (?, ?)");
 	$sth->execute($name, "sif$name");
 	$dbh_sif->commit();
 
 
-	system ("echo 'Update status = wip - finished permissions' >> /tmp/$$.log 2>>/tmp/$$.err");
+	system ("echo 'Update status = wip - finished permissions' >> /tmp/sifdata/$$.log 2>>/tmp/sifdata/$$.err");
 	$sth = $dbh_hits->prepare("UPDATE `database` SET status = 'wip', message = ? WHERE id = ?");
 	$sth->execute("finsihed permissions", $name);
 	print STDERR "Complete Build $name\n";
@@ -272,7 +274,7 @@ if ($@) {
 	print STDERR "FAILED Build for $name = $@\n";
 	if ($encode eq 'json') {
 		# XXX Just update DB and exit
-		open (my $IN, "/tmp/$$.log");
+		open (my $IN, "/tmp/sifdata/$$.log");
 		my $buffer = "";
 		while (<$IN>) {
 			$buffer .= $_;
@@ -292,7 +294,7 @@ if ($@) {
 	}
 }
 
-open (my $IN, "/tmp/$$.log");
+open (my $IN, "/tmp/sifdata/$$.log");
 my $buffer = "";
 while (<$IN>) {
 	$buffer .= $_;
