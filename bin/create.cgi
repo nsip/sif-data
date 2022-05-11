@@ -21,6 +21,7 @@ $| = 1;
 
 my $name = param('name') || shift;
 my $encode = param('encode') || 'html';
+my $type = param('type') || 'empty';
 
 if ($encode eq 'json') {
 	print "Content-type: text/json\n\n";
@@ -160,72 +161,87 @@ eval {
 	system ("echo 'CREATE DB $name' >> /tmp/$$.log 2>>/tmp/$$.err");
 	# system ("echo 'perl bin/create_sif_data.pl --create-database=$name' >> /tmp/$$.log 2>>/tmp/$$.err");
 	system ("perl bin/create_sif_data.pl --create-database=sif$name >> /tmp/$$.log 2>>/tmp/$$.err");
-	system ("echo 'CREATE SCHOOLS, STUDENTS, STAFF, ROOMS' >> /tmp/$$.log 2>>/tmp/$$.err");
-	system (
-		"perl bin/create_sif_data.pl "
-		. "--database=sif$name "
-		. "--create-schools=$schools "
-		. "--create-students=$students "
-		. "--create-staff=$teachers "
-		. "--create-rooms=$rooms "
-		. "--create-scheduled-activities=$scheduledactivities "
-		. $teachinggroups
-		. ">> /tmp/$$.log 2>>/tmp/$$.err"
-	);
 
-	if ($optiondata->{timetable}) {
-        #perl $root/bin/create_sif_data.pl --database="$1" --create-time-table=first
-        system ("echo 'CREATE TIMETABLE' >> /tmp/$$.log 2>>/tmp/$$.err");
+    # Static Data Create
+    if ($type eq "ag_collection") {
+        system ("echo 'CREATE ag_collection' >> /tmp/$$.log 2>>/tmp/$$.err");
         system (
             "perl bin/create_sif_data.pl "
             . "--database=sif$name "
-            . "--create-time-table=first "
+            . "--create-static=ag_collection "
             . ">> /tmp/$$.log 2>>/tmp/$$.err"
         );
     }
 
-	if ($optiondata->{grading}) {
-        #perl $root/bin/create_sif_data.pl --database="$1" --create-grading
-        system ("echo 'CREATE GRADING' >> /tmp/$$.log 2>>/tmp/$$.err");
+    # Standard Create
+    else {
+        system ("echo 'CREATE SCHOOLS, STUDENTS, STAFF, ROOMS' >> /tmp/$$.log 2>>/tmp/$$.err");
         system (
             "perl bin/create_sif_data.pl "
             . "--database=sif$name "
-            . "--create-grading "
+            . "--create-schools=$schools "
+            . "--create-students=$students "
+            . "--create-staff=$teachers "
+            . "--create-rooms=$rooms "
+            . "--create-scheduled-activities=$scheduledactivities "
+            . $teachinggroups
             . ">> /tmp/$$.log 2>>/tmp/$$.err"
         );
-    }
 
-	if ($optiondata->{contacts}) {
-        #perl $root/bin/create_sif_data.pl --database="$1" --create-student-contacts
-        system ("echo 'CREATE STUDENT CONTACTS' >> /tmp/$$.log 2>>/tmp/$$.err");
-        system (
-            "perl bin/create_sif_data.pl "
-            . "--database=sif$name "
-            . "--create-student-contacts "
-            . ">> /tmp/$$.log 2>>/tmp/$$.err"
-        );
-    }
+        if ($optiondata->{timetable}) {
+            #perl $root/bin/create_sif_data.pl --database="$1" --create-time-table=first
+            system ("echo 'CREATE TIMETABLE' >> /tmp/$$.log 2>>/tmp/$$.err");
+            system (
+                "perl bin/create_sif_data.pl "
+                . "--database=sif$name "
+                . "--create-time-table=first "
+                . ">> /tmp/$$.log 2>>/tmp/$$.err"
+            );
+        }
 
-	if ($optiondata->{accounts}) {
-        #perl $root/bin/create_sif_data.pl --database="$1" --create-accounts=8..16 --create-vendors=8..16 --create-debtors=8..16
-        system ("echo 'CREATE ACCOUNTS' >> /tmp/$$.log 2>>/tmp/$$.err");
-        system (
-            "perl bin/create_sif_data.pl "
-            . "--database=sif$name "
-            . "--create-student-contacts "
-            . "--create-accounts=8..16 "
-            . "--create-vendors=8..16 "
-            . "--create-debtors=8..16 "
-            . ">> /tmp/$$.log 2>>/tmp/$$.err"
-        );
-    }
+        if ($optiondata->{grading}) {
+            #perl $root/bin/create_sif_data.pl --database="$1" --create-grading
+            system ("echo 'CREATE GRADING' >> /tmp/$$.log 2>>/tmp/$$.err");
+            system (
+                "perl bin/create_sif_data.pl "
+                . "--database=sif$name "
+                . "--create-grading "
+                . ">> /tmp/$$.log 2>>/tmp/$$.err"
+            );
+        }
 
-	if ($optiondata->{naplan}) {
-        # TODO nothing to do here yet? NAPLAN is extenal XML input?
-    }
+        if ($optiondata->{contacts}) {
+            #perl $root/bin/create_sif_data.pl --database="$1" --create-student-contacts
+            system ("echo 'CREATE STUDENT CONTACTS' >> /tmp/$$.log 2>>/tmp/$$.err");
+            system (
+                "perl bin/create_sif_data.pl "
+                . "--database=sif$name "
+                . "--create-student-contacts "
+                . ">> /tmp/$$.log 2>>/tmp/$$.err"
+            );
+        }
 
-	if ($optiondata->{hmac}) {
-        # XXX Not done yet
+        if ($optiondata->{accounts}) {
+            #perl $root/bin/create_sif_data.pl --database="$1" --create-accounts=8..16 --create-vendors=8..16 --create-debtors=8..16
+            system ("echo 'CREATE ACCOUNTS' >> /tmp/$$.log 2>>/tmp/$$.err");
+            system (
+                "perl bin/create_sif_data.pl "
+                . "--database=sif$name "
+                . "--create-student-contacts "
+                . "--create-accounts=8..16 "
+                . "--create-vendors=8..16 "
+                . "--create-debtors=8..16 "
+                . ">> /tmp/$$.log 2>>/tmp/$$.err"
+            );
+        }
+
+        if ($optiondata->{naplan}) {
+            # TODO nothing to do here yet? NAPLAN is extenal XML input?
+        }
+
+        if ($optiondata->{hmac}) {
+            # XXX Not done yet
+        }
     }
 
 	system ("echo 'Update status = wip - starting permissions' >> /tmp/$$.log 2>>/tmp/$$.err");

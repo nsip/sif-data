@@ -142,6 +142,50 @@ sub create_database {
 	return ($db_name);
 }
 
+=head2 Add Static SQL
+
+=cut
+
+sub add_static_sql {
+	my ($self, $db_name, $file) = @_;
+
+	die "Bad db name" if ($db_name =~ m/[\/|\.|;|\s]+/);
+	my $config = YAML::LoadFile($ENV{NSIP_SIF_DATA} || "/etc/nsip/nsip_sif_data");
+
+	my $dsn = $config->{mysql_driver} . ':';
+	$dsn .= ';host='    . $config->{mysql_host} if (defined $config->{mysql_host});
+	$dsn .= ';port='    . $config->{mysql_port} if (defined $config->{mysql_port});
+
+	my $dbh = DBI->connect(
+		$dsn,
+		$config->{mysql_user},
+		$config->{mysql_password},
+	 	{RaiseError => 1}
+	);
+	$dbh->do("USE $db_name");
+
+	my $raw;
+	open (my $SQL, $file) or die "Can't open file $file $!";
+	while (<$SQL>) {
+		$raw .= $_;
+	}
+	close $SQL;
+
+	foreach my $row (split(/;/, $raw)) {
+		$row =~ s/^\s+//gs;	 $row =~ s/\s+$//gs;
+		next if (!$row);
+		eval {
+			$dbh->do($row);
+		};
+		if ($@) {
+			die "$@ with $row";
+		}
+	}
+	$dbh->disconnect;
+
+	return ($db_name);
+}
+
 =head2 Create a new id
 
     use SIF::Data;

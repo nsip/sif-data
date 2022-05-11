@@ -35,10 +35,15 @@ my $sd = SIF::Data->new();
 my ($schools, $students, $student_contacts, $staff, $rooms, $groups,
 	$grading, $account, $vendors, $debtors, $fix, $codeset, $create_db,
 	$db_name, $ttable, $school_id, $elements, $fobjects, $scheduled_activities,
-	$silent) = get_args();
+	$silent, $static) = get_args();
 
 if (defined $create_db) {
 	$db_name = $sd->create_database($create_db);
+}
+
+if (defined $static) {
+	$sd->add_static_sql($db_name, "./static/$static/static.sql");
+    exit 0;
 }
 
 my ($config, $dbh, $dsn) = $sd->db_connect($db_name);
@@ -137,6 +142,7 @@ sub get_args {
 	my $fobjects         = undef;
 	my $scheduled_activites         = undef;
 	my $silent           = 0;
+	my $static           = undef;
 
 	my $result = GetOptions (
 		"help"                     => \$help,
@@ -159,6 +165,7 @@ sub get_args {
 		"school-id=s"              => \$school_id,
 		"create-fobjects=s"        => \$fobjects,
 		"create-student-contacts"  => \$student_contacts,
+		"create-static"  => \$static,
 	);
 
 	if ($help) {
@@ -213,7 +220,7 @@ sub get_args {
 	return ($schools, $students, $student_contacts, $staff, $rooms,
 	$groups, $grading, $account, $vendors, $debtors, $fix, $codeset,
 	$create_db, $db_name, $ttable,  $school_id, $elements, $fobjects, $scheduled_activities,
-	$silent);
+	$silent, $static);
 }
 
 sub usage_exit {
